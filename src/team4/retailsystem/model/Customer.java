@@ -13,11 +13,11 @@ public class Customer
 	public Customer(String name, String telephoneNumber, String email,
 			String address) 
 	{
+		customerID = (numberOfCustomers++) + 1;
 		this.name = name;
 		this.telephoneNumber = telephoneNumber;
 		this.email = email;
 		this.address = address;
-		customerID = (numberOfCustomers++) + 1;
 	}
 
 	//Getters
