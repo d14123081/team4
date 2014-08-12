@@ -8,5 +8,5 @@ package team4.retailsystem.model;
  *
  */
 public interface RetailModelListener {
-	
+
 }

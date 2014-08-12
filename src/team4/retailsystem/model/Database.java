@@ -318,19 +318,24 @@ public class Database {
 		generateInvoices();
 	}
 
+	private void generateUsers() {
+		addUser(new User(1));
+		addUser(new User(0));
+	}
+
 	// Unfinished methods to generate instances of the tables
-	void generateCustomers() {
+	private void generateCustomers() {
 		addCustomer(new Customer("Alan", "0857223104", "Alan@DIT.ie", "Dublin"));
 		addCustomer(new Customer("John", "0854213514", "John@DIT.ie", "Cork"));
 		addCustomer(new Customer("Mary", "0859434115", "Mary@DIT.ie", "Wicklow"));
 	}
 
-	void generateSuppliers() {
+	private void generateSuppliers() {
 		// supplier 1 = apple
 		// supplier 2 = samsung
 	}
 
-	void generateProducts() {
+	private void generateProducts() {
 		addProduct(new Product(500.00, 10, "iPhone 5s", 600.00, 0,
 				suppliers.get(0)));
 		addProduct(new Product(250.00, 5, "iPhone 4", 300.00, 0,
@@ -339,19 +344,19 @@ public class Database {
 				suppliers.get(1)));
 	}
 
-	void generateOrders() {
+	private void generateOrders() {
 
 	}
 
-	void generateDeliveries() {
-		addDelivery(new Delivery(suppliers.get(0), orders.get(0))); 
-		addDelivery(new Delivery(suppliers.get(1), orders.get(1))); 
+	private void generateDeliveries() {
+		addDelivery(new Delivery(suppliers.get(0), orders.get(0).getID()));
+		addDelivery(new Delivery(suppliers.get(1), orders.get(1).getID()));
 	}
 
-	void generateInvoices() {
-	}
-
-	void generateUsers() {
+	private void generateInvoices() {
+		ArrayList<LineItem> items = new ArrayList<>();
+		items.add(new LineItem(1, 1));
+		addInvoice(new Invoice(items, customers.get(0)));
 	}
 
 	// No encryption on passwords, temp method??

@@ -33,7 +33,7 @@ public class Invoice {
 	public Invoice(ArrayList<LineItem> lineItems, Customer customer) {
 		setLineItems(lineItems);
 		setCustomer(customer);
-		setId(idCounter++);
+		setId((idCounter++) + 1);
 		setDate(new Date());
 		setCost(calculateCost(getLineItems()));
 	}

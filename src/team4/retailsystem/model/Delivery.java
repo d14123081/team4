@@ -1,10 +1,11 @@
 package team4.retailsystem.model;
-import java.util.Calendar;
+
+import java.util.Date;
 
 public class Delivery {
 	static int numberOfDeliveries = 0;
 
-	private Calendar deliveryDate;
+	private Date deliveryDate;
 	private int deliveryID;
 	private int orderID;
 	private Supplier supplier;
@@ -13,7 +14,7 @@ public class Delivery {
 		this.deliveryID = (numberOfDeliveries++) + 1;
 		this.supplier = supplier;
 		this.orderID = orderID;
-		deliveryDate = Calendar.getInstance();
+		deliveryDate = new Date();
 	}
 
 	public Calendar getDate() {
@@ -30,5 +31,17 @@ public class Delivery {
 
 	public Supplier getSupplier() {
 		return supplier;
+	}
+
+	public void setDeliveryID(int deliveryID) {
+		this.deliveryID = deliveryID;
+	}
+
+	public void setOrderID(int orderID) {
+		this.orderID = orderID;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 }
