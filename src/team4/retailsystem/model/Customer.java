@@ -1,26 +1,25 @@
 package team4.retailsystem.model;
-public class Customer 
-{
-	static int numberOfCustomers = 0;
-	//Variables
+
+public class Customer {
+	static int customerCount = 0;
+	// Variables
 	private String name;
 	private String telephoneNumber;
 	private String email;
 	private String address;
 	private int customerID;
 
-	//Constructor
+	// Constructor
 	public Customer(String name, String telephoneNumber, String email,
-			String address) 
-	{
+			String address) {
 		this.name = name;
 		this.telephoneNumber = telephoneNumber;
 		this.email = email;
 		this.address = address;
-		customerID = (numberOfCustomers++) + 1;
+		customerID = (customerCount++) + 1;
 	}
 
-	//Getters
+	// Getters
 	public String getName() {
 		return name;
 	}
