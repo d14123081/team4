@@ -16,7 +16,8 @@ import java.util.Date;
 public class Invoice {
 	private static int idCounter = 0;
 	private int id;
-	private ArrayList<LineItem> lineItems;
+	private ArrayList<LineItem> lineItems; // DATABASE OR LOCAL - ARRAYLIST OR
+											// ARRAY?
 	private Date date;
 	private Customer customer;
 	private double cost;
@@ -61,7 +62,6 @@ public class Invoice {
 		setCost(cost);
 	}
 
-	// DATABASE OR LOCAL - ARRAYLIST OR ARRAY?
 	public ArrayList<LineItem> getLineItems() {
 		return lineItems;
 	}
@@ -110,7 +110,8 @@ public class Invoice {
 	 * Calculates the cost of the lineItems. sum of (product * amount) for every
 	 * item.
 	 * 
-	 * @param lineItems the items that make up the invoice
+	 * @param lineItems
+	 *            the items that make up the invoice
 	 * @return the cost of all products sold to the customer
 	 */
 	private double calculateCost(ArrayList<LineItem> lineItems) {
