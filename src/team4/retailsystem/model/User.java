@@ -1,20 +1,40 @@
 package team4.retailsystem.model;
 
+/**
+ * A User class used for login, authentication and access right control.
+ * <p>
+ * Communicates with the database to authenticate the user.
+ * 
+ * @author Szymon
+ */
 public class User {
 	private static int idCounter = 0;
 	private int id;
 	private int authorizationLevel;
 
-	/*
-	 * Assumption - Users will be accessed through the Database method
-	 * authorizeUser(String, String). Hence, for security protected access to
-	 * constructors.
+	/**
+	 * Creates a new user given the provided access rights level.
+	 * <p>
+	 * Assumption - User objects will be accessed/created through the Database
+	 * method authorizeUser(String, String). Hence, for security, "protected"
+	 * access to the constructor should suffice.
+	 * 
+	 * @param authorizationLevel
+	 *            the access level of the user as an integer.
 	 */
 	protected User(int authorizationLevel) {
 		setAuthorizationLevel(authorizationLevel);
 		setId(idCounter++);
 	}
 
+	/**
+	 * Used by the database to re-create a user object form existing user data.
+	 * 
+	 * @param id
+	 *            the unique int id of the user.
+	 * @param authorizationLevel
+	 *            the access level of the user as an integer.
+	 */
 	protected User(int id, int authorizationLevel) {
 		setAuthorizationLevel(authorizationLevel);
 		setId(id);
