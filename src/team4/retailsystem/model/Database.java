@@ -350,7 +350,7 @@ public class Database {
 		order2.add(new LineItem(3, 20));
 		
 		addOrder(new Order(7500.0, suppliers.get(0), 1, order1));
-		addOrder(new Order(9600.0, suppliers.get(1), 1, order2));
+		addOrder(new Order(9600.0, suppliers.get(1), 2, order2));
 	}
 
 	private void generateDeliveries() {
