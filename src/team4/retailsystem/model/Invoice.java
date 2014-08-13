@@ -26,9 +26,9 @@ public class Invoice {
 	 * Creates a brand new invoice with current date.
 	 * 
 	 * @param lineItems
-	 *            the items that make up the invoice
+	 *            the items that make up the invoice.
 	 * @param customer
-	 *            the customer that made the purchase
+	 *            the customer that made the purchase.
 	 */
 	public Invoice(ArrayList<LineItem> lineItems, Customer customer) {
 		setLineItems(lineItems);
