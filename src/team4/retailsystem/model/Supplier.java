@@ -50,5 +50,9 @@ public class Supplier {
     public void setTelephone(String telephone){
         this.telephone = telephone;
     }
-
+    
+    public int getID()
+    {
+    	return this.ID;
+    }
 }
