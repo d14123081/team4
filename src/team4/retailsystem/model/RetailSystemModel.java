@@ -28,6 +28,7 @@ public class RetailSystemModel {
 	private ArrayList<Product> products;
 	private ArrayList<Order> orders;
 	private ArrayList<Supplier> suppliers;
+	private ArrayList<Delivery> deliveries;
 
 	public RetailSystemModel() {
 		listeners = new ArrayList<RetailModelListener>();
@@ -39,6 +40,30 @@ public class RetailSystemModel {
 		products = database.getProducts();
 		orders = database.getOrders();
 		suppliers = database.getSuppliers();
+		deliveries = database.getDeliveries();
+	}
+	
+	//getters
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+	public ArrayList<Customer> getCustomers() {
+		return customers;
+	}
+	public ArrayList<Invoice> getInvoices() {
+		return invoices;
+	}
+	public ArrayList<Product> getProducts() {
+		return products;
+	}
+	public ArrayList<Order> getOrders() {
+		return orders;
+	}
+	public ArrayList<Supplier> getSuppliers() {
+		return suppliers;
+	}
+	public ArrayList<Delivery> getDeliveries() {
+		return deliveries;
 	}
 
 	//User class methods
