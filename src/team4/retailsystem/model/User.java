@@ -5,6 +5,8 @@ package team4.retailsystem.model;
  * <p>
  * Communicates with the database to authenticate the user.
  * 
+ * START USERNAME
+ * 
  * @author Szymon
  */
 public class User {
