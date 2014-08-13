@@ -120,7 +120,7 @@ public class Invoice {
 			// fetch product info from the database here to get the cost per
 			// item. return stmt to note that it hasn't been implemented yet
 			return -1;
-			lineItem.getProductID();
+			//lineItem.getProductID();
 		}
 		return totalCost;
 	}

@@ -9,4 +9,6 @@ package team4.retailsystem.view;
  */
 public interface RetailViewListener {
 
+	public void doLogin(String username, String password);
+	
 }

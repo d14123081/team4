@@ -1,7 +1,9 @@
 package team4.retailsystem.controller;
 
+import team4.retailsystem.model.Database;
 import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
+import team4.retailsystem.model.User;
 import team4.retailsystem.view.RetailSystemView;
 import team4.retailsystem.view.RetailViewListener;
 
@@ -18,6 +20,8 @@ import team4.retailsystem.view.RetailViewListener;
 public class RetailSystemController
 implements RetailModelListener, RetailViewListener
 {
+	private User user;
+	private Database database;
 	
 	private RetailSystemView view;
 	private RetailSystemModel model;
@@ -25,9 +29,12 @@ implements RetailModelListener, RetailViewListener
 	public RetailSystemController(RetailSystemModel model, RetailSystemView view){
 		this.model = model;
 		this.view = view;
+		this.database = Database.getInstance();
 		
 		this.model.addRetailModelListener(this);
 		this.view.addRetailViewListener(this);
+		
+		this.view.showLoginScreen();
 	}
 
 	@Override
@@ -70,6 +77,13 @@ implements RetailModelListener, RetailViewListener
 	public void deliveriesChanged() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void doLogin(String username, String password) {
+		user = database.authorizeUser(username, password);
+		
+		//check auth level here, decide what to do/show next
 	}
 	
 }
