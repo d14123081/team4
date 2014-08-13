@@ -8,16 +8,18 @@ public class Order {
     private static int orderNumber = 0;
     private Product product;
     private Customer customer;
+    private Supplier supplier;
     private int quantity;
     private Date date;
     private boolean ordered;
     private SimpleDateFormat dateformat = new SimpleDateFormat("dd/M/yyyy");
 
-    public Order(Product product, Customer custumer, int quatity, Date date) {
+    public Order(Product product, Customer custumer, Supplier supplier, int quatity, Date date) {
         // TODO Auto-generated constructor stub
         this.quantity = quatity;
         this.product = product;
         this.customer = custumer;
+        this.supplier = supplier;
         this.orderNumber++;
         this.date = new Date(date.getDay() + 1);
         this.ordered = false;
@@ -29,6 +31,10 @@ public class Order {
 
     public Customer getCustomer() {
         return this.customer;
+    }
+    
+    public Supplier getSupplier(){
+        return this.supplier;
     }
 
     public int getOrderNumber() {
@@ -63,7 +69,7 @@ public class Order {
         this.date = date;
     }
 
-    public String ViewCurrentOrdering(Order order) {
+    public String ViewCurrentOrderingForCustomer(Order order) {
         String text = null;
         if (order.isOrdered() == false) {
             text =
@@ -81,13 +87,49 @@ public class Order {
         return text;
     }
 
-    public String ViewOrdered(Order order) {
+    public String ViewOrderedForCustomer(Order order) {
         String text = null;
         if (order.isOrdered() == true) {
             text =
                     "Order number: " + order.getOrderNumber()
                             + "\nCustomer Name: "
                             + order.getCustomer().getName() + "\nItem: "
+                            + order.getProduct().getName() + "\nQuantity: "
+                            + order.getQuantity() + "\nPrice: "
+                            + order.getQuantity() * order.getProduct().getCost()
+                            + "\ndelivery on: "
+                            + dateformat.format(order.getDeliveryDate())
+                            + "\n___________________________________________\n";
+        }
+
+        return text;
+    }
+    
+    public String ViewCurrentOrderingForAdmin(Order order) {
+        String text = null;
+        if (order.isOrdered() == false) {
+            text =
+                    "Order number: " + order.getOrderNumber()
+                            + "\nSupplier Name: "
+                            + order.getSupplier().getName() + "\nItem: "
+                            + order.getProduct().getName() + "\nQuantity: "
+                            + order.getQuantity() + "\nPrice: "
+                            + order.getQuantity() * order.getProduct().getCost()
+                            + "\nEstimate delivery on: "
+                            + dateformat.format(order.getDeliveryDate())
+                            + "\n___________________________________________\n";
+        }
+
+        return text;
+    }
+
+    public String ViewOrderedForAdmin(Order order) {
+        String text = null;
+        if (order.isOrdered() == true) {
+            text =
+                    "Order number: " + order.getOrderNumber()
+                            + "\nCustomer Name: "
+                            + order.getSupplier().getName() + "\nItem: "
                             + order.getProduct().getName() + "\nQuantity: "
                             + order.getQuantity() + "\nPrice: "
                             + order.getQuantity() * order.getProduct().getCost()
