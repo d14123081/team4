@@ -5,13 +5,16 @@ package team4.retailsystem.model;
  * <p>
  * Communicates with the database to authenticate the user.
  * 
- * START USERNAME
- * 
  * @author Szymon
  */
 public class User {
+	public static final int NO_AUTHORIZATION = -1;
+	public static final int NORMAL_USER = 1;
+	public static final int ADMINISTRATOR = 2;
+	
 	private static int idCounter = 0;
 	private int id;
+	private String username;
 	private int authorizationLevel;
 
 	/**
@@ -24,8 +27,9 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int authorizationLevel) {
+	protected User(int authorizationLevel, String username) {
 		setAuthorizationLevel(authorizationLevel);
+		setUsername(username);
 		setId(idCounter++);
 	}
 
@@ -37,8 +41,9 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int id, int authorizationLevel) {
+	protected User(int id, int authorizationLevel, String username) {
 		setAuthorizationLevel(authorizationLevel);
+		setUsername(username);
 		setId(id);
 	}
 
@@ -49,6 +54,10 @@ public class User {
 	public int getID() {
 		return id;
 	}
+	
+	public String getUsername(){
+		return username;
+	}
 
 	private void setId(int id) {
 		this.id = id;
@@ -56,5 +65,9 @@ public class User {
 
 	private void setAuthorizationLevel(int authorizationLevel) {
 		this.authorizationLevel = authorizationLevel;
+	}
+
+	private void setUsername(String username) {
+		this.username = username;
 	}
 }
