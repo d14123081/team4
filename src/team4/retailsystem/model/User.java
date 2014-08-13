@@ -30,7 +30,7 @@ public class User {
 	protected User(int authorizationLevel, String username) {
 		setAuthorizationLevel(authorizationLevel);
 		setUsername(username);
-		setId(idCounter++);
+		setId(++idCounter);
 	}
 
 	/**

@@ -12,7 +12,7 @@ public class Customer {
 	// Constructor
 	public Customer(String name, String telephoneNumber, String email,
 			String address) {
-		customerID = (numberOfCustomers++) + 1;
+		customerID = ++numberOfCustomers;
 		this.name = name;
 		this.telephoneNumber = telephoneNumber;
 		this.email = email;

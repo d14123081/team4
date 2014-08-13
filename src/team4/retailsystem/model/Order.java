@@ -1,70 +1,69 @@
 package team4.retailsystem.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Order {
 
     private static int orderNumber = 0;
-    private Product product;
-    private Customer customer;
     private Supplier supplier;
-    private int quantity;
     private Date date;
-    private boolean ordered;
+    private double cost;
+    private int deliveryID;
     private int ID;
+    private ArrayList<LineItem> items;
     private SimpleDateFormat dateformat = new SimpleDateFormat("dd/M/yyyy");
 
-    public Order(Product product, Customer custumer, Supplier supplier, int quatity, Date date) {
+    public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items) 
+    {
         // TODO Auto-generated constructor stub
-        this.quantity = quatity;
-        this.product = product;
-        this.customer = custumer;
+    	this.cost = cost;
         this.supplier = supplier;
         ID = ++orderNumber;
-        this.date = new Date(date.getDay() + 1);
-        this.ordered = false;
+        this.date = new Date();
+        this.deliveryID = deliveryID;
+        this.items = items;
+    }
+    
+    public ArrayList<LineItem> getLineItems()
+    {
+    	return items;
+    }
+    
+    public void setLineItems(ArrayList<LineItem> items)
+    {
+    	this.items = items;
     }
     
     public int getID()
     {
     	return ID;
     }
-
-    public Product getProduct(){
-        return this.product;
+    
+    public double getCost()
+    {
+    	return cost;
+    }
+    
+    public void setCost(double cost)
+    {
+    	this.cost = cost;
+    }
+    
+    public int getDeliveryID()
+    {
+    	return deliveryID;
+    }
+    
+    public void setDeliveryID(int deliveryID)
+    {
+    	this.deliveryID = deliveryID;
     }
 
-    public Customer getCustomer() {
-        return this.customer;
-    }
     
     public Supplier getSupplier(){
         return this.supplier;
-    }
-
-    public int getOrderNumber() {
-        return this.orderNumber;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        Order.orderNumber = orderNumber;
-    }
-
-    public int getQuantity() {
-        return this.quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public boolean isOrdered() {
-        return this.ordered;
-    }
-
-    public void setOrdered(boolean ordered) {
-        this.ordered = ordered;
     }
 
     public Date getDeliveryDate() {

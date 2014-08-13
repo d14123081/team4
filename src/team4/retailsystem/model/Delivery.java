@@ -11,7 +11,7 @@ public class Delivery {
 	private Supplier supplier;
 
 	public Delivery(Supplier supplier, int orderID) {
-		this.deliveryID = (numberOfDeliveries++) + 1;
+		this.deliveryID = ++numberOfDeliveries;
 		this.supplier = supplier;
 		this.orderID = orderID;
 		deliveryDate = new Date();

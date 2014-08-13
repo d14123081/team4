@@ -13,7 +13,7 @@ public class Product {
 
 	public Product(String name, double cost, double markup, double price,
 			int stockLevel, Supplier supplier) {
-		this.ID = (productCount++) + 1;
+		this.ID = ++productCount;
 		this.name = name;
 		this.cost = cost;
 		this.markup = markup;

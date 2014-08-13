@@ -1,9 +1,6 @@
 package team4.retailsystem.model;
 
 /**
- * Unfinished database class for the group project
- * 
- * Will update as new classes are put in Git to generate the database
  * 
  * @author D14123080 Alan Kavanagh
  *
@@ -305,13 +302,17 @@ public class Database {
 
 	// Auto generate database
 	void generateDatabase() {
-		generateUsers();
-		generateCustomers();
-		generateSuppliers();
-		generateProducts();
-		generateOrders();
-		generateDeliveries();
-		generateInvoices();
+		try {
+			generateUsers();
+			generateCustomers();
+			generateSuppliers();
+			generateProducts();
+			generateOrders();
+			generateDeliveries();
+			generateInvoices();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void generateUsers() {
@@ -342,7 +343,14 @@ public class Database {
 	}
 
 	private void generateOrders() {
-
+		ArrayList<LineItem> order1 = new ArrayList<>();
+		order1.add(new LineItem(1, 10));
+		order1.add(new LineItem(2, 10));
+		ArrayList<LineItem> order2 = new ArrayList<>();
+		order2.add(new LineItem(3, 20));
+		
+		addOrder(new Order(7500.0, suppliers.get(0), 1, order1));
+		addOrder(new Order(9600.0, suppliers.get(1), 1, order2));
 	}
 
 	private void generateDeliveries() {
