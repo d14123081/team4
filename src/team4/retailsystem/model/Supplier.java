@@ -1,17 +1,22 @@
 package team4.retailsystem.model;
 
 public class Supplier {
+	static int suppliersCount = 0;
+	
     private String name;
     private String email;
     private String address;
-    private long telphone;
+    private String telephone;
+    private int ID;
 
-    public Supplier(String name, String email, String address, long telphone) {
+    public Supplier(String name, String email, String address, String telephone) 
+    {
         // TODO Auto-generated constructor stub
         this.name = name;
         this.email = email;
         this.address = address;
-        this.telphone = telphone;
+        this.telephone = telephone;
+        this.ID = (++suppliersCount);
     }
     
     public String getName(){
@@ -38,12 +43,12 @@ public class Supplier {
         this.address = address;
     }
     
-    public long getTelephone(){
-        return this.telphone;
+    public String getTelephoneNumber(){
+        return this.telephone;
     }
     
-    public void setTelphone(long telphone){
-        this.telphone = telphone;
+    public void setTelephone(String telephone){
+        this.telephone = telephone;
     }
 
 }
