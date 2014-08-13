@@ -9,4 +9,18 @@ package team4.retailsystem.model;
  */
 public interface RetailModelListener {
 
+	public void usersChanged();
+	
+	public void customersChanged();
+	
+	public void invoicesChanged();
+	
+	public void productsChanged();
+	
+	public void ordersChanged();
+	
+	public void suppliersChanged();
+	
+	public void deliveriesChanged();
+	
 }

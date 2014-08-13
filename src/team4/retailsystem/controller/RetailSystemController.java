@@ -29,5 +29,47 @@ implements RetailModelListener, RetailViewListener
 		this.model.addRetailModelListener(this);
 		this.view.addRetailViewListener(this);
 	}
+
+	@Override
+	public void usersChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void customersChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void invoicesChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void productsChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ordersChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void suppliersChanged() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deliveriesChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
