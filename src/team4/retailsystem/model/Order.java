@@ -12,6 +12,7 @@ public class Order {
     private int quantity;
     private Date date;
     private boolean ordered;
+    private int ID;
     private SimpleDateFormat dateformat = new SimpleDateFormat("dd/M/yyyy");
 
     public Order(Product product, Customer custumer, Supplier supplier, int quatity, Date date) {
@@ -20,9 +21,14 @@ public class Order {
         this.product = product;
         this.customer = custumer;
         this.supplier = supplier;
-        this.orderNumber++;
+        ID = ++orderNumber;
         this.date = new Date(date.getDay() + 1);
         this.ordered = false;
+    }
+    
+    public int getID()
+    {
+    	return ID;
     }
 
     public Product getProduct(){

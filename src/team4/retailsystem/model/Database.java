@@ -11,6 +11,9 @@ package team4.retailsystem.model;
 import java.util.ArrayList;
 
 public class Database {
+
+	private static Database db = null;
+
 	private ArrayList<Customer> customers = new ArrayList<>();
 	private ArrayList<Supplier> suppliers = new ArrayList<>();
 	private ArrayList<Product> products = new ArrayList<>();
@@ -19,7 +22,7 @@ public class Database {
 	private ArrayList<Order> orders = new ArrayList<>();
 	private ArrayList<User> users = new ArrayList<>();
 
-	public Database() {
+	private Database() {
 		generateDatabase();
 	}
 
@@ -210,22 +213,16 @@ public class Database {
 		}
 	}
 
-	public boolean updateSupplier(Supplier supp)
-	{
-		try
-		{
-			for(Supplier s : suppliers)
-			{
-				if(s.getID() == supp.getID())
-				{
+	public boolean updateSupplier(Supplier supp) {
+		try {
+			for (Supplier s : suppliers) {
+				if (s.getID() == supp.getID()) {
 					s = supp;
-					return true
+					return true;
 				}
 			}
 			return false;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -274,7 +271,6 @@ public class Database {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 
 	public boolean updateOrder(Order order) {
@@ -319,11 +315,10 @@ public class Database {
 	}
 
 	private void generateUsers() {
-		addUser(new User(1));
-		addUser(new User(0));
+		addUser(new User(1, "Eoin"));
+		addUser(new User(0, "Szymon"));
 	}
 
-	// Unfinished methods to generate instances of the tables
 	private void generateCustomers() {
 		addCustomer(new Customer("Alan", "0857223104", "Alan@DIT.ie", "Dublin"));
 		addCustomer(new Customer("John", "0854213514", "John@DIT.ie", "Cork"));
@@ -331,16 +326,18 @@ public class Database {
 	}
 
 	private void generateSuppliers() {
-		// supplier 1 = apple
-		// supplier 2 = samsung
+		addSupplier(new Supplier("Apple", "Apple@suppliers.com", "California",
+				"184234242"));
+		addSupplier(new Supplier("Samsung", "Samsung@suppliers.com", "Tokyo",
+				"76328843"));
 	}
 
 	private void generateProducts() {
-		addProduct(new Product(500.00, 10, "iPhone 5s", 600.00, 0,
+		addProduct(new Product("iPhone 5s", 500.00, 10, 600.00, 0,
 				suppliers.get(0)));
-		addProduct(new Product(250.00, 5, "iPhone 4", 300.00, 0,
+		addProduct(new Product("iPhone 4", 250.00, 5, 300.00, 0,
 				suppliers.get(0)));
-		addProduct(new Product(480.00, 10, "Galaxy S5", 550.00, 0,
+		addProduct(new Product("Galaxy S5", 480.00, 10, 550.00, 0,
 				suppliers.get(1)));
 	}
 
@@ -364,17 +361,23 @@ public class Database {
 		try {
 			for (User u : users) {
 				if (u.getUsername().equalsIgnoreCase(user)) {
-					if (u.getPassword().equals(pass)) {
-						return u;
-					} else {
-						return null;
-					}
+					return u;
+				} else {
+					return new User(-1, "Not authorised");
 				}
 			}
-			return null;
+			return new User(-1, "Not authorised");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new User(-1, "Not authorised");
 		}
+	}
+
+	// Return instance of database
+	public static Database getInstance() {
+		if (db == null) {
+			db = new Database();
+		}
+		return db;
 	}
 }

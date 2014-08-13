@@ -17,7 +17,7 @@ public class Delivery {
 		deliveryDate = new Date();
 	}
 
-	public Calendar getDate() {
+	public Date getDate() {
 		return deliveryDate;
 	}
 
