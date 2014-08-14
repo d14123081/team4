@@ -322,8 +322,12 @@ public class Database {
 		EncryptionModule em;
 		try {
 			em = new EncryptionModule();
-			addUser(new User(1, "Eoin", em.encrypt("Nioe", "testSalt"), "testSalt"));
-			addUser(new User(0, "Szymon", em.encrypt("Nomyzs", "testSalt"), "testSalt"));
+			addUser(new User(User.ADMINISTRATOR, "Eoin", em.encrypt("nioe", "testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Szymon", em.encrypt("nomyzs", "testSalt"), "testSalt"));
+			addUser(new User(User.ADMINISTRATOR, "Alan", em.encrypt("nala", "testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Ha", em.encrypt("ah", "testSalt"), "testSalt"));
+			addUser(new User(User.ADMINISTRATOR, "Siobhain", em.encrypt("niahbois", "testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Giovanni", em.encrypt("innavoig", "testSalt"), "testSalt"));
 			
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -383,7 +387,7 @@ public class Database {
 	 */
 	public User authorizeUser(String username, String password) {
 		for(User user : users){
-			if(user.getUsername().equals(username)){
+			if(user.getUsername().toLowerCase().equals(username.toLowerCase())){
 				try {
 					EncryptionModule em = new EncryptionModule();
 					String passwordDigest = em.encrypt(password, user.getSalt());
