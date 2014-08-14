@@ -1,5 +1,7 @@
 package team4.retailsystem.view;
 
+import team4.retailsystem.model.User;
+
 /**
  * An interface that describes the expected behaviours of a retail system view.
  * 
@@ -12,7 +14,7 @@ public interface RetailSystemView {
 	
 	public void showLoginScreen();
 	
-	public void showMainMenuScreen();
+	public void showMainMenuScreen(User user);
 	
 	public void showCustomerEditingScreen();
 	
@@ -25,4 +27,6 @@ public interface RetailSystemView {
 	public void showSupplierEditingScreen();
 	
 	public void showUserEditingScreen();
+	
+	public void showError(String errorMessage);
 }

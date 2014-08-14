@@ -11,4 +11,5 @@ public interface RetailViewListener {
 
 	public void doLogin(String username, String password);
 	
+	public void errorAcknowledged();
 }

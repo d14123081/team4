@@ -16,8 +16,8 @@ import java.util.Date;
 public class Invoice {
 	private static int idCounter = 0;
 	private int id;
-	private ArrayList<LineItem> lineItems; // DATABASE OR LOCAL - ARRAYLIST OR
-											// ARRAY?
+	private ArrayList<LineItem> lineItems;
+
 	private Date date;
 	private Customer customer;
 	private double cost;
@@ -117,10 +117,13 @@ public class Invoice {
 	private double calculateCost(ArrayList<LineItem> lineItems) {
 		double totalCost = 0;
 		for (LineItem lineItem : lineItems) {
-			// fetch product info from the database here to get the cost per
-			// item. return stmt to note that it hasn't been implemented yet
-			return -1;
-			//lineItem.getProductID();
+			// when the database class is complete, should be able to fetch the product by id without a need for the loop
+			for(Product p : Database.getInstance().getProducts()){
+				if(p.getID() == lineItem.getProductID()){
+					totalCost += p.getCost();
+					break;
+				}
+			}
 		}
 		return totalCost;
 	}

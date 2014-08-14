@@ -2,6 +2,8 @@ package team4.retailsystem.view;
 
 import java.util.ArrayList;
 
+import team4.retailsystem.model.User;
+
 /**
  * A class to implement a basic text-based retail system interface
  * 
@@ -49,9 +51,19 @@ implements RetailSystemView
 	}
 
 	@Override
-	public void showMainMenuScreen() {
-		// TODO Auto-generated method stub
+	public void showMainMenuScreen(User user) {
 		
+		//decide what menu options to show the user based on their auth level.
+		String welcomMessage = "Welcome, "+user.getUsername()+". ";
+		
+		if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
+			welcomMessage += "You have administrator levelaccess.";
+		}
+		else if(user.getAuthorizationLevel() == User.NORMAL_USER){
+			welcomMessage += "You have normal level access.";
+		}
+		
+		screen.setScreenText(welcomMessage);
 	}
 
 	@Override
@@ -88,5 +100,16 @@ implements RetailSystemView
 	public void showUserEditingScreen() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void showError(String errorMessage) {
+		screen.setScreenText(errorMessage);
+		screen.updateScreenText("Press enter to continue.");
+		screen.getString();
+		
+		for(RetailViewListener r:listeners){
+			r.errorAcknowledged();
+		}
 	}
 }

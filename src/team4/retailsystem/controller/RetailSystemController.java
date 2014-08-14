@@ -88,6 +88,34 @@ implements RetailModelListener, RetailViewListener
 		user = database.authorizeUser(username, password);
 		
 		//check auth level here, decide what to do/show next
+		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
+			for(RetailSystemView r: views){
+				r.showError("Unable to authorise user: "+username);
+			}
+		}
+		else
+		{
+			for(RetailSystemView r: views){
+				r.showMainMenuScreen(user);
+			}
+		}
+	}
+
+	@Override
+	public void errorAcknowledged() {
+		//Take user back to main menu, or login screen.
+		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
+			for(RetailSystemView r: views){
+				r.showLoginScreen();
+			}
+		}
+		else
+		{
+			for(RetailSystemView r: views){
+				r.showMainMenuScreen(user);
+			}
+		}
+		
 	}
 	
 }

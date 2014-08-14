@@ -1,18 +1,18 @@
 package team4.retailsystem.model;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 /**
  * 
  * @author D14123080 Alan Kavanagh
  *
  */
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Database {
 
 	private static Database db = null;
-
-	private HashMap<String,String> passwordMap = new HashMap<String,String>();
 	
 	private ArrayList<Customer> customers = new ArrayList<>();
 	private ArrayList<Supplier> suppliers = new ArrayList<>();
@@ -319,19 +319,16 @@ public class Database {
 	}
 
 	private void generateUsers() {
-		addUser(new User(User.ADMINISTRATOR, "eoin"));
-		addUser(new User(User.NORMAL_USER, "szymon"));
-		addUser(new User(User.ADMINISTRATOR, "alan"));
-		addUser(new User(User.NORMAL_USER, "siobhain"));
-		addUser(new User(User.ADMINISTRATOR, "ha"));
-		addUser(new User(User.NORMAL_USER, "giovanni"));
-		
-		passwordMap.put("eoin", "1234");
-		passwordMap.put("szymon", "1234");
-		passwordMap.put("alan", "1234");
-		passwordMap.put("siobhain", "1234");
-		passwordMap.put("ha", "1234");
-		passwordMap.put("giovanni", "1234");
+		EncryptionModule em;
+		try {
+			em = new EncryptionModule();
+			addUser(new User(1, "Eoin", em.encrypt("Nioe", "testSalt"), "testSalt"));
+			addUser(new User(0, "Szymon", em.encrypt("Nomyzs", "testSalt"), "testSalt"));
+			
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void generateCustomers() {
@@ -378,19 +375,63 @@ public class Database {
 		addInvoice(new Invoice(items, customers.get(0)));
 	}
 
-	// No encryption on passwords, temp method??
+	/**
+	 * Return existing User on username+password match, otherwise return an unauthorized user.
+	 * @param username The username of the User.
+	 * @param password A String password.
+	 * @return User that matches the username and password, otherwise an unauthorized User object.
+	 */
 	public User authorizeUser(String username, String password) {
-		User user = new User(-1, "Not authorised");
-		
-		for(User u:users){
-			if(u.getUsername().toLowerCase().equals(username.toLowerCase())){
-				if(passwordMap.get(username).equals(password)){
-					user = u;
-				}
+		for(User user : users){
+			if(user.getUsername().equals(username)){
+				try {
+					EncryptionModule em = new EncryptionModule();
+					String passwordDigest = em.encrypt(password, user.getSalt());
+					if(user.getPasswordDigest().equals(passwordDigest)){
+						return user;						
+					}
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+					break;
+				}		
 			}
 		}
+		return new User(User.NO_AUTHORIZATION, "Not authorised", null, null);
+	}
+	
+	/**
+	 * Inner class that uses MD5 to generate password digests. 
+	 * @author Szymon
+	 */
+	private class EncryptionModule {
+		private MessageDigest md;
+
+		private EncryptionModule() throws NoSuchAlgorithmException {
+			md = MessageDigest.getInstance("MD5");
+		}
 		
-		return user;
+		/**
+		 * Returns a random 8-byte salt as a String.
+		 * @return Random 8-byte string.
+		 */
+		private String getRandomSalt() {
+			SecureRandom random = new SecureRandom();
+			byte bytes[] = new byte[8];
+			random.nextBytes(bytes);
+			return new String(bytes);
+		}
+
+		/**
+		 * Returns the password digest, created using the given salt.
+		 * @param password The password to encrypt.
+		 * @param salt The salt used to protect against dictionary attacks.
+		 * @return Password digest as a String.
+		 */
+		private String encrypt(String password, String salt) {
+			md.reset();
+			md.update(salt.getBytes());
+			return new String(md.digest(password.getBytes()));
+		}
 	}
 
 	// Return instance of database
