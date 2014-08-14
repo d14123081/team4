@@ -6,11 +6,14 @@ package team4.retailsystem.model;
  *
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Database {
 
 	private static Database db = null;
 
+	private HashMap<String,String> passwordMap = new HashMap<String,String>();
+	
 	private ArrayList<Customer> customers = new ArrayList<>();
 	private ArrayList<Supplier> suppliers = new ArrayList<>();
 	private ArrayList<Product> products = new ArrayList<>();
@@ -316,8 +319,19 @@ public class Database {
 	}
 
 	private void generateUsers() {
-		addUser(new User(1, "Eoin"));
-		addUser(new User(0, "Szymon"));
+		addUser(new User(User.ADMINISTRATOR, "eoin"));
+		addUser(new User(User.NORMAL_USER, "szymon"));
+		addUser(new User(User.ADMINISTRATOR, "alan"));
+		addUser(new User(User.NORMAL_USER, "siobhain"));
+		addUser(new User(User.ADMINISTRATOR, "ha"));
+		addUser(new User(User.NORMAL_USER, "giovanni"));
+		
+		passwordMap.put("eoin", "1234");
+		passwordMap.put("szymon", "1234");
+		passwordMap.put("alan", "1234");
+		passwordMap.put("siobhain", "1234");
+		passwordMap.put("ha", "1234");
+		passwordMap.put("giovanni", "1234");
 	}
 
 	private void generateCustomers() {
@@ -365,20 +379,18 @@ public class Database {
 	}
 
 	// No encryption on passwords, temp method??
-	public User authorizeUser(String user, String pass) {
-		try {
-			for (User u : users) {
-				if (u.getUsername().equalsIgnoreCase(user)) {
-					return u;
-				} else {
-					return new User(-1, "Not authorised");
+	public User authorizeUser(String username, String password) {
+		User user = new User(-1, "Not authorised");
+		
+		for(User u:users){
+			if(u.getUsername().toLowerCase().equals(username.toLowerCase())){
+				if(passwordMap.get(username).equals(password)){
+					user = u;
 				}
 			}
-			return new User(-1, "Not authorised");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new User(-1, "Not authorised");
 		}
+		
+		return user;
 	}
 
 	// Return instance of database
