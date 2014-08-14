@@ -16,6 +16,8 @@ public class User {
 	private int id;
 	private String username;
 	private int authorizationLevel;
+	private String passwordDigest;
+	private String salt;
 
 	/**
 	 * Creates a new user given the provided access rights level.
@@ -27,10 +29,12 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int authorizationLevel, String username) {
+	protected User(int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);
 		setUsername(username);
 		setId(++idCounter);
+		setPasswordDigest(passwordDigest);
+		setSalt(salt);
 	}
 
 	/**
@@ -41,10 +45,12 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int id, int authorizationLevel, String username) {
+	protected User(int id, int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);
 		setUsername(username);
 		setId(id);
+		setPasswordDigest(passwordDigest);
+		setSalt(salt);
 	}
 
 	public int getAuthorizationLevel() {
@@ -58,6 +64,14 @@ public class User {
 	public String getUsername(){
 		return username;
 	}
+	
+	protected String getSalt() {
+		return salt;
+	}
+	
+	protected String getPasswordDigest(){
+		return passwordDigest;
+	}
 
 	private void setId(int id) {
 		this.id = id;
@@ -69,5 +83,13 @@ public class User {
 
 	private void setUsername(String username) {
 		this.username = username;
+	}
+
+	private void setPasswordDigest(String passwordDigest) {
+		this.passwordDigest = passwordDigest;
+	}
+	
+	private void setSalt(String salt){
+		this.salt = salt;
 	}
 }
