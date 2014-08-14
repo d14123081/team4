@@ -1,5 +1,7 @@
 package team4.retailsystem.controller;
 
+import java.util.ArrayList;
+
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
@@ -23,20 +25,22 @@ implements RetailModelListener, RetailViewListener
 	private User user;
 	private Database database;
 	
-	private RetailSystemView view;
+	private ArrayList<RetailSystemView> views = new ArrayList<RetailSystemView>();
 	private RetailSystemModel model;
 	
-	public RetailSystemController(RetailSystemModel model, RetailSystemView view){
+	public RetailSystemController(RetailSystemModel model, ArrayList<RetailSystemView> views){
 		this.model = model;
-		this.view = view;
+		this.views = views;
 		this.database = Database.getInstance();
 		
 		this.model.addRetailModelListener(this);
-		this.view.addRetailViewListener(this);
 		
-		this.view.showLoginScreen();
+		for(RetailSystemView r:views){
+			r.addRetailViewListener(this);
+			r.showLoginScreen();
+		}
 	}
-
+	
 	@Override
 	public void usersChanged() {
 		// TODO Auto-generated method stub
