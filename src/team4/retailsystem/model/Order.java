@@ -74,7 +74,7 @@ public class Order {
         this.date = date;
     }
 
-    public String ViewCurrentOrderingForCustomer(Order order) {
+    /*public String ViewCurrentOrderingForCustomer(Order order) {
         String text = null;
         if (order.isOrdered() == false) {
             text =
@@ -144,6 +144,6 @@ public class Order {
         }
 
         return text;
-    }
+    }*/
 
 }
