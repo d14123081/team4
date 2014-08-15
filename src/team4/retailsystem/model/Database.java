@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Database {
 
-	private static Database db = null;
+	private static Database db = new Database();
 	
 	private ArrayList<Customer> customers = new ArrayList<>();
 	private ArrayList<Supplier> suppliers = new ArrayList<>();
@@ -181,6 +181,15 @@ public class Database {
 		return products;
 	}
 
+	public Product getProductById(int id){
+		for(Product p:products){
+			if(p.getID() == id){
+				return p;
+			}
+		}
+		return null;
+	}
+	
 	public ArrayList<Delivery> getDeliveries() {
 		return deliveries;
 	}
@@ -440,9 +449,6 @@ public class Database {
 
 	// Return instance of database
 	public static Database getInstance() {
-		if (db == null) {
-			db = new Database();
-		}
 		return db;
 	}
 }
