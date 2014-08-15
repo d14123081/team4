@@ -120,7 +120,7 @@ public class CustomerPanel extends JPanel{
 	
 	
 }
- //change to upload
+ 
  
 	
 }
