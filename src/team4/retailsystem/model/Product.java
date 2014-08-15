@@ -11,13 +11,13 @@ public class Product {
 	private int stockLevel;
 	private Supplier supplier;
 
-	public Product(String name, double cost, double markup, double price,
+	public Product(String name, double cost, double markup,
 			int stockLevel, Supplier supplier) {
 		this.ID = ++productCount;
 		this.name = name;
 		this.cost = cost;
 		this.markup = markup;
-		this.price = price;
+		this.price = cost+markup;
 		this.stockLevel = stockLevel;
 		this.supplier = supplier;
 	}

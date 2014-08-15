@@ -336,24 +336,24 @@ public class Database {
 	}
 
 	private void generateCustomers() {
-		addCustomer(new Customer("Alan", "0857223104", "Alan@DIT.ie", "Dublin"));
-		addCustomer(new Customer("John", "0854213514", "John@DIT.ie", "Cork"));
-		addCustomer(new Customer("Mary", "0859434115", "Mary@DIT.ie", "Wicklow"));
+		addCustomer(new Customer("Carphone Warehouse", "4758439", "cwarehouse@customers.com", "Dublin"));
+		addCustomer(new Customer("Meteor", "3534594", "meteor@customers.com", "Cork"));
+		addCustomer(new Customer("Vodafone", "6849932", "vodafone@customer.com", "Wicklow"));
 	}
 
 	private void generateSuppliers() {
-		addSupplier(new Supplier("Apple", "Apple@suppliers.com", "California",
+		addSupplier(new Supplier("Apple", "apple@suppliers.com", "California",
 				"184234242"));
-		addSupplier(new Supplier("Samsung", "Samsung@suppliers.com", "Tokyo",
+		addSupplier(new Supplier("Samsung", "samsung@suppliers.com", "Tokyo",
 				"76328843"));
 	}
 
 	private void generateProducts() {
-		addProduct(new Product("iPhone 5s", 500.00, 10, 600.00, 0,
+		addProduct(new Product("iPhone 5s", 500.00, 100.00, 0,
 				suppliers.get(0)));
-		addProduct(new Product("iPhone 4", 250.00, 5, 300.00, 0,
+		addProduct(new Product("iPhone 4", 250.00, 50.00, 0,
 				suppliers.get(0)));
-		addProduct(new Product("Galaxy S5", 480.00, 10, 550.00, 0,
+		addProduct(new Product("Galaxy S5", 480.00, 70.00, 0,
 				suppliers.get(1)));
 	}
 
