@@ -7,7 +7,6 @@ public class Product {
 	private String name;
 	private double cost;
 	private double markup;
-	private double price;
 	private int stockLevel;
 	private Supplier supplier;
 
@@ -17,7 +16,6 @@ public class Product {
 		this.name = name;
 		this.cost = cost;
 		this.markup = markup;
-		this.price = cost+markup;
 		this.stockLevel = stockLevel;
 		this.supplier = supplier;
 	}
@@ -57,11 +55,7 @@ public class Product {
 	}
 
 	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
+		return cost + (cost*markup);
 	}
 
 	public int getStockLevel() {
