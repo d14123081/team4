@@ -20,7 +20,6 @@ public class Invoice {
 
 	private Date date;
 	private Customer customer;
-	private double cost;
 
 	/**
 	 * Creates a brand new invoice with current date.
@@ -35,7 +34,6 @@ public class Invoice {
 		setCustomer(customer);
 		setId(++idCounter);
 		setDate(new Date());
-		setCost(calculateCost(getLineItems()));
 	}
 
 	/**
@@ -59,7 +57,6 @@ public class Invoice {
 		setCustomer(customer);
 		setId(id);
 		setDate(date);
-		setCost(cost);
 	}
 
 	public ArrayList<LineItem> getLineItems() {
@@ -71,7 +68,7 @@ public class Invoice {
 	}
 
 	public double getCost() {
-		return cost;
+		return calculateCost();
 	}
 
 	public Date getDate() {
@@ -94,10 +91,6 @@ public class Invoice {
 		this.id = id;
 	}
 
-	private void setCost(double cost) {
-		this.cost = cost;
-	}
-
 	private void setDate(Date date) {
 		this.date = date;
 	}
@@ -114,16 +107,14 @@ public class Invoice {
 	 *            the items that make up the invoice
 	 * @return the cost of all products sold to the customer
 	 */
-	private double calculateCost(ArrayList<LineItem> lineItems) {
+	private double calculateCost() {
 		double totalCost = 0;
+		Product p;
+		Database db = Database.getInstance();
+		
 		for (LineItem lineItem : lineItems) {
-			// when the database class is complete, should be able to fetch the product by id without a need for the loop
-			for(Product p : Database.getInstance().getProducts()){
-				if(p.getID() == lineItem.getProductID()){
-					totalCost += p.getCost();
-					break;
-				}
-			}
+			p = db.getProductById(lineItem.getProductID());
+			totalCost += p.getCost();
 		}
 		return totalCost;
 	}
