@@ -18,6 +18,15 @@ public class Supplier {
         this.telephone = telephone;
         this.ID = (++suppliersCount);
     }
+
+    public Supplier(String name, String email, String address, String telephone, int id) 
+    {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.telephone = telephone;
+        this.ID = id;
+    }
     
     public String getName(){
         return this.name;

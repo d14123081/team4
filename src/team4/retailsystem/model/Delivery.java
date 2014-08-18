@@ -17,6 +17,13 @@ public class Delivery {
 		deliveryDate = new Date();
 	}
 
+	public Delivery(Supplier supplier, int orderID, Date date, int id) {
+		this.deliveryID = id;
+		this.supplier = supplier;
+		this.orderID = orderID;
+		deliveryDate = date;
+	}
+
 	public Date getDate() {
 		return deliveryDate;
 	}

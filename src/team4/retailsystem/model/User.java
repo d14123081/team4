@@ -29,7 +29,7 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int authorizationLevel, String username, String passwordDigest, String salt) {
+	public User(int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);
 		setUsername(username);
 		setId(++idCounter);
@@ -45,7 +45,7 @@ public class User {
 	 * @param authorizationLevel
 	 *            the access level of the user as an integer.
 	 */
-	protected User(int id, int authorizationLevel, String username, String passwordDigest, String salt) {
+	public User(int id, int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);
 		setUsername(username);
 		setId(id);
@@ -65,11 +65,11 @@ public class User {
 		return username;
 	}
 	
-	protected String getSalt() {
+	public String getSalt() {
 		return salt;
 	}
 	
-	protected String getPasswordDigest(){
+	public String getPasswordDigest(){
 		return passwordDigest;
 	}
 
