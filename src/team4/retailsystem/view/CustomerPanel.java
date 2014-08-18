@@ -3,7 +3,9 @@ package team4.retailsystem.view;
 
 
 import java.awt.BorderLayout;
+
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
@@ -11,6 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import team4.retailsystem.model.Customer;
+
 
 public class CustomerPanel extends JPanel{
 	
@@ -51,7 +56,8 @@ public class CustomerPanel extends JPanel{
 		 idTF = new JTextField(8);
 		 telTF = new JTextField(8);
 		 
-		 submit = new JButton("Add Customer");
+		 submit = new JButton("Add new Customer");
+		 submit.addActionListener(new BtnListener());
 		 
 		 //adding to components to panel
 		 this.add(nameLabel);
@@ -112,15 +118,34 @@ public class CustomerPanel extends JPanel{
 		this.idTF.setText(newID);
 	}
 	
-	//Listeners(still figuring out)
+	
+	
 
- public void addCustomerListener(ActionListener listenForAddButton){
-         
-		 submit.addActionListener(listenForAddButton);
-	
-	
-}
+	public class BtnListener implements ActionListener{
+	    public void actionPerformed(ActionEvent e){
+	    	
+	    	if(getNameTF().isEmpty()||getAddressTF().isEmpty()
+	    	    	||getEmailTF().isEmpty()||getTel().isEmpty()){
+	    	    		
+	    				// Checks for blank fields
+	    	    		Warning w = new Warning();
+	    	    		w.blankWarning();
+	    	    	}
+	    	    	
+	    	    	// checks for invalid Email construction
+	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
+	    	    		Customer customer = new Customer(getNameTF(), getTel(), getAddressTF(), getEmailTF() );
+	    	    		//add to customer array/database when functionality available
+	    	    		
+	    	    		
+	    	    	}
+	    	    	else{
+	    	    		
+	    	    		Warning w = new Warning();
+	    	    		w.EmailWarning();
+	    	      	    		
+	    	  } 
  
- 
-	
+	    }
+	}
 }
