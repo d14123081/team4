@@ -203,5 +203,6 @@ public class SupplierPanel extends JPanel implements ActionListener, ListSelecti
         String text = supplierList.getSelectedValue().toString();
         nameField.setText(text);
         index = supplierList.getSelectedIndex();
+        String test;
     }
 }

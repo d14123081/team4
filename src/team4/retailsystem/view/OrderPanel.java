@@ -10,6 +10,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Order;
+import team4.retailsystem.model.Supplier;
 
 public class OrderPanel extends JPanel implements ListSelectionListener, ActionListener {
 
@@ -46,7 +48,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         gbc.gridheight = 1;
         gbc.gridwidth = 2;
         addPanel(buttonPanel1, gbl, gbc);
-        
+        ArrayList<Supplier> as  = db.getSuppliers();
+        for(Supplier s : as){
+            
+        }
         buttonPanel1.setLayout(new BoxLayout(buttonPanel1, BoxLayout.X_AXIS));
         newOrderButton = new JButton("New Order"); 
         buttonPanel1.add(newOrderButton,gbc);
