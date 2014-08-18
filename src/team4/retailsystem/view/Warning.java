@@ -12,7 +12,7 @@ public class Warning extends JFrame{
 
 	public Warning() {
 	//	this.setLayout(GridLayout);
-		
+	// comment test
 		
 	}
 	
