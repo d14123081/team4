@@ -1003,7 +1003,7 @@ public class PermanentDatabase {
 	public Order getOrder(int id) {
 		String sql = "SELECT * FROM ORDERS WHERE ID = " + id + ";";
 		openConnection();
-		
+		// PermanentDatabase.deleteCustomer(as.get(5));
 		Order output = null;
 		ResultSet rs = null;
 		try {

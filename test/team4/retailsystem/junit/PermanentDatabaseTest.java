@@ -191,11 +191,7 @@ public class PermanentDatabaseTest {
 
 	@Test
 	public void testCRUDInvoice() {
-		//int aID = 
-		//LineItem a = new LineItem(1, 6000);
 		
-		//ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
-		//lineItems.add();
 	}
 
 	@Test
