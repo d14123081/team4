@@ -2,6 +2,7 @@ package team4.retailsystem.junit;
 
 import static org.junit.Assert.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import org.junit.Test;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Delivery;
+import team4.retailsystem.model.EncryptionModule;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.PermanentDatabase;
@@ -339,6 +341,46 @@ public class PermanentDatabaseTest {
 
 	@Test
 	public void testAuthorizeUser() {
-		fail("Not yet implemented");
+		EncryptionModule md = null;
+		try {
+			md = new EncryptionModule();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			fail("Could not initiate the encryption module.");
+		}
+		
+		String adminUsername = "tester";
+		String adminWrongUsername = "teste";
+		String adminPassword = "kitten";
+		String adminWrongPassword = "superposition";
+		String adminSalt = md.getRandomSalt();
+		User admin = new User(User.ADMINISTRATOR, adminUsername, md.encrypt(adminPassword, adminSalt), adminSalt);
+		
+		String nonAdminUsername = "bb84";
+		String nonAdminPassword = adminWrongPassword;
+		String nonAdminSalt = md.getRandomSalt();
+		User nonAdmin = new User(User.NORMAL_USER, nonAdminUsername, md.encrypt(nonAdminPassword, nonAdminSalt), nonAdminSalt);
+		
+		String notInSysUsername = "alice";
+		String notInSysPassword = "wrong_basis";
+		User notInSys;
+		
+		PermanentDatabase.getInstance().addUser(admin);
+		PermanentDatabase.getInstance().addUser(nonAdmin);
+		
+		admin = PermanentDatabase.getInstance().authorizeUser(adminUsername, adminPassword);
+		nonAdmin = PermanentDatabase.getInstance().authorizeUser(nonAdminUsername, nonAdminPassword);
+		notInSys = PermanentDatabase.getInstance().authorizeUser(notInSysUsername, notInSysPassword);
+		
+		assertEquals(User.ADMINISTRATOR, admin.getAuthorizationLevel());
+		assertEquals(User.NORMAL_USER, nonAdmin.getAuthorizationLevel());
+		assertEquals(User.NO_AUTHORIZATION, notInSys.getAuthorizationLevel());
+		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminWrongUsername, adminPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminUsername, adminWrongPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminWrongUsername, adminWrongPassword).getAuthorizationLevel());	
+		
+		//clean up
+		PermanentDatabase.getInstance().deleteUser(admin);
+		PermanentDatabase.getInstance().deleteUser(nonAdmin);
 	}
 }
