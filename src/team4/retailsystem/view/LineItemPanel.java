@@ -23,11 +23,11 @@ public class LineItemPanel extends JPanel{
 		this.setSize(200, 300);
 		this.setVisible(true);
 		
-		productIdLabel = new JLabel();
-		quantityLabel = new JLabel();
-		quantityTF = new JTextField();
-		productIdTF = new JTextField();
-		lineInSubmitBtn = new JButton();
+		productIdLabel = new JLabel("productId");
+		quantityLabel = new JLabel("quantity");
+		quantityTF = new JTextField(8);
+		productIdTF = new JTextField(8);
+		lineInSubmitBtn = new JButton("Submit");
 		
 		quantityTF.setEditable(false);
 		productIdTF.setEditable(false);
