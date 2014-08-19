@@ -3,7 +3,6 @@ package team4.retailsystem.view;
 
 
 import java.awt.BorderLayout;
-
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
 
@@ -29,7 +30,7 @@ public class CustomerPanel extends JPanel{
 	private JTextField eMailTF;
 	private JTextField idTF;
 	private JTextField telTF;
-	private JButton submit;
+	private JButton submit, back, remove, edit;
 
 	/* how to implement the ID generator?
 	 * is the ID handled by the data base as an int or a string?
@@ -40,24 +41,47 @@ public class CustomerPanel extends JPanel{
 		
 		this.setSize(200, 400);
 		 this.setVisible(true);
-		 this.setLayout(new GridLayout(0,2));
+		 this.setLayout(new GridLayout(0,2,10, 30));
 		 
 	//	 this.setLayout(this, EAST);
 		
 		 nameLabel = new JLabel("Name:");
+		 nameLabel.setHorizontalAlignment(PROPERTIES);
 		 addressLabel = new JLabel("Address:");
+		 addressLabel.setHorizontalAlignment(PROPERTIES);
+		 
 		 eMailLabel = new JLabel("Email:");
+		 eMailLabel.setHorizontalAlignment(PROPERTIES);
+
 		 idLabel = new JLabel("ID:");
+		 idLabel.setHorizontalAlignment(PROPERTIES);
+
 		 telLabel = new JLabel("Telephone Number:");
+		 telLabel.setHorizontalAlignment(PROPERTIES);
+
 		 
 		 nameTF = new JTextField(8);
+		 setNameTF("'Search here'");
 		 addressTF = new JTextField(8);
 		 eMailTF = new JTextField(8);
 		 idTF = new JTextField(8);
 		 telTF = new JTextField(8);
 		 
-		 submit = new JButton("Add new Customer");
-		 submit.addActionListener(new BtnListener());
+		 nameTF.addActionListener(new TextFieldListener());
+		 
+
+		 submit = new JButton("Create new Customer");
+		 submit.addActionListener(new CRUDListener());
+		 
+		 remove = new JButton("Remove Customer");
+		 remove.addActionListener(new CRUDListener());
+		 
+
+		 edit = new JButton("Edit Customer");
+		 edit.addActionListener(new CRUDListener());
+		 
+		 back = new JButton("Clear fields");
+		 back.addActionListener(new CRUDListener());
 		 
 		 //adding to components to panel
 		 this.add(nameLabel);
@@ -71,14 +95,19 @@ public class CustomerPanel extends JPanel{
 		 this.add(telLabel);
 		 this.add(telTF);
 		 this.add(submit);
+		 this.add(remove);
+		 this.add(edit);
+		 this.add(back);
 
 		 idTF.setEditable(false);
-		 
+		 eMailTF.setEditable(false);
+		 addressTF.setEditable(false);
+		 telTF.setEditable(false);
 		 
 	}
 	
 	
-	// getters and setters
+	// **********getters and setters***************
 	
 	public String getNameTF(){
 		return nameTF.getText();
@@ -92,11 +121,11 @@ public class CustomerPanel extends JPanel{
 		return eMailTF.getText();
 	}
 	
-	public String getID(){
+	public String getIDTF(){
 		return idTF.getText();
 	}
 	
-	public String getTel(){
+	public String getTelTF(){
 		return telTF.getText();
 	}
 
@@ -120,32 +149,151 @@ public class CustomerPanel extends JPanel{
 	
 	
 	
+	
+	// *********listeners and methods************
 
-	public class BtnListener implements ActionListener{
+	public class TextFieldListener implements ActionListener{
 	    public void actionPerformed(ActionEvent e){
+	    	System.out.println("put customer information in textfields");
 	    	
-	    	if(getNameTF().isEmpty()||getAddressTF().isEmpty()
-	    	    	||getEmailTF().isEmpty()||getTel().isEmpty()){
+	}
+	    
+	}
+	
+	
+	
+	
+	class CRUDListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if(e.getActionCommand().equals("Clear fields")){
+				clearTextFields();
+			}
+			if(e.getActionCommand().equals("Create new Customer"))newCustomerMode();
+			 
+			 // save new customer if conditions are met
+	    	if(e.getActionCommand().equals("Save new Customer")){
+	    		if(getNameTF().isEmpty()||getAddressTF().isEmpty()
+	    	    	||getEmailTF().isEmpty()||getTelTF().isEmpty()){
 	    	    		
 	    				// Checks for blank fields
 	    	    		Warning w = new Warning();
 	    	    		w.blankWarning();
-	    	    	}
+	    	    		}
 	    	    	
-	    	    	// checks for invalid Email construction
+	    		   	// checks for invalid Email construction
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
-	    	    		Customer customer = new Customer(getNameTF(), getTel(), getAddressTF(), getEmailTF() );
+	    	    		
+	    	    		Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
 	    	    		//add to customer array/database when functionality available
-	    	    		
-	    	    		
-	    	    	}
-	    	    	else{
-	    	    		
-	    	    		Warning w = new Warning();
-	    	    		w.EmailWarning();
-	    	      	    		
+	    	    		System.out.println("Customer added to database");
+	    	    		clearTextFields();
+	    	    		setToViewMode();
+
+		    	    		
+		    	    	}
+		    	    	else{
+		    	    		
+		    	    		Warning w = new Warning();
+		    	    		w.EmailWarning();
+		    	      	    		
 	    	  } 
- 
+
 	    }
+			// when back button pressed
+			if(e.getActionCommand().equals("back")){
+				setToViewMode();
+			}
+			
+			// when remove button pressed
+			if(e.getActionCommand().equals("Remove Customer")){
+				Warning w = new Warning();
+				w.RemoveWarning();
+				System.out.println("Customer removed");
+			}
+			
+			//when edit button pressed
+			if(e.getActionCommand().equals("Edit Customer")){
+				 editCustomerMode();
+				
+			}
+			
+				if(e.getActionCommand().equals("Save Changes")){
+					 if(getNameTF().isEmpty()||getAddressTF().isEmpty()
+			    		       	||getEmailTF().isEmpty()||getTelTF().isEmpty()){
+			    	    		
+			    	    		Warning w = new Warning();
+			    	    		w.blankWarning();
+			    	    	}
+					
+				
+					 	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
+					 
+					 	//update database, return to view mode
+	    	    		System.out.println("customer details saved to data base");
+	    	    		setToViewMode();
+					 
+						}
+	    	    		else{
+	    	    			Warning w = new Warning();
+		    	    		w.EmailWarning();
+	    	    		}
+			}	    	
+    	  }
+		}	
+	
+	
+	//default panel view 
+	public void setToViewMode(){
+		idTF.setEditable(false);
+		 eMailTF.setEditable(false);
+		 addressTF.setEditable(false);
+		 telTF.setEditable(false);
+		 submit.setEnabled(true);
+		 remove.setEnabled(true);
+		 edit.setEnabled(true);
+		 edit.setText("Edit Customer");
+ 		 submit.setText("Create new Customer");
+ 		 back.setText("Clear fields");
+ 		 setNameTF("'Search here'");
 	}
+ 		 
+ 		
+ 	public void clearTextFields(){	 
+ 		 idTF.setText("");
+ 		 eMailTF.setText("");
+ 		 nameTF.setText("");
+ 		 addressTF.setText("");
+ 		 telTF.setText("");
+ 	
+		 
+	}
+ 	
+ 	//panel view edit customer
+ 	public void editCustomerMode(){
+ 		idTF.setEditable(false);
+		 eMailTF.setEditable(true);
+		 addressTF.setEditable(true);
+		 telTF.setEditable(true);
+		 
+		 submit.setEnabled(false);
+		 remove.setEnabled(false);
+		 edit.setText("Save Changes");
+		 back.setText("back");
+ 		
+ 	}
+ 	
+ 	//panel view new customer 
+ 	public void newCustomerMode(){
+ 		 idTF.setEditable(false);
+		 eMailTF.setEditable(true);
+		 nameTF.setEditable(true);
+		 addressTF.setEditable(true);
+		 telTF.setEditable(true);
+		 
+		 submit.setText("Save new Customer");
+		 remove.setEnabled(false);
+		 edit.setEnabled(false);
+		 back.setText("back");
+ 		
+ 	}
 }
