@@ -206,15 +206,7 @@ public class Database {
 		return users;
 	}
 	
-	public ArrayList<Integer> getUserIDs()
-	{
-		ArrayList<Integer> userids = new ArrayList<>();
-		for(User u : users)
-		{
-			userids.add(u.getID());
-		}
-		return userids;
-	}
+	
 
 	// Unfinished methods to update objects in database
 	public boolean updateCustomer(Customer cust) {
