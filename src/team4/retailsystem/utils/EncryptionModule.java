@@ -1,4 +1,4 @@
-package team4.retailsystem.model;
+package team4.retailsystem.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

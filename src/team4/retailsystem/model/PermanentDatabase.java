@@ -6,6 +6,8 @@ import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 
+import team4.retailsystem.utils.EncryptionModule;
+
 /**
  * A permanent SQLite database module with interfaces for CRUD.
  * @author Szymon
@@ -1218,6 +1220,10 @@ public class PermanentDatabase {
 			isUpdated = true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
+		}
+		
+		for(LineItem li : order.getLineItems()){
+			updateOrderItem(li);
 		}
 		
 		closeConnection();
