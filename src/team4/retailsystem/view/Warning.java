@@ -1,5 +1,9 @@
 package team4.retailsystem.view;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -8,10 +12,10 @@ import javax.swing.JLabel;
 public class Warning extends JFrame{
 	
 	private JLabel warningLabel;
-	private JButton okButton;
+	private JButton okButton, cancelButton;
 
 	public Warning() {
-	//	this.setLayout(GridLayout);
+	this.setLocation(530, 250);
 	// comment test
 		
 	}
@@ -40,6 +44,36 @@ public class Warning extends JFrame{
 	//	this.add(okButton);
 	}
 	
+	public void RemoveWarning(){
+		this.setLayout(new FlowLayout());
+		this.setSize(300, 120);
+		this.setResizable(false);
+		okButton = new JButton("Delete");
+		cancelButton = new JButton("Cancel");
+
+
+		this.setVisible(true);
+		warningLabel = new JLabel("Are you sure you want to remove a customer");
+		this.add(warningLabel);
+		this.add(okButton);
+		this.add(cancelButton);
+		okButton.addActionListener(new BtnListener());
+	}
 	
+	class BtnListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if(e.getActionCommand().equals("Delete")){
+				// remove customer from database
+				System.out.println("Customer removed from database");
+			}
+			else if(e.getActionCommand().equals("Cancel")){
+				// close window on cancel
+				
+			}
+		}
+		
+	//	CustomerPanel.this.clearTextFields();
+
+	}
 
 }

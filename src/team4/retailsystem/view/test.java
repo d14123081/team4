@@ -6,10 +6,11 @@ public class test extends JFrame{
 
     public test() {
         // TODO Auto-generated constructor stub
-        this.setSize(800, 800);
+        this.setSize(500, 500);
+        this.setLocation(420,120);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Log In Frame");
-        this.setContentPane(new SupplierPanel());
+        this.setContentPane(new CustomerPanel());
         this.setVisible(true);
     }
 
