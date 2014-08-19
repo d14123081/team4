@@ -793,7 +793,6 @@ public class PermanentDatabase {
 				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				System.out.println("adding invoice");
 				output = new Invoice(invoiceItems, customer, id, date, value);
 			}
 			rs.close();	

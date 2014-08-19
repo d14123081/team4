@@ -71,7 +71,7 @@ public class Invoice {
 	}
 
 	public double getCost() {
-		return calculateCost();
+		return cost;
 	}
 
 	public Date getDate() {

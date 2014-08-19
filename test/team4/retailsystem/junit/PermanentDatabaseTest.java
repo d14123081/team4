@@ -196,7 +196,8 @@ public class PermanentDatabaseTest {
 
 	@Test
 	public void testCRUDInvoice() {
-		Date d = new Date();
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		Date date = new Date();
 		double cost = 54.0;
 		int productID = 1;
 		int quantity = 2;
@@ -206,86 +207,89 @@ public class PermanentDatabaseTest {
 		lineItems.add(one);
 		lineItems.add(two);
 		
-		Product p1 = new Product("p1", 12, .5, 15, new Supplier("name", "email", "address", "telephone"));
-		Product p2 = new Product("p2", 12, .5, 15, new Supplier("name", "email", "address", "telephone"));
-		PermanentDatabase.getInstance().addProduct(p1);
-		PermanentDatabase.getInstance().addProduct(p2);
+		Supplier supplier1 = new Supplier("Supplier One", "supplier1@email.com", "supplier 1 road", "11111111");
+		Supplier supplier2 = new Supplier("Supplier Two", "supplier2@email.com", "supplier 2 road", "22222222");
+		db.addSupplier(supplier1);
+		db.addSupplier(supplier2);
 		
-		String name = "Amazing Carpets";
-		String newName = "Average Carpets";
-		String telephoneNo = "0833903128";
-		String newTelephoneNo = "123445678";
-		String email = "amazing.carpets@gmail.com";
-		String newEmail = "average.carpets@outlook.com";
-		String address = "54 Random Street\nDublin 4\nIreland";
-		String newAddress = "81 Less Random street";
+		Product product1 = new Product("product 1", 12, .5, 15, supplier1);
+		Product product2 = new Product("product 2", 12, .5, 15, supplier2);
+		db.addProduct(product1);
+		db.addProduct(product2);
+
+		String customerName = "Amazing Carpets";
+		String customerTel = "0833903128";
+		String customerEmail = "amazing.carpets@gmail.com";
+		String customerAddress = "54 Random Street\nDublin 4\nIreland";
+		Customer customer = new Customer(customerName, customerTel, customerEmail, customerAddress);
+		db.addCustomer(customer);	
 		
 		//acquire the id for customer c
-		Customer c = new Customer(name, telephoneNo, email, address);
-		PermanentDatabase.getInstance().addCustomer(c);
-		c = PermanentDatabase.getInstance().getCustomer(1);
+		customer = PermanentDatabase.getInstance().getCustomer(1);
+		
+		String newCustomerName = "Average Carpets";
+		String newCustomerTel = "123445678";
+		String newCustomerEmail = "average.carpets@outlook.com";
+		String newCustomerAddress = "81 Less Random street";
+		Customer newCustomer = new Customer(newCustomerName, newCustomerTel, newCustomerEmail, newCustomerAddress);
+		db.addCustomer(newCustomer);
 		
 		//test Create
-		Invoice invoice = new Invoice(lineItems, c, 1, d, 54.0);
-		PermanentDatabase.getInstance().addInvoice(invoice);
-		System.out.println(invoice);
+		Invoice invoice = new Invoice(lineItems, customer);
+		assertTrue(db.addInvoice(invoice));
+		date = invoice.getDate();
+		cost = invoice.getCost();
 		
 		//test Create & Read
-		Invoice read = PermanentDatabase.getInstance().getInvoice(1);
-		System.out.println(read);
-		assertEquals(cost, read.getCost(), .0001);
-		assertEquals(c.getName(), read.getCustomer().getName());
-		assertEquals(d.getTime(), read.getDate().getTime());
-		ArrayList<LineItem> readLI = read.getLineItems();
-		assertEquals(one.getProductID(), readLI.get(0).getProductID());
-		assertEquals(two.getProductID(), readLI.get(1).getProductID());
-		assertEquals(one.getQuantity(), readLI.get(0).getQuantity());
-		assertEquals(two.getQuantity(), readLI.get(1).getQuantity());
-		assertEquals(read.getID(), readLI.get(0).getOrderID());
-		assertEquals(read.getID(), readLI.get(1).getOrderID());
+		invoice = db.getInvoice(1);
+		assertEquals(cost, invoice.getCost(), .0001);
+		assertEquals(customer.getName(), invoice.getCustomer().getName());
+		assertEquals(date.getTime(), invoice.getDate().getTime());
 		
-		//test Update
-		Date newDate = new Date();
-		Customer e = new Customer(newName, newTelephoneNo, newEmail, newAddress);
-		PermanentDatabase.getInstance().addCustomer(e);
-		e = PermanentDatabase.getInstance().getCustomer(2);
-		read.setCustomer(e);
-		read.setDate(newDate);
-
-		ArrayList<LineItem> newLineItems = new ArrayList<LineItem>();
-		newLineItems = new ArrayList<LineItem>();
-		LineItem newLineItem1 = read.getLineItems().get(0);
-		LineItem newLineItem2 = read.getLineItems().get(1);
-		newLineItem1.setProductID(quantity);
-		newLineItem1.setQuantity(productID);
-		newLineItem2.setProductID(productID);
-		newLineItem2.setQuantity(quantity);		
-		newLineItems.add(newLineItem1);
-		newLineItems.add(newLineItem2);
-		read.setLineItems(newLineItems);
-
-		PermanentDatabase.getInstance().updateInvoice(read);
-		Invoice f = PermanentDatabase.getInstance().getInvoice(1);
-		assertEquals(cost, f.getCost(), .0001);
-		assertEquals(e.getName(), read.getCustomer().getName());
-		assertEquals(newDate.getTime(), f.getDate().getTime());
+		ArrayList<LineItem> invoiceListItems = invoice.getLineItems();
+		assertEquals(one.getProductID(), invoiceListItems.get(0).getProductID());
+		assertEquals(two.getProductID(), invoiceListItems.get(1).getProductID());
+		assertEquals(one.getQuantity(), invoiceListItems.get(0).getQuantity());
+		assertEquals(two.getQuantity(), invoiceListItems.get(1).getQuantity());
+		assertEquals(invoice.getID(), invoiceListItems.get(0).getOrderID());
+		assertEquals(invoice.getID(), invoiceListItems.get(1).getOrderID());
 		
-		ArrayList<LineItem> newReadLI = f.getLineItems();
-		assertEquals(newLineItems.get(0).getProductID(), newReadLI.get(0).getProductID());
-		assertEquals(newLineItems.get(1).getProductID(), newReadLI.get(1).getProductID());
-		assertEquals(newLineItems.get(0).getQuantity(), newReadLI.get(0).getQuantity());
-		assertEquals(newLineItems.get(1).getQuantity(), newReadLI.get(1).getQuantity());
-		assertEquals(newLineItems.get(0).getOrderID(), newReadLI.get(0).getOrderID());
-		assertEquals(newLineItems.get(1).getOrderID(), newReadLI.get(1).getOrderID());
+		//test Update		
+		Date newDate = new Date();		
+		newCustomer = db.getCustomer(2);
+		invoice.setCustomer(newCustomer);
+		invoice.setDate(newDate);
+
+		invoiceListItems.get(0).setProductID(quantity);
+		invoiceListItems.get(0).setQuantity(productID);
+		invoiceListItems.get(1).setProductID(productID);
+		invoiceListItems.get(1).setQuantity(quantity);	
+		invoice.setLineItems(invoiceListItems);
+
+		db.updateInvoice(invoice);
+		invoice = db.getInvoice(1);
+		assertEquals(cost, invoice.getCost(), .0001);
+		assertEquals(newCustomer.getName(), invoice.getCustomer().getName());
+		assertEquals(newDate.getTime(), invoice.getDate().getTime());
+		
+		invoiceListItems = invoice.getLineItems();
+		assertEquals(quantity, invoiceListItems.get(0).getProductID());
+		assertEquals(productID, invoiceListItems.get(1).getProductID());
+		assertEquals(productID, invoiceListItems.get(0).getQuantity());
+		assertEquals(quantity, invoiceListItems.get(1).getQuantity());
+		assertEquals(invoice.getID(), invoiceListItems.get(0).getOrderID());
+		assertEquals(invoice.getID(), invoiceListItems.get(1).getOrderID());
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteInvoice(f));
+		assertTrue(PermanentDatabase.getInstance().deleteInvoice(invoice));
 		
 		//cleanup
-		PermanentDatabase.getInstance().deleteCustomer(c);
-		PermanentDatabase.getInstance().deleteCustomer(e);
-		PermanentDatabase.getInstance().deleteProduct(p1);
-		PermanentDatabase.getInstance().deleteProduct(p2);
+		db.deleteCustomer(customer);
+		db.deleteCustomer(newCustomer);
+		db.deleteProduct(product1);
+		db.deleteProduct(product2);
+		db.deleteSupplier(supplier1);
+		db.deleteSupplier(supplier2);		
 	}
 
 	@Test
