@@ -8,6 +8,7 @@ import java.util.Date;
 import org.junit.Test;
 
 import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.PermanentDatabase;
@@ -223,7 +224,6 @@ public class PermanentDatabaseTest {
 		
 		//test Create
 		Invoice invoice = new Invoice(lineItems, c, 1, d, 54.0);
-		System.out.println("CREATING INVOICE");
 		PermanentDatabase.getInstance().addInvoice(invoice);
 		
 		//test Create & Read
@@ -290,17 +290,51 @@ public class PermanentDatabaseTest {
 
 	@Test
 	public void testCRUDDelivery() {
-		fail("Not yet implemented");		
-	}
+		int orderID = 2;
+		
+		String name = "Amazing Carpets";
+		String telephoneNo = "0833903128";
+		String email = "amazing.carpets@gmail.com";
+		String address = "54 Random Street\nDublin 4\nIreland";
+		Supplier supplier1 = new Supplier(name, email, address, telephoneNo);	
+		PermanentDatabase.getInstance().addSupplier(supplier1);
+		
+		String newName = "Average Carpets";	
+		String newTelephoneNo = "123445678";
+		String newEmail = "average.carpets@outlook.com";
+		String newAddress = "81 Less Random street";		
+		Supplier supplier2 = new Supplier(newName, newEmail, newAddress, newTelephoneNo);	
+		PermanentDatabase.getInstance().addSupplier(supplier2);	
 
-	@Test
-	public void testCRUDOrderItem() {
-		fail("Not yet implemented");
-	}
+		//test Create
+		Delivery delivery = new Delivery(supplier1, orderID);
+		Date date = delivery.getDate();
+		PermanentDatabase.getInstance().addDelivery(delivery);
+		
+		//test Create & Read
+		delivery = PermanentDatabase.getInstance().getDelivery(1);
+		assertEquals(orderID, delivery.getOrderID());
+		assertEquals(date, delivery.getDate());
+		assertEquals(supplier1.getName(), delivery.getSupplier().getName());
+		
+		//test Update
+		orderID = 505;
+		delivery.setOrderID(orderID);
+		delivery.setSupplier(supplier2);
+		delivery.setDate(new Date());
+		date = delivery.getDate();
 
-	@Test
-	public void testCRUDInvoiceItem() {
-		fail("Not yet implemented");
+		PermanentDatabase.getInstance().updateDelivery(delivery);		
+		assertEquals(orderID, delivery.getOrderID());
+		assertEquals(date, delivery.getDate());
+		assertEquals(supplier2.getName(), delivery.getSupplier().getName());
+		
+		//test Delete
+		assertTrue(PermanentDatabase.getInstance().deleteDelivery(delivery));
+		
+		//cleanup
+		PermanentDatabase.getInstance().deleteSupplier(supplier1);
+		PermanentDatabase.getInstance().deleteSupplier(supplier2);
 	}
 
 	@Test

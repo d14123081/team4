@@ -91,7 +91,6 @@ public class PermanentDatabase {
 		if(open)
 			return;
 		open = true;
-		System.out.println("INSIDE openConnection()");
 		if(connection != null && statement != null){
 			return;
 		}
@@ -249,12 +248,7 @@ public class PermanentDatabase {
 		if(i==null){
 			return false;
 		}
-		System.out.println("inside add invoice");
-		System.out.println("before");
-		System.out.println(statement);
 		openConnection();
-		System.out.println("after");
-		System.out.println(statement);
 		
 		String sql = "INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,";
 		sql += appendApostrophes(i.getDate().getTime()) + ", ";
@@ -264,7 +258,6 @@ public class PermanentDatabase {
 		boolean isAdded = true;
 		int id = 0;
 		try {
-			System.out.println("fails here");
 			statement.executeUpdate(sql);
 			
 			ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -1157,8 +1150,8 @@ public class PermanentDatabase {
 		openConnection();
 		
 		String sql = "UPDATE DELIVERIES";
-		sql += " SET DELIVERYDATE = " + appendApostrophes(del) + ",";
-		sql += " ORDERID = " + appendApostrophes(del) + ",";
+		sql += " SET DELIVERYDATE = " + appendApostrophes(del.getDate().getTime()) + ",";
+		sql += " ORDERID = " + appendApostrophes(del.getOrderID()) + ",";
 		sql += " SUPPLIERID = " + appendApostrophes(del.getSupplier().getID());
 		sql += " WHERE ID = " + del.getDeliveryID() + ";";
 		

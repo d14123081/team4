@@ -28,7 +28,6 @@ public class Order {
 
     public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items, int id, Date date) 
     {
-        // TODO Auto-generated constructor stub
     	this.cost = cost;
         this.supplier = supplier;
         ID = id;
