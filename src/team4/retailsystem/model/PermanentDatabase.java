@@ -11,7 +11,8 @@ public class PermanentDatabase {
 	private static PermanentDatabase db = null;
 	private Connection connection = null;
 	private Statement statement = null;
-	
+	boolean open = false;
+			
 	private static final String CREATE_CUSTOMERS_TABLE = "CREATE TABLE CUSTOMERS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
 			+ "NAME TEXT, "
@@ -87,7 +88,11 @@ public class PermanentDatabase {
 	}
 
 	private void openConnection() {
-		if(connection != null){
+		if(open)
+			return;
+		open = true;
+		System.out.println("INSIDE openConnection()");
+		if(connection != null && statement != null){
 			return;
 		}
 		try {
@@ -99,14 +104,17 @@ public class PermanentDatabase {
 		}
 		try {
 			connection = DriverManager.getConnection("jdbc:sqlite:testSystem.db");
-			connection.setAutoCommit(false);
+			//connection.setAutoCommit(false);
 			statement = connection.createStatement();
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
+			return;
 		}
 	}
 
 	private void closeConnection() {
+		if(true)
+			return;
 		if(connection == null){
 			return;
 		}
@@ -118,6 +126,7 @@ public class PermanentDatabase {
 			connection = null;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
+			return;
 		}
 	}
 
@@ -240,7 +249,12 @@ public class PermanentDatabase {
 		if(i==null){
 			return false;
 		}
+		System.out.println("inside add invoice");
+		System.out.println("before");
+		System.out.println(statement);
 		openConnection();
+		System.out.println("after");
+		System.out.println(statement);
 		
 		String sql = "INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,";
 		sql += appendApostrophes(i.getDate().getTime()) + ", ";
@@ -250,6 +264,7 @@ public class PermanentDatabase {
 		boolean isAdded = true;
 		int id = 0;
 		try {
+			System.out.println("fails here");
 			statement.executeUpdate(sql);
 			
 			ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -476,6 +491,10 @@ public class PermanentDatabase {
 			System.err.println("Database access error: " + e.getMessage());
 		}
 		
+		for(LineItem li : i.getLineItems()){
+			deleteInvoiceItem(li, i.getID());
+		}
+		
 		closeConnection();
 		return isDeleted;	
 	}
@@ -549,7 +568,7 @@ public class PermanentDatabase {
 		}
 		openConnection();
 		
-		String sql = "DELETE FROM ORDERITEMS WHERE ORDERID=" + invoiceID + ";";
+		String sql = "DELETE FROM INVOICEITEMS WHERE INVOICEID=" + invoiceID + ";";
 		
 		boolean isDeleted = false;
 		try {
@@ -1173,6 +1192,9 @@ public class PermanentDatabase {
 			isUpdated = true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
+		}
+		for(LineItem li : inv.getLineItems()){
+			updateInvoiceItem(li);
 		}
 		
 		closeConnection();
