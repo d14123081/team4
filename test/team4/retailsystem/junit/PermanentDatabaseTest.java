@@ -228,9 +228,11 @@ public class PermanentDatabaseTest {
 		//test Create
 		Invoice invoice = new Invoice(lineItems, c, 1, d, 54.0);
 		PermanentDatabase.getInstance().addInvoice(invoice);
+		System.out.println(invoice);
 		
 		//test Create & Read
 		Invoice read = PermanentDatabase.getInstance().getInvoice(1);
+		System.out.println(read);
 		assertEquals(cost, read.getCost(), .0001);
 		assertEquals(c.getName(), read.getCustomer().getName());
 		assertEquals(d.getTime(), read.getDate().getTime());

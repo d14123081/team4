@@ -1,8 +1,6 @@
 package team4.retailsystem.model;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -17,7 +15,7 @@ public class PermanentDatabase {
 
 	private static PermanentDatabase db = null;
 	private Connection connection = null;
-	private Statement statement = null;
+	private PreparedStatement pStatement = null;
 	boolean open = false;
 			
 	private static final String CREATE_CUSTOMERS_TABLE = "CREATE TABLE CUSTOMERS "
@@ -89,18 +87,23 @@ public class PermanentDatabase {
 			+ "SALT TEXT)";
 	private static final String USERS_DEFINITION = "USERS (ID,USERNAME,AUTHLEVEL,PASSWDIGEST,SALT)";
 	
-	private PermanentDatabase() {
-		//createTables();
-		//generateDatabase(); //it doesn't have any instance variables, just a handle. everything is started and closed before and after every transaction		
+	private PermanentDatabase(String dbName) {
+		openConnection(dbName);
+		createTables();	
+	}
+	
+	public static PermanentDatabase getInstance() {
+		if (db == null) {
+			db = new PermanentDatabase("testSystem");
+		}
+		return db;
 	}
 
-	private void openConnection() {
-		if(open)
-			return;
-		open = true;
-		if(connection != null && statement != null){
-			return;
+	private void openConnection(String databaseName) {
+		if(open){
+			return;			
 		}
+		open = true;
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
@@ -109,488 +112,353 @@ public class PermanentDatabase {
 			return;
 		}
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:testSystem.db");
-			//connection.setAutoCommit(false);
-			statement = connection.createStatement();
+			connection = DriverManager.getConnection("jdbc:sqlite:"+databaseName+".db");
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 			return;
 		}
 	}
 
-	private void closeConnection() {
-		if(true)
-			return;
-		if(connection == null){
-			return;
-		}
+	public void closeConnection() {
 		try {
-			statement.close();
-			statement = null;
-			connection.commit();
+			pStatement.close();
 			connection.close();
-			connection = null;
+			open = false;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-			return;
 		}
-	}
-
-	/**
-	 * Helper method to format String objects for database storage.
-	 * <p>
-	 * Adds apostrophes before and after if the object is of type String,
-	 * otherwise returns the string representation of the object.
-	 * 
-	 * @param o
-	 *            Object, preferably a String or a char to surround with
-	 *            apostrophes.
-	 * @return 'o' iff o is an instance of String; otherwise o
-	 */
-	private String appendApostrophes(Object o) {
-		if (o instanceof String || o instanceof Character) {
-			return "'" + o + "'";
-		}
-		return "" + o;
 	}
 
 	// Methods to add rows to table
-	public boolean addCustomer(Customer c) {
-		if(c==null){
+	public boolean addCustomer(Customer customer) {
+		if(customer==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + CUSTOMERS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(c.getName()) + ", ";
-		sql += appendApostrophes(c.getTelephoneNumber()) + ", ";
-		sql += appendApostrophes(c.getEmail()) + ", ";
-		sql += appendApostrophes(c.getAddress()) + ");";
-		
-		boolean isAdded = false;
+		}		
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + CUSTOMERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
+			pStatement.setString(1, customer.getName());
+			pStatement.setString(2, customer.getTelephoneNumber());
+			pStatement.setString(3, customer.getEmail());
+			pStatement.setString(4, customer.getAddress());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;
+		}		
+		return false;
 	}
 
-	public boolean addSupplier(Supplier s) {
-		if(s==null){
+	public boolean addSupplier(Supplier supplier) {
+		if(supplier==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + SUPPLIERS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(s.getName()) + ", ";
-		sql += appendApostrophes(s.getTelephoneNumber()) + ", ";
-		sql += appendApostrophes(s.getEmail()) + ", ";
-		sql += appendApostrophes(s.getAddress()) + ");";
-		
-		boolean isAdded = false;
+		}		
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + SUPPLIERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
+			pStatement.setString(1, supplier.getName());
+			pStatement.setString(2, supplier.getTelephoneNumber());
+			pStatement.setString(3, supplier.getEmail());
+			pStatement.setString(4, supplier.getAddress());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;		
+		}		
+		return false;		
 	}
 
-	public boolean addProduct(Product p) {
-		if(p==null){
+	public boolean addProduct(Product product) {
+		if(product==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + PRODUCTS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(p.getName()) + ", ";
-		sql += appendApostrophes(p.getCost()) + ", ";
-		sql += appendApostrophes(p.getMarkup()) + ", ";
-		sql += appendApostrophes(p.getStockLevel()) + ", ";
-		sql += appendApostrophes(p.getSupplier().getID()) + ");";
-		
-		boolean isAdded = false;
+		}		
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + PRODUCTS_DEFINITION + " VALUES (NULL,?,?,?,?,?)");
+			pStatement.setString(1, product.getName());
+			pStatement.setDouble(2, product.getCost());
+			pStatement.setDouble(3, product.getMarkup());
+			pStatement.setInt(4, product.getStockLevel());
+			pStatement.setInt(5, product.getSupplier().getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;		
+		}		
+		return false;		
 	}
 
-	public boolean addDelivery(Delivery d) {
-		if(d==null){
+	public boolean addDelivery(Delivery delivery) {
+		if(delivery==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + DELIVERIES_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(d.getDate().getTime()) + ", ";
-		sql += appendApostrophes(d.getOrderID()) + ", ";
-		sql += appendApostrophes(d.getSupplier().getID()) + ");";
-		
-		boolean isAdded = false;
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + DELIVERIES_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement.setLong(1, delivery.getDate().getTime());
+			pStatement.setInt(2, delivery.getOrderID());
+			pStatement.setInt(3, delivery.getSupplier().getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;		
+		}		
+		return false;		
 	}
 
-	public boolean addInvoice(Invoice i) {
-		if(i==null){
+	public boolean addInvoice(Invoice invoice) {
+		if(invoice==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(i.getDate().getTime()) + ", ";
-		sql += appendApostrophes(i.getCustomer().getID()) + ", ";
-		sql += appendApostrophes(i.getCost()) + ");";
-		
-		boolean isAdded = true;
-		int id = 0;
+		}		
 		try {
-			statement.executeUpdate(sql);
+			pStatement = connection.prepareStatement("INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement.setLong(1, invoice.getDate().getTime());
+			pStatement.setInt(2, invoice.getCustomer().getID());
+			pStatement.setDouble(3, invoice.getCost());
+			pStatement.executeUpdate();
 			
-			ResultSet generatedKeys = statement.getGeneratedKeys();
+			int id = 0;
+			ResultSet generatedKeys = pStatement.getGeneratedKeys();
 			while(generatedKeys.next()){			
 				id = generatedKeys.getInt(1);
 			}
 			generatedKeys.close();
 			
-			for(LineItem li : i.getLineItems()){
+			for(LineItem li : invoice.getLineItems()){
 				addInvoiceItem(li, id);
 			}
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-			isAdded = false;
 		}
-		
-		closeConnection();
-		return isAdded;	
+		return false;
 	}
 
-	public boolean addOrder(Order o) {
-		if(o==null){
+	public boolean addOrder(Order order) {
+		if(order==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(o.getDeliveryDate().getTime()) + ", ";
-		sql += appendApostrophes(o.getSupplier().getID()) + ", ";
-		sql += appendApostrophes(o.getDeliveryID()) + ", ";
-		sql += appendApostrophes(o.getCost()) + ");";
-		
-		boolean isAdded = true;
-		int id = 0;
+		}		
 		try {
-			statement.executeUpdate(sql);
+			pStatement = connection.prepareStatement("INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
+			pStatement.setLong(1, order.getDeliveryDate().getTime());
+			pStatement.setInt(2, order.getSupplier().getID());
+			pStatement.setInt(3, order.getDeliveryID());
+			pStatement.setDouble(4, order.getCost());
+			pStatement.executeUpdate();
 			
-			ResultSet generatedKeys = statement.getGeneratedKeys();
+			int id = 0;
+			ResultSet generatedKeys = pStatement.getGeneratedKeys();
 			while(generatedKeys.next()){			
 				id = generatedKeys.getInt(1);
 			}
 			generatedKeys.close();
 			
-			for(LineItem li : o.getLineItems()){
+			for(LineItem li : order.getLineItems()){
 				addOrderItem(li, id);
 			}
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-			isAdded = false;
 		}
-		
-		closeConnection();
-		return isAdded;	
+		return false;	
 	}
 
-	public boolean addUser(User u) {
-		if(u==null){
+	public boolean addUser(User user) {
+		if(user==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + USERS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(u.getUsername()) + ", ";
-		sql += appendApostrophes(u.getAuthorizationLevel()) + ", ";
-		sql += appendApostrophes(u.getPasswordDigest()) + ", ";
-		sql += appendApostrophes(u.getSalt()) + ");";
-		
-		boolean isAdded = false;
+		}				
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + USERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
+			pStatement.setString(1, user.getUsername());
+			pStatement.setInt(2, user.getAuthorizationLevel());
+			pStatement.setString(3, user.getPasswordDigest());
+			pStatement.setString(4, user.getSalt());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;			
+		}		
+		return false;			
 	}
 	
 	public boolean addOrderItem(LineItem li, int orderID) {	
 		if(li==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + ORDER_ITEMS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(li.getProductID()) + ", ";
-		sql += appendApostrophes(li.getQuantity()) + ", ";
-		sql += appendApostrophes(orderID) + ");";
-		
-		boolean isAdded = false;
+		}		
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + ORDER_ITEMS_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement.setInt(1, li.getProductID());
+			pStatement.setInt(2, li.getQuantity());
+			pStatement.setInt(3, orderID);
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;				
+		}		
+		return false;				
 	}
 	
 	public boolean addInvoiceItem(LineItem li, int inoviceID) {	
 		if(li==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "INSERT INTO " + INVOICE_ITEMS_DEFINITION + " VALUES (NULL,";
-		sql += appendApostrophes(li.getProductID()) + ", ";
-		sql += appendApostrophes(li.getQuantity()) + ", ";
-		sql += appendApostrophes(inoviceID) + ");";
-		
-		boolean isAdded = false;
 		try {
-			statement.executeUpdate(sql);
-			isAdded = true;
+			pStatement = connection.prepareStatement("INSERT INTO " + INVOICE_ITEMS_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement.setInt(1, li.getProductID());
+			pStatement.setInt(2, li.getQuantity());
+			pStatement.setInt(3, inoviceID);
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isAdded;				
+		}		
+		return false;				
 	}
 
 	// Remove row from table
-	public boolean deleteCustomer(Customer c) {
-		if(c==null){
+	public boolean deleteCustomer(Customer customer) {
+		if(customer==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM CUSTOMERS WHERE ID=" + c.getID() + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM CUSTOMERS WHERE ID=(?)");
+			pStatement.setInt(1, customer.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isDeleted;		
+		return false;		
 	}
 
-	public boolean deleteSupplier(Supplier s) {
-		if(s==null){
+	public boolean deleteSupplier(Supplier supplier) {
+		if(supplier==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM SUPPLIERS WHERE ID=" + s.getID() + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM SUPPLIERS WHERE ID=(?)");
+			pStatement.setInt(1, supplier.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isDeleted;	
+		return false;	
 	}
 
-	public boolean deleteProduct(Product p) {
-		if(p==null){
+	public boolean deleteProduct(Product product) {
+		if(product==null){
 			return false;
-		}
-		openConnection();
-		
-		String sql = "DELETE FROM PRODUCTS WHERE ID=" + p.getID() + ";";
-		
-		boolean isDeleted = false;
+		}		
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM PRODUCTS WHERE ID=(?)");
+			pStatement.setInt(1, product.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isDeleted;	
+		}		
+		return false;	
 	}
 
-	public boolean deleteDelivery(Delivery d) {
-		if(d==null){
+	public boolean deleteDelivery(Delivery delivery) {
+		if(delivery==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM DELIVERIES WHERE ID=" + d.getDeliveryID() + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM DELIVERIES WHERE ID=(?)");
+			pStatement.setInt(1, delivery.getDeliveryID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isDeleted;	
+		}		
+		return false;	
 	}
 
-	public boolean deleteInvoice(Invoice i) {
-		if(i==null){
+	public boolean deleteInvoice(Invoice invoice) {
+		if(invoice==null){
 			return false;
-		}
-		openConnection();
-		
-		for(LineItem li : i.getLineItems()){
-			deleteInvoiceItem(li, i.getID());
-		}
-		
-		String sql = "DELETE FROM INVOICES WHERE ID=" + i.getID() + ";";
-		
-		boolean isDeleted = false;
+		}		
+		for(LineItem li : invoice.getLineItems()){
+			deleteInvoiceItem(li, invoice.getID());
+		}				
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM INVOICES WHERE ID=(?)");
+			pStatement.setInt(1, invoice.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		for(LineItem li : i.getLineItems()){
-			deleteInvoiceItem(li, i.getID());
-		}
-		
-		closeConnection();
-		return isDeleted;	
+		}		
+		return false;	
 	}
 
-	public boolean deleteOrder(Order o) {
-		if(o==null){
+	public boolean deleteOrder(Order order) {
+		if(order==null){
 			return false;
 		}
-		openConnection();
-		
-		for(LineItem li : o.getLineItems()){
-			deleteOrderItem(li, o.getID());
+		for(LineItem li : order.getLineItems()){
+			deleteOrderItem(li, order.getID());
 		}
-		String sql = "DELETE FROM ORDERS WHERE ID=" + o.getID() + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM ORDERS WHERE ID=(?)");
+			pStatement.setInt(1, order.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-		return isDeleted;	
+		}		
+		return false;	
 	}
 
-	public boolean deleteUser(User u) {
-		if(u==null){
+	public boolean deleteUser(User user) {
+		if(user==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM USERS WHERE ID=" + u.getID() + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM USERS WHERE ID=(?)");
+			pStatement.setInt(1, user.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isDeleted;	
+		return false;	
 	}
 	
-	public boolean deleteOrderItem(LineItem li, int orderID){	
-		if(li==null){
+	public boolean deleteOrderItem(LineItem lineItem, int orderID){	
+		if(lineItem==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM ORDERITEMS WHERE ORDERID=" + orderID + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM ORDERITEMS WHERE ORDERID=(?)");
+			pStatement.setInt(1, orderID);
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isDeleted;	
+		return false;	
 	}
 	
 	public boolean deleteInvoiceItem(LineItem li, int invoiceID){		
 		if(li==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "DELETE FROM INVOICEITEMS WHERE INVOICEID=" + invoiceID + ";";
-		
-		boolean isDeleted = false;
 		try {
-			statement.executeUpdate(sql);
-			isDeleted = true;
+			pStatement = connection.prepareStatement("DELETE FROM INVOICEITEMS WHERE INVOICEID=(?)");
+			pStatement.setInt(1, invoiceID);
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isDeleted;	
+		return false;	
 	}
 	
 	// Select * from table
 	public ArrayList<Customer> getCustomers() {
-		String sql = "SELECT * FROM CUSTOMERS;";
-		openConnection();
-		
 		ArrayList<Customer> output = new ArrayList<Customer>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM CUSTOMERS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				String telephoneNo = rs.getString("phoneno");
@@ -602,45 +470,35 @@ public class PermanentDatabase {
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
-		}
-		
-		closeConnection();
+		}		
 		return output;
 	}
 
 	public ArrayList<Supplier> getSuppliers() {
-		String sql = "SELECT * FROM SUPPLIERS;";
-		openConnection();
-		
 		ArrayList<Supplier> output = new ArrayList<Supplier>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM SUPPLIERS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				String telephoneNo = rs.getString("phoneno");
 				String email = rs.getString("email");
 				String address = rs.getString("address");
 				int id = rs.getInt("id");
-				output.add(new Supplier(name, telephoneNo, email, address, id));
+				output.add(new Supplier(name, email, address, telephoneNo, id));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-		
-		closeConnection();
 		return output;
 	}
 
 	public ArrayList<Product> getProducts() {
-		String sql = "SELECT * FROM PRODUCTS;";
-		openConnection();
-		
 		ArrayList<Product> output = new ArrayList<Product>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM PRODUCTS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				double cost = rs.getDouble("cost");
@@ -648,85 +506,64 @@ public class PermanentDatabase {
 				int stockLevel = rs.getInt("stockLevel");				
 				int id = rs.getInt("id");
 				int supplierID = rs.getInt("supplierid");
-				
 				Supplier supplier = getSupplier(supplierID);
-				
 				output.add(new Product(name, cost, markup, stockLevel, supplier, id));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public ArrayList<Delivery> getDeliveries() {
-		String sql = "SELECT * FROM DELIVERIES;";
-		openConnection();
-		
 		ArrayList<Delivery> output = new ArrayList<Delivery>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM DELIVERIES");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int id = rs.getInt("id");
 				long deliveryDate = rs.getLong("deliverydate");
 				Date date = new Date(deliveryDate);
 				int orderID = rs.getInt("orderid");
 				int supplierID = rs.getInt("supplierid");
-				
 				Supplier supplier = getSupplier(supplierID);
-				
 				output.add(new Delivery(supplier, orderID, date, id));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public ArrayList<Invoice> getInvoices() {
-		String sql = "SELECT * FROM INVOICES;";
-		openConnection();
-		
 		ArrayList<Invoice> output = new ArrayList<Invoice>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICES");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int id = rs.getInt("id");
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
 				double value = rs.getDouble("value");
-				
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				
 				output.add(new Invoice(invoiceItems, customer, id, date, value));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public ArrayList<Order> getOrders() {
-		String sql = "SELECT * FROM INVOICES;";
-		openConnection();
-		
 		ArrayList<Order> output = new ArrayList<Order>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM ORDERS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int id = rs.getInt("id");
 				long dateLong = rs.getLong("date");
@@ -734,44 +571,34 @@ public class PermanentDatabase {
 				int supplierID = rs.getInt("supplierid");
 				int deliveryID = rs.getInt("deliveryid");
 				double value = rs.getDouble("value");
-				
 				Supplier supplier = getSupplier(supplierID);
 				ArrayList<LineItem> orderItems = getOrderItems(id);
-				
 				output.add(new Order(value, supplier, deliveryID, orderItems, id, date));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public ArrayList<User> getUsers() {
-		String sql = "SELECT * FROM USERS;";
-		openConnection();
-		
 		ArrayList<User> output = new ArrayList<User>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM USERS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int id = rs.getInt("id");
 				String username = rs.getString("username");
 				int authlevel = rs.getInt("authlevel");
 				String passwdigest = rs.getString("passwdigest");
 				String salt = rs.getString("salt");
-				
 				output.add(new User(id, authlevel, username, passwdigest, salt));
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}	
 	
@@ -781,13 +608,11 @@ public class PermanentDatabase {
 	 * @return ArrayList of LineItems associated with the given orderID.
 	 */
 	public ArrayList<LineItem> getOrderItems(int orderID){
-		String sql = "SELECT * FROM ORDERITEMS WHERE ORDERID=" + orderID + ";";
-		openConnection();
-		
 		ArrayList<LineItem> output = new ArrayList<LineItem>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM ORDERITEMS WHERE ORDERID=(?)");
+			pStatement.setInt(1, orderID);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int productID = rs.getInt("productid");
 				int id = rs.getInt("id");
@@ -798,8 +623,6 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 	
@@ -808,13 +631,10 @@ public class PermanentDatabase {
 	 * @return ArrayList of LineItems.
 	 */
 	public ArrayList<LineItem> getOrderItems(){
-		String sql = "SELECT * FROM ORDERITEMS;";
-		openConnection();
-		
 		ArrayList<LineItem> output = new ArrayList<LineItem>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM ORDERITEMS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int productID = rs.getInt("productid");
 				int orderId = rs.getInt("orderid");
@@ -826,8 +646,6 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
@@ -837,13 +655,11 @@ public class PermanentDatabase {
 	 * @return ArrayList of LineItems associated with the given invoiceID.
 	 */
 	public ArrayList<LineItem> getInvoiceItems(int invoiceID){	
-		String sql = "SELECT * FROM INVOICEITEMS WHERE INVOICEID=" + invoiceID + ";";
-		openConnection();
-		
 		ArrayList<LineItem> output = new ArrayList<LineItem>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICEITEMS WHERE INVOICEID=(?)");
+			pStatement.setInt(1, invoiceID);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int productID = rs.getInt("productid");
 				int id = rs.getInt("id");
@@ -854,8 +670,6 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 	
@@ -864,13 +678,10 @@ public class PermanentDatabase {
 	 * @return ArrayList of LineItems.
 	 */
 	public ArrayList<LineItem> getInvoiceItems(){	
-		String sql = "SELECT * FROM INVOICEITEMS;";
-		openConnection();
-		
 		ArrayList<LineItem> output = new ArrayList<LineItem>();
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICEITEMS");
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				int productID = rs.getInt("productid");
 				int invoiceID = rs.getInt("invoiceid");
@@ -882,20 +693,16 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	// single item getters
 	public Customer getCustomer(int id) {
-		String sql = "SELECT * FROM CUSTOMERS WHERE ID=" + id + ";";
-		openConnection();
-		
 		Customer output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM CUSTOMERS WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				String telephoneNo = rs.getString("phoneno");
@@ -907,19 +714,15 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;		
 	}
 
 	public Supplier getSupplier(int id) {
-		String sql = "SELECT * FROM SUPPLIERS WHERE ID = " + id + ";";
-		openConnection();
-		
 		Supplier output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM SUPPLIERS WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				String telephoneNo = rs.getString("phoneno");
@@ -931,471 +734,319 @@ public class PermanentDatabase {
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public Product getProduct(int id) {
-		String sql = "SELECT * FROM PRODUCTS WHERE ID=" + id + ";";
-		openConnection();
-		
 		Product output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM PRODUCTS WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String name = rs.getString("name");
 				double cost = rs.getDouble("cost");
 				double markup = rs.getDouble("markup");
 				int stockLevel = rs.getInt("stockLevel");		
 				int supplierID = rs.getInt("supplierid");
-				
 				Supplier supplier = getSupplier(supplierID);
-				
 				output = new Product(name, cost, markup, stockLevel, supplier, id);
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	public Delivery getDelivery(int id) {
-		String sql = "SELECT * FROM DELIVERIES WHERE ID=" + id + ";";
-		openConnection();
-		
 		Delivery output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM DELIVERIES WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				long deliveryDate = rs.getLong("deliverydate");
 				Date date = new Date(deliveryDate);
 				int orderID = rs.getInt("orderid");
 				int supplierID = rs.getInt("supplierid");
-				
 				Supplier supplier = getSupplier(supplierID);
-				
 				output = new Delivery(supplier, orderID, date, id);
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();		
 		return output;
 	}
 
 	public Invoice getInvoice(int id) {
-		String sql = "SELECT * FROM INVOICES WHERE ID=" + id + ";";
-		openConnection();
-		
 		Invoice output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICES WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
 				double value = rs.getDouble("value");
-				
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				
+				System.out.println("adding invoice");
 				output = new Invoice(invoiceItems, customer, id, date, value);
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();	
 		return output;		
 	}
 
 	public Order getOrder(int id) {
-		String sql = "SELECT * FROM ORDERS WHERE ID = " + id + ";";
-		openConnection();
-		// PermanentDatabase.deleteCustomer(as.get(5));
 		Order output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int supplierID = rs.getInt("supplierid");
 				int deliveryID = rs.getInt("deliveryid");
 				double value = rs.getDouble("value");
-				
 				Supplier supplier = getSupplier(supplierID);
 				ArrayList<LineItem> orderItems = getOrderItems(id);
-				
 				output = new Order(value, supplier, deliveryID, orderItems, id, date);
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();	
 		return output;
 	}
 
 	public User getUser(int id) {
-		String sql = "SELECT * FROM USERS WHERE ID=" + id + ";";
-		openConnection();
-		
 		User output = null;
-		ResultSet rs = null;
 		try {
-			rs = statement.executeQuery(sql);
+			pStatement = connection.prepareStatement("SELECT * FROM USERS WHERE ID=(?)");
+			pStatement.setInt(1, id);
+			ResultSet rs = pStatement.executeQuery();
 			while(rs.next()){
 				String username = rs.getString("username");
 				int authlevel = rs.getInt("authlevel");
 				String passwdigest = rs.getString("passwdigest");
 				String salt = rs.getString("salt");
-				
 				output = new User(id, authlevel, username, passwdigest, salt);
 			}
 			rs.close();	
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
-
-		closeConnection();
 		return output;
 	}
 
 	// Methods to update objects in database
-	public boolean updateCustomer(Customer cust) {
-		if(cust==null){
+	public boolean updateCustomer(Customer customer) {
+		if(customer==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE CUSTOMERS";
-		sql += " SET NAME = " + appendApostrophes(cust.getName()) + ",";
-		sql += " PHONENO = " + appendApostrophes(cust.getTelephoneNumber()) + ",";
-		sql += " EMAIL = " + appendApostrophes(cust.getEmail()) + ",";
-		sql += " ADDRESS = " + appendApostrophes(cust.getAddress());
-		sql += " WHERE ID = " + cust.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE CUSTOMERS SET NAME = ?, PHONENO = ?, EMAIL = ?, ADDRESS = ? WHERE ID = ?");
+			pStatement.setString(1, customer.getName());
+			pStatement.setString(2, customer.getTelephoneNumber());
+			pStatement.setString(3, customer.getEmail());
+			pStatement.setString(4, customer.getAddress());
+			pStatement.setInt(5, customer.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;			
+		return false;			
 	}
 
-	public boolean updateSupplier(Supplier supp) {
-		if(supp==null){
+	public boolean updateSupplier(Supplier supplier) {
+		if(supplier==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE SUPPLIERS";
-		sql += " SET NAME = " + appendApostrophes(supp.getName()) + ",";
-		sql += " PHONENO = " + appendApostrophes(supp.getTelephoneNumber()) + ",";
-		sql += " EMAIL = " + appendApostrophes(supp.getEmail()) + ",";
-		sql += " ADDRESS = " + appendApostrophes(supp.getAddress());
-		sql += " WHERE ID = " + supp.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE SUPPLIERS SET NAME = ?, PHONENO = ?, EMAIL = ?, ADDRESS = ? WHERE ID = ?");
+			pStatement.setString(1, supplier.getName());
+			pStatement.setString(2, supplier.getTelephoneNumber());
+			pStatement.setString(3, supplier.getEmail());
+			pStatement.setString(4, supplier.getAddress());
+			pStatement.setInt(5, supplier.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;			
+		return false;			
 	}
 
-	public boolean updateProduct(Product prod) {
-		if(prod==null){
+	public boolean updateProduct(Product product) {
+		if(product==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE PRODUCTS";
-		sql += " SET NAME = " + appendApostrophes(prod.getName()) + ",";
-		sql += " COST = " + appendApostrophes(prod.getCost()) + ",";
-		sql += " MARKUP = " + appendApostrophes(prod.getMarkup()) + ",";
-		sql += " STOCKLEVEL = " + appendApostrophes(prod.getStockLevel()) + ",";
-		sql += " SUPPLIERID = " + appendApostrophes(prod.getSupplier().getID());
-		sql += " WHERE ID = " + prod.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE PRODUCTS SET NAME = ?, COST = ?, MARKUP = ?, STOCKLEVEL = ?, SUPPLIERID = ? WHERE ID = ?");
+			pStatement.setString(1, product.getName());
+			pStatement.setDouble(2, product.getCost());
+			pStatement.setDouble(3, product.getMarkup());
+			pStatement.setInt(4, product.getStockLevel());
+			pStatement.setInt(5, product.getSupplier().getID());
+			pStatement.setInt(6, product.getID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 
-	public boolean updateDelivery(Delivery del) {
-		if(del==null){
+	public boolean updateDelivery(Delivery delivery) {
+		if(delivery==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE DELIVERIES";
-		sql += " SET DELIVERYDATE = " + appendApostrophes(del.getDate().getTime()) + ",";
-		sql += " ORDERID = " + appendApostrophes(del.getOrderID()) + ",";
-		sql += " SUPPLIERID = " + appendApostrophes(del.getSupplier().getID());
-		sql += " WHERE ID = " + del.getDeliveryID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE DELIVERIES SET DELIVERYDATE = ?, ORDERID = ?, SUPPLIERID = ? WHERE ID = ?");
+			pStatement.setLong(1, delivery.getDate().getTime());
+			pStatement.setInt(2, delivery.getOrderID());
+			pStatement.setInt(3, delivery.getSupplier().getID());
+			pStatement.setInt(4, delivery.getDeliveryID());
+			pStatement.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 
-	public boolean updateInvoice(Invoice inv) {
-		if(inv==null){
+	public boolean updateInvoice(Invoice invoice) {
+		if(invoice==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE INVOICES";
-		sql += " SET DATE = " + appendApostrophes(inv.getDate().getTime()) + ",";
-		sql += " CUSTOMERID = " + appendApostrophes(inv.getCustomer().getID()) + ",";
-		sql += " VALUE = " + appendApostrophes(inv.getCost());
-		sql += " WHERE ID = " + inv.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE INVOICES SET DATE = ?, CUSTOMERID = ?, VALUE = ? WHERE ID = ?");
+			pStatement.setLong(1, invoice.getDate().getTime());
+			pStatement.setInt(2, invoice.getCustomer().getID());
+			pStatement.setDouble(3, invoice.getCost());
+			pStatement.setInt(4, invoice.getID());
+			pStatement.executeUpdate();	
+			for(LineItem li : invoice.getLineItems()){
+				updateInvoiceItem(li);
+			}
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		for(LineItem li : inv.getLineItems()){
-			updateInvoiceItem(li);
-		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 
 	public boolean updateOrder(Order order) {
 		if(order==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE ORDERS";
-		sql += " SET DATE = " + appendApostrophes(order.getDeliveryDate().getTime()) + ",";
-		sql += " SUPPLIERID = " + appendApostrophes(order.getSupplier().getID()) + ",";
-		sql += " DELIVERYID = " + appendApostrophes(order.getDeliveryID()) + ",";
-		sql += " VALUE = " + appendApostrophes(order.getCost());
-		sql += " WHERE ID = " + order.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE ORDERS SET DATE = ?, SUPPLIERID = ?, DELIVERYID = ?, VALUE = ? WHERE ID = ?");
+			pStatement.setLong(1,order.getDeliveryDate().getTime());
+			pStatement.setInt(2, order.getSupplier().getID());
+			pStatement.setInt(3, order.getDeliveryID());
+			pStatement.setDouble(4, order.getCost());
+			pStatement.setInt(5, order.getID());
+			pStatement.executeUpdate();	
+			for(LineItem li : order.getLineItems()){
+				updateOrderItem(li);
+			}
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		for(LineItem li : order.getLineItems()){
-			updateOrderItem(li);
-		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 
 	public boolean updateUser(User user) {
 		if(user==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE USERS";
-		sql += " SET USERNAME = " + appendApostrophes(user.getUsername()) + ",";
-		sql += " AUTHLEVEL = " + appendApostrophes(user.getAuthorizationLevel()) + ",";
-		sql += " PASSWDIGEST = " + appendApostrophes(user.getPasswordDigest()) + ",";
-		sql += " SALT = " + appendApostrophes(user.getSalt());
-		sql += " WHERE ID = " + user.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE USERS SET USERNAME = ?, AUTHLEVEL = ?, PASSWDIGEST = ?, SALT = ? WHERE ID = ?");
+			pStatement.setString(1,user.getUsername());
+			pStatement.setInt(2, user.getAuthorizationLevel());
+			pStatement.setString(3, user.getPasswordDigest());
+			pStatement.setString(4, user.getSalt());
+			pStatement.setInt(5, user.getID());
+			pStatement.executeUpdate();	
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 	
-	public boolean updateOrderItem(LineItem li){
-		if(li==null){
+	public boolean updateOrderItem(LineItem lineItem){
+		if(lineItem==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE ORDERITEMS";
-		sql += " SET PRODUCTID = " + appendApostrophes(li.getProductID()) + ",";
-		sql += " QUANTITY = " + appendApostrophes(li.getQuantity()) + ",";
-		sql += " ORDERID = " + appendApostrophes(li.getOrderID());
-		sql += " WHERE ID = " + li.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE ORDERITEMS SET PRODUCTID = ?, QUANTITY = ?, ORDERID = ? WHERE ID = ?");
+			pStatement.setInt(1,lineItem.getProductID());
+			pStatement.setInt(2, lineItem.getQuantity());
+			pStatement.setInt(3, lineItem.getOrderID());
+			pStatement.setInt(4, lineItem.getID());
+			pStatement.executeUpdate();	
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;	
+		return false;	
 	}
 	
-	public boolean updateInvoiceItem(LineItem li){
-		if(li==null){
+	public boolean updateInvoiceItem(LineItem lineItem){
+		if(lineItem==null){
 			return false;
 		}
-		openConnection();
-		
-		String sql = "UPDATE INVOICEITEMS";
-		sql += " SET PRODUCTID = " + appendApostrophes(li.getProductID()) + ",";
-		sql += " QUANTITY = " + appendApostrophes(li.getQuantity()) + ",";
-		sql += " INVOICEID = " + appendApostrophes(li.getOrderID());
-		sql += " WHERE ID = " + li.getID() + ";";
-		
-		boolean isUpdated = false;
 		try {
-			statement.executeUpdate(sql);
-			isUpdated = true;
+			pStatement = connection.prepareStatement("UPDATE INVOICEITEMS SET PRODUCTID = ?, QUANTITY = ?, INVOICEID = ? WHERE ID = ?");
+			pStatement.setInt(1,lineItem.getProductID());
+			pStatement.setInt(2, lineItem.getQuantity());
+			pStatement.setInt(3, lineItem.getOrderID());
+			pStatement.setInt(4, lineItem.getID());
+			pStatement.executeUpdate();	
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
-		
-		closeConnection();
-		return isUpdated;			
-	}
-
-	// Auto generate database
-	void generateDatabase() {
-		try {
-			createTables();		//works
-			//generateUsers();		//works
-			//generateCustomers();	//works
-			//generateSuppliers();	//works
-			//generateProducts();	//works
-			//generateOrders();		//works
-			//generateDeliveries();	//works.. i think	
-			//generateInvoices();	//works
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		return false;			
 	}
 	
-	private void createTables(){
-		openConnection();
-		
+	private void createTables(){		
 		try {
-			statement.executeUpdate(CREATE_CUSTOMERS_TABLE);
-			statement.executeUpdate(CREATE_DELIVERIES_TABLE);
-			statement.executeUpdate(CREATE_INVOICE_ITEMS_TABLE);
-			statement.executeUpdate(CREATE_INVOICES_TABLE);
-			statement.executeUpdate(CREATE_ORDER_ITEMS_TABLE);
-			statement.executeUpdate(CREATE_ORDERS_TABLE);
-			statement.executeUpdate(CREATE_PRODUCTS_TABLE);
-			statement.executeUpdate(CREATE_SUPPLIERS_TABLE);
-			statement.executeUpdate(CREATE_USERS_TABLE);
+			pStatement = connection.prepareStatement(CREATE_CUSTOMERS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_DELIVERIES_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_INVOICE_ITEMS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_INVOICES_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_ORDER_ITEMS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_ORDERS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_PRODUCTS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_SUPPLIERS_TABLE);
+			pStatement.executeUpdate();
+			pStatement = connection.prepareStatement(CREATE_USERS_TABLE);
+			pStatement.executeUpdate();
 		} catch (SQLException e) {
+			if(e.getMessage().contains("table CUSTOMERS already exists")){
+				return;
+			}
 			System.err.println("Database access error: " + e.getMessage());
-		}
-		
-		closeConnection();
-	}
-
-	private void generateUsers() {
-		EncryptionModule em;
-		try {
-			em = new EncryptionModule();
-			addUser(new User(1, "Eoin", em.encrypt("Nioe", "testSalt"),
-					"testSalt"));
-			addUser(new User(0, "Szymon", em.encrypt("Nomyzs", "testSalt"),
-					"testSalt"));
-
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void generateCustomers() {
-		addCustomer(new Customer("Alan", "0857223104", "Alan@DIT.ie", "Dublin"));
-		addCustomer(new Customer("John", "0854213514", "John@DIT.ie", "Cork"));
-		addCustomer(new Customer("Mary", "0859434115", "Mary@DIT.ie", "Wicklow"));
-	}
-
-	private void generateSuppliers() {
-		addSupplier(new Supplier("Apple", "Apple@suppliers.com", "California",
-				"184234242"));
-		addSupplier(new Supplier("Samsung", "Samsung@suppliers.com", "Tokyo",
-				"76328843"));
-	}
-
-	private void generateProducts() {
-		addProduct(new Product("iPhone 5s", 500.00, 10, 0, getSupplier(1)));
-		addProduct(new Product("iPhone 4", 250.00, 5, 0,
-				getSupplier(1)));
-		addProduct(new Product("Galaxy S5", 480.00, 10, 0,
-				getSupplier(1)));
-	}
-
-	// HAVE A CLOSER LOOK AT THIS ONE
-	private void generateOrders() {
-		ArrayList<LineItem> order1 = new ArrayList<>();
-		order1.add(new LineItem(1, 10));
-		order1.add(new LineItem(2, 10));
-		ArrayList<LineItem> order2 = new ArrayList<>();
-		order2.add(new LineItem(3, 20));
-
-		addOrder(new Order(7500.0, getSupplier(1), 1, order1));
-		addOrder(new Order(9600.0, getSupplier(2), 2, order2));
-	}
-
-	private void generateDeliveries() {
-		addDelivery(new Delivery(getSupplier(1), getOrder(1).getID()));
-		addDelivery(new Delivery(getSupplier(2), getOrder(2).getID()));
-	}
-
-	private void generateInvoices() {
-		ArrayList<LineItem> items = new ArrayList<>();
-		items.add(new LineItem(1, 30));
-		items.add(new LineItem(2, 10));
-		addInvoice(new Invoice(items, getCustomer(1)));
+		}		
 	}
 
 	/**
@@ -1426,18 +1077,5 @@ public class PermanentDatabase {
 			}
 		}
 		return new User(User.NO_AUTHORIZATION, "Not authorised", null, null);
-	}
-
-	// Return instance of database
-	public static PermanentDatabase getInstance() {
-		if (db == null) {
-			db = new PermanentDatabase();
-		}
-		return db;
-	}
-	
-	public static void main(String [] args){
-		PermanentDatabase db = PermanentDatabase.getInstance(); 
-		db.generateDatabase();
 	}
 }
