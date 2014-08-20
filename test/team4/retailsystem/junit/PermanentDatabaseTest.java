@@ -589,29 +589,139 @@ public class PermanentDatabaseTest {
 		String name3 = "name 3";
 		String email1 = "email 1";
 		
+		Supplier supplier1 =  new Supplier(name1,name1,name1,name1);
+		Product product1 = new Product(name1, 1, 1, 1, supplier1);
+		Product product2 = new Product(name2, 2, 2, 2, supplier1);
+		Product product3 = new Product(name3, 3, 3, 3, supplier1);
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addProduct(product1);
+		db.addProduct(product2);
+		db.addProduct(product3);
+		
 		Customer customer = new Customer(email1, email1, email1, email1);
+		LineItem lineItem1 = new LineItem(1, 1);
+		LineItem lineItem2 = new LineItem(2, 2);
+		LineItem lineItem3 = new LineItem(3, 3);		
 		
-/*		Invoice one = new Invoice(arrayListOne, customer);
-		Invoice two = new Invoice(arrayListTwo, customer);
-		Invoice three = new Invoice(arrayListThree, customer);
+		ArrayList<LineItem> items1 = new ArrayList<LineItem>();
+		items1.add(lineItem1);
+		items1.add(lineItem2);
+		ArrayList<LineItem> items2 = new ArrayList<LineItem>();
+		items2.add(lineItem2);
+		items2.add(lineItem3);
+		ArrayList<LineItem> items3 = new ArrayList<LineItem>();
+		items3.add(lineItem3);
+		items3.add(lineItem1);
 		
-		User one = new User(1, name1, email1, email1);
-		User two = new User(1, name2, email1, email1);
-		User three = new User(1, name3, email1, email1);
+		Invoice one = new Invoice(items1, customer);
+		Invoice two = new Invoice(items2, customer);
+		Invoice three = new Invoice(items3, customer);
+		
+		db.addInvoice(one);
+		db.addInvoice(two);
+		db.addInvoice(three);
+
+		ArrayList<Invoice> invoices = db.getInvoices();
+		assertEquals(1, invoices.get(0).getLineItems().get(0).getProductID());
+		assertEquals(2, invoices.get(0).getLineItems().get(1).getProductID());
+		assertEquals(2, invoices.get(1).getLineItems().get(0).getProductID());
+		assertEquals(3, invoices.get(1).getLineItems().get(1).getProductID());
+		assertEquals(3, invoices.get(2).getLineItems().get(0).getProductID());
+		assertEquals(1, invoices.get(2).getLineItems().get(1).getProductID());
+		
+		// cleanup
+		db.deleteInvoice(invoices.get(0));
+		db.deleteInvoice(invoices.get(1));
+		db.deleteInvoice(invoices.get(2));
+		
+		ArrayList<Product> products = db.getProducts();
+		db.deleteProduct(products.get(0));
+		db.deleteProduct(products.get(1));
+		db.deleteProduct(products.get(2));
+	}
+	
+	@Test
+	public void testGetOrders(){
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String email1 = "email 1";
+		
+		Supplier supplier1 =  new Supplier(name1,name1,name1,name1);
+		Product product1 = new Product(name1, 1, 1, 1, supplier1);
+		Product product2 = new Product(name2, 2, 2, 2, supplier1);
+		Product product3 = new Product(name3, 3, 3, 3, supplier1);
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addProduct(product1);
+		db.addProduct(product2);
+		db.addProduct(product3);
+		
+		LineItem lineItem1 = new LineItem(1, 1);
+		LineItem lineItem2 = new LineItem(2, 2);
+		LineItem lineItem3 = new LineItem(3, 3);
+		
+		ArrayList<LineItem> items1 = new ArrayList<LineItem>();
+		items1.add(lineItem1);
+		items1.add(lineItem2);
+		ArrayList<LineItem> items2 = new ArrayList<LineItem>();
+		items2.add(lineItem2);
+		items2.add(lineItem3);
+		ArrayList<LineItem> items3 = new ArrayList<LineItem>();
+		items3.add(lineItem3);
+		items3.add(lineItem1);
+		
+		Order one = new Order(1, supplier1, 1, items1);
+		Order two = new Order(1, supplier1, 1, items2);
+		Order three = new Order(1, supplier1, 1, items3);
+		
+		db.addOrder(one);
+		db.addOrder(two);
+		db.addOrder(three);
+
+		ArrayList<Order> orders = db.getOrders();
+		assertEquals(1, orders.get(0).getLineItems().get(0).getProductID());
+		assertEquals(2, orders.get(0).getLineItems().get(1).getProductID());
+		assertEquals(2, orders.get(1).getLineItems().get(0).getProductID());
+		assertEquals(3, orders.get(1).getLineItems().get(1).getProductID());
+		assertEquals(3, orders.get(2).getLineItems().get(0).getProductID());
+		assertEquals(1, orders.get(2).getLineItems().get(1).getProductID());
+		
+		// cleanup
+		db.deleteOrder(orders.get(0));
+		db.deleteOrder(orders.get(1));
+		db.deleteOrder(orders.get(2));
+		
+		ArrayList<Product> products = db.getProducts();
+		db.deleteProduct(products.get(0));
+		db.deleteProduct(products.get(1));
+		db.deleteProduct(products.get(2));	
+	}
+	
+	@Test
+	public void testGetDeliveries(){
+		String name1 = "name 1";
+		
+		Supplier supplier1 = new Supplier(name1, name1, name1, name1);
+		
+		Delivery one = new Delivery(supplier1, 1);
+		Delivery two = new Delivery(supplier1, 2);
+		Delivery three = new Delivery(supplier1, 3);
 
 		PermanentDatabase db = PermanentDatabase.getInstance();
-		db.addUser(one);
-		db.addUser(two);
-		db.addUser(three);
+		db.addDelivery(one);
+		db.addDelivery(two);
+		db.addDelivery(three);
 
-		ArrayList<User> users = db.getUsers();
-		assertEquals(name1, users.get(0).getUsername());
-		assertEquals(name2, users.get(1).getUsername());
-		assertEquals(name3, users.get(2).getUsername());
+		ArrayList<Delivery> deliveries = db.getDeliveries();
+		assertEquals(1, deliveries.get(0).getOrderID());
+		assertEquals(2, deliveries.get(1).getOrderID());
+		assertEquals(3, deliveries.get(2).getOrderID());
 
 		// cleanup
-		db.deleteUser(one);
-		db.deleteUser(two);
-		db.deleteUser(three);	*/	
+		db.deleteDelivery(deliveries.get(0));
+		db.deleteDelivery(deliveries.get(1));
+		db.deleteDelivery(deliveries.get(2));	
 	}
 }
