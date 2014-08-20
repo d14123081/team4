@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
+import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 import team4.retailsystem.view.RetailSystemView;
 import team4.retailsystem.view.RetailViewListener;
@@ -74,8 +75,10 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void suppliersChanged() {
-		// TODO Auto-generated method stub
-		
+		ArrayList<Supplier> suppliers = database.getSuppliers();
+		for(RetailSystemView v:views){
+			v.updateSupplierList(suppliers);
+		}
 	}
 
 	@Override
@@ -180,6 +183,26 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickDeleteUser(int userId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickAddSupplier(String name, String address, String email,
+			String phone) {
+		model.addSupplier(new Supplier(name, address, email, phone));
+		
+	}
+
+	@Override
+	public void clickUpdateSupplier(String name, String address, String email,
+			String phone) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickDeleteSupplier(int supplierId) {
 		// TODO Auto-generated method stub
 		
 	}

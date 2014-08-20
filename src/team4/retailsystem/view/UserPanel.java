@@ -15,6 +15,9 @@ import team4.retailsystem.model.Database;
 import team4.retailsystem.model.User;
 
 public class UserPanel extends JPanel {
+	
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
 	JTextField usernameTextField;
 	JTextField idTextField;
 	Database database;
@@ -100,6 +103,14 @@ public class UserPanel extends JPanel {
 		btnAddUser.setBounds(10, 11, 138, 23);
 		btnAddUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				//get name, pass, authLevel
+				
+				//call listeners
+				for(RetailViewListener r:listeners){
+					//r.clickAddUser(username, pass, authLevel);
+				}
+				
 				/*database.addUser(new User());
 				users = database.getUsers();
 				list.setListData(users.toArray());*/

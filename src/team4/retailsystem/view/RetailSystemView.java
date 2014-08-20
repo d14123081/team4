@@ -1,5 +1,8 @@
 package team4.retailsystem.view;
 
+import java.util.ArrayList;
+
+import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
 /**
@@ -25,6 +28,8 @@ public interface RetailSystemView {
 	public void showProductEditingSCreen();
 	
 	public void showSupplierEditingScreen();
+	
+	public void updateSupplierList(ArrayList<Supplier> suppliers);
 	
 	public void showUserEditingScreen();
 	
