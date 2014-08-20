@@ -1,4 +1,6 @@
 package team4.retailsystem.view;
+import java.util.ArrayList;
+
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
@@ -14,6 +16,8 @@ import team4.retailsystem.model.Database;
 
 public class InvoicePanel extends JPanel 
 {
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
 	private Database db = Database.getInstance();
 	private JTable table;
 	private JTable table_1;
@@ -134,5 +138,9 @@ public class InvoicePanel extends JPanel
 		JComboBox comboBox_1 = new JComboBox();
 		comboBox_1.setBounds(80, 24, 89, 20);
 		add(comboBox_1);
+	}
+	
+	public void addListener(RetailViewListener r){
+		listeners.add(r);
 	}
 }
