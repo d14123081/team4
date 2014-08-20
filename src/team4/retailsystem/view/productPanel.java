@@ -88,6 +88,10 @@ public class productPanel extends JFrame{
 	            	productPanel gui = new productPanel();  
 	            }
 	            
+	            public void addListener(RetailViewListener r){
+	        		listeners.add(r);
+	        	}
+	            
 	            private class AddProductListener implements ActionListener{
 
 					public void actionPerformed(ActionEvent event) {
