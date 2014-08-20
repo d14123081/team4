@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.PermanentDatabase;
 
 
 public class CustomerPanel extends JPanel{
@@ -184,6 +185,8 @@ public class CustomerPanel extends JPanel{
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 	    	    		
 	    	    		Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
+	    	    		PermanentDatabase.getInstance().addCustomer(customer);
+	    	    		
 	    	    		//add to customer array/database when functionality available
 	    	    		System.out.println("Customer added to database");
 	    	    		clearTextFields();
