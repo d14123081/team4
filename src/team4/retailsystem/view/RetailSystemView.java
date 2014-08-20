@@ -25,7 +25,7 @@ public interface RetailSystemView {
 	
 	public void showOrderEditingScreen();
 	
-	public void showProductEditingSCreen();
+	public void showProductEditingScreen();
 	
 	public void showSupplierEditingScreen();
 	

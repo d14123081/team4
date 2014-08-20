@@ -86,7 +86,7 @@ implements RetailSystemView
 	}
 
 	@Override
-	public void showProductEditingSCreen() {
+	public void showProductEditingScreen() {
 		// TODO Auto-generated method stub
 		
 	}

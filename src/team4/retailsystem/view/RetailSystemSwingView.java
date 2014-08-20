@@ -4,21 +4,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
+/**
+ * An Swing implementation of RetailSystemView, it holds a content pane that
+ * switches between the various different retail system panels, along with a
+ * selection of buttons to decide which panel to view.
+ * 
+ * @author Eoin Kernan D14123081
+ * 
+ */
 public class RetailSystemSwingView 
 extends JFrame
 implements RetailSystemView
 {
 
-	private ArrayList<RetailViewListener> listeners;
+	//An array of RetailViewListeners, to be informed of interface events if required
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	
+	//Buttons for switching between the panels
 	JButton customerButton;
 	JButton invoiceButton;
 	JButton orderButton;
@@ -26,9 +38,11 @@ implements RetailSystemView
 	JButton supplierButton;
 	JButton userButton;
 	
-	private JPanel buttonPanel;
-	private JPanel contentPanel;
+	private JPanel contentPane;//The main content frame for the frame, holds everything else
+	private JPanel buttonPanel;//holds the row of buttons at the top
+	private JPanel contentPanel;//holds whichever of the 'panels' it's told to
 	
+	//The main panel views, currently one for each aspect of the system.
 	private CustomerPanel customerPanel;
 	private InvoicePanel invoicePanel;
 	private OrderPanel orderPanel;
@@ -37,13 +51,17 @@ implements RetailSystemView
 	private UserPanel userPanel;
 	
 	public RetailSystemSwingView() {
+		
 		initialiseComponents();
 		addButtonListeners();
 		constructView();
+		
+		setVisible(true);
 	}
 
 	private void initialiseComponents(){
 		
+		contentPane = new JPanel();
 		buttonPanel = new JPanel();
 		contentPanel = new JPanel();
 		
@@ -63,7 +81,27 @@ implements RetailSystemView
 	}
 	
 	private void constructView(){
-		//this.setLayout();
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(300, 300, 700, 700);
+		
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+		
+		buttonPanel.add(customerButton);
+		buttonPanel.add(invoiceButton);
+		buttonPanel.add(orderButton);
+		buttonPanel.add(productButton);
+		buttonPanel.add(supplierButton);
+		buttonPanel.add(userButton);
+		//buttonPanel.add(userPanel);
+		
+		contentPanel.add(customerPanel);
+		
+		contentPane.add(buttonPanel);
+		contentPane.add(contentPanel);
+		
+		setContentPane(contentPane);
 	}
 	
 	private void addButtonListeners(){
@@ -71,8 +109,7 @@ implements RetailSystemView
 		customerButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(customerPanel);
+				showCustomerEditingScreen();
 			}
 			
 		});
@@ -80,8 +117,7 @@ implements RetailSystemView
 		invoiceButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(invoicePanel);
+				showInvoiceEditingScreen();
 			}
 			
 		});
@@ -89,8 +125,7 @@ implements RetailSystemView
 		orderButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(orderPanel);
+				showOrderEditingScreen();
 			}
 			
 		});
@@ -98,8 +133,7 @@ implements RetailSystemView
 		productButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(productPanel);
+				showProductEditingScreen();
 			}
 			
 		});
@@ -107,8 +141,7 @@ implements RetailSystemView
 		supplierButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(supplierPanel);
+				showSupplierEditingScreen();
 			}
 			
 		});
@@ -116,8 +149,7 @@ implements RetailSystemView
 		userButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contentPanel.removeAll();
-				contentPanel.add(userPanel);
+				showUserEditingScreen();
 			}
 			
 		});
@@ -126,7 +158,12 @@ implements RetailSystemView
 	@Override
 	public void addRetailViewListener(RetailViewListener listener) {
 		listeners.add(listener);
-		
+		customerPanel.addListener(listener);
+		invoicePanel.addListener(listener);
+		orderPanel.addListener(listener);
+		productPanel.addListener(listener);
+		supplierPanel.addListener(listener);
+		userPanel.addListener(listener);
 	}
 
 	@Override
@@ -143,31 +180,40 @@ implements RetailSystemView
 
 	@Override
 	public void showCustomerEditingScreen() {
-		// TODO Auto-generated method stub
-		
+		contentPanel.removeAll();
+		contentPanel.add(customerPanel);
+		this.validate();
 	}
 
 	@Override
 	public void showInvoiceEditingScreen() {
-		// TODO Auto-generated method stub
+		contentPanel.removeAll();
+		contentPanel.add(invoicePanel);
+		this.validate();
 		
 	}
 
 	@Override
 	public void showOrderEditingScreen() {
-		// TODO Auto-generated method stub
-		
+		contentPanel.removeAll();
+		contentPanel.add(orderPanel);
+		this.validate();
 	}
 
 	@Override
-	public void showProductEditingSCreen() {
-		// TODO Auto-generated method stub
+	public void showProductEditingScreen() {
+		//TODO: contentPanel is extending a JFrame instead of a panel
+		contentPanel.removeAll();
+		//contentPanel.add(productPanel);
+		this.validate();
 		
 	}
 
 	@Override
 	public void showSupplierEditingScreen() {
-		// TODO Auto-generated method stub
+		contentPanel.removeAll();
+		contentPanel.add(supplierPanel);
+		this.validate();
 		
 	}
 
@@ -178,8 +224,9 @@ implements RetailSystemView
 
 	@Override
 	public void showUserEditingScreen() {
-		// TODO Auto-generated method stub
-		
+		contentPanel.removeAll();
+		contentPanel.add(userPanel);
+		this.validate();
 	}
 
 	@Override
