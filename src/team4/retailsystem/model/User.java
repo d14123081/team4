@@ -106,4 +106,12 @@ public class User {
 	{
 		return this.username;
 	}
+	
+	public void resetPassword(){
+		setPasswordDigest(null);
+	}
+	
+	public boolean isPasswordEmpty(){
+		return getPasswordDigest()==null;
+	}
 }
