@@ -450,4 +450,168 @@ public class PermanentDatabaseTest {
 		PermanentDatabase.getInstance().deleteUser(admin);
 		PermanentDatabase.getInstance().deleteUser(nonAdmin);
 	}
+	
+	@Test
+	public void testGetCustomers(){
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String telNo1 = "telNo 1";
+		String telNo2 = "telNo 2";
+		String telNo3 = "telNo 3";
+		String email1 = "email 1";
+		String email2 = "email 2";
+		String email3 = "email 3";
+		String addr1 = "addr 1";
+		String addr2 = "addr 2";
+		String addr3 = "addr 3";
+		
+		Customer one = new Customer(name1, telNo1, email1, addr1);
+		Customer two = new Customer(name2, telNo2, email2, addr2);
+		Customer three = new Customer(name3, telNo3, email3, addr3);
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addCustomer(one);
+		db.addCustomer(two);
+		db.addCustomer(three);
+		
+		ArrayList<Customer> customers = db.getCustomers();
+		assertEquals(name1, customers.get(0).getName());
+		assertEquals(name2, customers.get(1).getName());
+		assertEquals(name3, customers.get(2).getName());
+		
+		//cleanup
+		db.deleteCustomer(one);
+		db.deleteCustomer(two);
+		db.deleteCustomer(three);
+	}
+	
+	@Test
+	public void testGetSuppliers() {
+
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String telNo1 = "telNo 1";
+		String telNo2 = "telNo 2";
+		String telNo3 = "telNo 3";
+		String email1 = "email 1";
+		String email2 = "email 2";
+		String email3 = "email 3";
+		String addr1 = "addr 1";
+		String addr2 = "addr 2";
+		String addr3 = "addr 3";
+
+		Supplier one = new Supplier(name1, telNo1, email1, addr1);
+		Supplier two = new Supplier(name2, telNo2, email2, addr2);
+		Supplier three = new Supplier(name3, telNo3, email3, addr3);
+
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addSupplier(one);
+		db.addSupplier(two);
+		db.addSupplier(three);
+
+		ArrayList<Supplier> suppliers = db.getSuppliers();
+		assertEquals(name1, suppliers.get(0).getName());
+		assertEquals(name2, suppliers.get(1).getName());
+		assertEquals(name3, suppliers.get(2).getName());
+
+		// cleanup
+		db.deleteSupplier(one);
+		db.deleteSupplier(two);
+		db.deleteSupplier(three);
+	}
+	
+	@Test
+	public void testGetProducts(){
+
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String telNo1 = "telNo 1";
+		String email1 = "email 1";
+		String addr1 = "addr 1";
+
+		Supplier supplier = new Supplier(name1, email1, addr1, telNo1);
+		
+		Product one = new Product(name1, 1, 1, 1, supplier);
+		Product two = new Product(name2, 1, 1, 1, supplier);
+		Product three = new Product(name3, 1, 1, 1, supplier);
+
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addProduct(one);
+		db.addProduct(two);
+		db.addProduct(three);
+
+		ArrayList<Product> products = db.getProducts();
+		assertEquals(name1, products.get(0).getName());
+		assertEquals(name2, products.get(1).getName());
+		assertEquals(name3, products.get(2).getName());
+
+		// cleanup
+		db.deleteProduct(one);
+		db.deleteProduct(two);
+		db.deleteProduct(three);
+	}
+	
+	@Test
+	public void testGetUsers(){
+
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String email1 = "email 1";
+		
+		User one = new User(1, name1, email1, email1);
+		User two = new User(1, name2, email1, email1);
+		User three = new User(1, name3, email1, email1);
+
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addUser(one);
+		db.addUser(two);
+		db.addUser(three);
+
+		ArrayList<User> users = db.getUsers();
+		assertEquals(name1, users.get(0).getUsername());
+		assertEquals(name2, users.get(1).getUsername());
+		assertEquals(name3, users.get(2).getUsername());
+
+		// cleanup
+		db.deleteUser(one);
+		db.deleteUser(two);
+		db.deleteUser(three);		
+	}
+	
+	@Test
+	public void testGetInvoices(){
+		String name1 = "name 1";
+		String name2 = "name 2";
+		String name3 = "name 3";
+		String email1 = "email 1";
+		
+		Customer customer = new Customer(email1, email1, email1, email1);
+		
+/*		Invoice one = new Invoice(arrayListOne, customer);
+		Invoice two = new Invoice(arrayListTwo, customer);
+		Invoice three = new Invoice(arrayListThree, customer);
+		
+		User one = new User(1, name1, email1, email1);
+		User two = new User(1, name2, email1, email1);
+		User three = new User(1, name3, email1, email1);
+
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addUser(one);
+		db.addUser(two);
+		db.addUser(three);
+
+		ArrayList<User> users = db.getUsers();
+		assertEquals(name1, users.get(0).getUsername());
+		assertEquals(name2, users.get(1).getUsername());
+		assertEquals(name3, users.get(2).getUsername());
+
+		// cleanup
+		db.deleteUser(one);
+		db.deleteUser(two);
+		db.deleteUser(three);	*/	
+	}
 }
