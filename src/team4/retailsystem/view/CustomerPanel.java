@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,7 +17,7 @@ import javax.swing.JTextField;
 import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
-import team4.retailsystem.model.PermanentDatabase;
+import team4.retailsystem.model.Database;
 
 
 public class CustomerPanel extends JPanel{
@@ -185,7 +186,8 @@ public class CustomerPanel extends JPanel{
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 	    	    		
 	    	    		Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
-	    	    		PermanentDatabase.getInstance().addCustomer(customer);
+	    	    		Database db = Database.getInstance();
+	    	    		db.addCustomer(customer);
 	    	    		
 	    	    		//add to customer array/database when functionality available
 	    	    		System.out.println("Customer added to database");

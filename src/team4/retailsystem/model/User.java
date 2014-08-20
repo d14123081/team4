@@ -36,6 +36,15 @@ public class User {
 		setPasswordDigest(passwordDigest);
 		setSalt(salt);
 	}
+	
+	public User()
+	{
+		setAuthorizationLevel(1);
+		setId(++idCounter);
+		setUsername("operator"+idCounter);
+		setPasswordDigest(null);
+		setSalt(null);
+	}
 
 	/**
 	 * Used by the database to re-create a user object form existing user data.
@@ -77,11 +86,11 @@ public class User {
 		this.id = id;
 	}
 
-	private void setAuthorizationLevel(int authorizationLevel) {
+	public void setAuthorizationLevel(int authorizationLevel) {
 		this.authorizationLevel = authorizationLevel;
 	}
 
-	private void setUsername(String username) {
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
@@ -91,5 +100,18 @@ public class User {
 	
 	private void setSalt(String salt){
 		this.salt = salt;
+	}
+	
+	public String toString()
+	{
+		return this.username;
+	}
+	
+	public void resetPassword(){
+		setPasswordDigest(null);
+	}
+	
+	public boolean isPasswordEmpty(){
+		return getPasswordDigest()==null;
 	}
 }

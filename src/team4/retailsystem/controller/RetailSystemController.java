@@ -117,5 +117,13 @@ implements RetailModelListener, RetailViewListener
 		}
 		
 	}
+
+	@Override
+	public void clickTestAdd(String value) {
+		// TODO Auto-generated method stub
+		
+		//do something with the value here (update the model or whatever)
+		
+	}
 	
 }
