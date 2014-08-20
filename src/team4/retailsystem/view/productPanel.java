@@ -11,11 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ProductPanel extends JFrame{
+public class productPanel extends JFrame{
 	
 	public static final String jbutton = null;
 
-	public ProductPanel(){
+	public productPanel(){
 	            
 	                 setDefaultLookAndFeelDecorated(true);
 	                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +76,7 @@ public class ProductPanel extends JFrame{
 	            }
 	
 	            public static void main(String[] args){
-	            	ProductPanel gui = new ProductPanel();  
+	            	productPanel gui = new productPanel();  
 	            }
 	            
 	            private class RetailViewListener implements ActionListener{
