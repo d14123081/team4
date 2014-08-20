@@ -100,9 +100,9 @@ public class UserPanel extends JPanel {
 		btnAddUser.setBounds(10, 11, 138, 23);
 		btnAddUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				database.addUser(new User());
+				/*database.addUser(new User());
 				users = database.getUsers();
-				list.setListData(users.toArray());
+				list.setListData(users.toArray());*/
 			}
 		});
 		userListPanel.add(btnAddUser);
