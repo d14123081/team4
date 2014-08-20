@@ -145,5 +145,43 @@ implements RetailModelListener, RetailViewListener
 	public void clickDeleteCustomer(int id) {
 		model.deleteCustomer(id);
 	}
+
+	@Override
+	public void clickCreateProduct(String name, double cost, double markup,
+			int stockLevel, int supplierId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickUpdateProduct(String name, double cost, double markup,
+			int stockLevel, int supplierId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickDeleteProduct(int productId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickAddUser(String username, String pass, int authLevel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickUpdateUser(String username, String pass, int authLevel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickDeleteUser(int userId) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

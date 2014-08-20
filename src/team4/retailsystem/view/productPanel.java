@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
 import java.awt.Container;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,8 +14,15 @@ import javax.swing.JTextField;
 
 public class productPanel extends JFrame{
 	
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	public static final String jbutton = null;
 
+	JTextField nameField;
+	JTextField textField1;
+	JTextField textField2;
+	JTextField textField3;
+	JTextField textField4;
+	
 	public productPanel(){
 	            
 	                 setDefaultLookAndFeelDecorated(true);
@@ -30,8 +38,8 @@ public class productPanel extends JFrame{
 	                 JLabel nameLabel = new JLabel("Enter Name of Product");
 	                 myPanel.add(nameLabel);
 	                 //Add Textbox
-	                 JTextField textField = new JTextField("Enter Name of Product",40);
-	                 myPanel.add(textField); 
+	                 nameField = new JTextField("Enter Name of Product",40);
+	                 myPanel.add(nameField); 
 	                 //Add button as before
 	                 
 	                 
@@ -39,7 +47,7 @@ public class productPanel extends JFrame{
 	                 JLabel costLabel = new JLabel("Enter Cost of Product");
 	                 myPanel.add(costLabel);
 	                 //Add Textbox
-	                 JTextField textField1 = new JTextField("Enter Cost of Product",40);
+	                 textField1 = new JTextField("Enter Cost of Product",40);
 	                 myPanel.add(textField1);     
 	                 //Add button as before
 	                 
@@ -47,7 +55,7 @@ public class productPanel extends JFrame{
 	                 JLabel markUpLabel = new JLabel("Enter MarkUp of Product");
 	                 myPanel.add(markUpLabel);
 	                 //Add Textbox
-	                 JTextField textField2 = new JTextField("Enter MarkUp of Product",40);
+	                 textField2 = new JTextField("Enter MarkUp of Product",40);
 	                 myPanel.add(textField2);     
 	                 //Add button as before
 	                 
@@ -55,7 +63,7 @@ public class productPanel extends JFrame{
 	                 JLabel stockLabel = new JLabel("Enter Stock Level of Product");
 	                 myPanel.add(stockLabel);
 	                 //Add Textbox
-	                 JTextField textField3 = new JTextField("Enter Stock Level of Product",40);
+	                 textField3 = new JTextField("Enter Stock Level of Product",40);
 	                 myPanel.add(textField3);     
 	                 //Add button as before
 	                
@@ -63,12 +71,13 @@ public class productPanel extends JFrame{
 	                 JLabel supplierLabel = new JLabel("Enter Supplier of Product");
 	                 myPanel.add(supplierLabel);
 	                 //Add Textbox
-	                 JTextField textField4 = new JTextField("Enter Supplier of Product",40);
+	                 textField4 = new JTextField("Enter Supplier of Product",40);
 	                 myPanel.add(textField4);     
 	                 //Add button as before
 	                 
 	                 
 	                 JButton jbutton = new JButton("Create Product");
+	                 jbutton.addActionListener(new AddProductListener());
 	                 myPanel.add(jbutton);
 	                
 	                 setContentPane(myPanel);
@@ -79,14 +88,57 @@ public class productPanel extends JFrame{
 	            	productPanel gui = new productPanel();  
 	            }
 	            
-	            private class RetailViewListener implements ActionListener{
+	            private class AddProductListener implements ActionListener{
 
 					public void actionPerformed(ActionEvent event) {
-						System.out.println("Inner class listener handling this click!");
+						
+						String name = nameField.getText();
+						double cost =  Double.parseDouble(textField1.getText());
+						double markup = Double.parseDouble(textField2.getText());
+						int stockLevel = Integer.parseInt(textField3.getText());
+						int supplierId = Integer.parseInt(textField4.getText());
+						
+						//validation here
+						
+						//if valid...
+						//inform RetailViewListeners of event
+						for(RetailViewListener r:listeners){
+							r.clickCreateProduct(name, cost, markup, stockLevel, supplierId);
+						}
+						//else, show an error
+						
+						/*System.out.println("Inner class listener handling this click!");
 						
 						if(event.getSource().equals(jbutton)){
 							System.out.println("This product has been created");
-						}	
+						}*/
+					}
 	            }
-}
+					
+					private class UpdateProductListener implements ActionListener{
+
+						public void actionPerformed(ActionEvent event) {
+							
+							String name = nameField.getText();
+							double cost =  Double.parseDouble(textField1.getText());
+							double markup = Double.parseDouble(textField2.getText());
+							int stockLevel = Integer.parseInt(textField3.getText());
+							int supplierId = Integer.parseInt(textField4.getText());
+							
+							//validation here
+							
+							//if valid...
+							//inform RetailViewListeners of event
+							for(RetailViewListener r:listeners){
+								r.clickUpdateProduct(name, cost, markup, stockLevel, supplierId);
+							}
+							//else, show an error
+							
+							/*System.out.println("Inner class listener handling this click!");
+							
+							if(event.getSource().equals(jbutton)){
+								System.out.println("This product has been created");
+							}*/
+						}
+					}
 }
