@@ -176,6 +176,11 @@ public class SupplierPanel extends JPanel implements ActionListener,
             if (isSelected == true) {
                 isEditOrder = true;
                 setEditableForField(true);
+                Supplier supplier = suppliers.get(index);
+                nameField.setText(supplier.getName());
+                addressField.setText(supplier.getAddress());
+                emailField.setText(supplier.getEmail());
+                telephoneField.setText(supplier.getTelephoneNumber());
             } else
                 warmingMsg("Please select Supplier to Edit");
         }
