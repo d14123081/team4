@@ -10,7 +10,7 @@ public class test extends JFrame{
         this.setLocation(420,120);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Log In Frame");
-        this.setContentPane(new SupplierPanel());
+        this.setContentPane(new ProductPanel2());
         this.setVisible(true);
     }
 

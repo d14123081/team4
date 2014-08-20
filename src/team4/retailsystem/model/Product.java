@@ -77,5 +77,10 @@ public class Product {
 	public int getID() {
 		return ID;
 	}
+	
+	public String toString()
+	{
+		return this.name;
+	}
 
 }
