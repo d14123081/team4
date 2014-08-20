@@ -151,4 +151,8 @@ public class UserPanel extends JPanel {
 		});
 		add(btnDelete);
 	}
+	
+	public void addListener(RetailViewListener r){
+		listeners.add(r);
+	}
 }
