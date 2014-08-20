@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Database {
 
 	private static Database db = new Database();
-	
+
 	private ArrayList<Customer> customers = new ArrayList<>();
 	private ArrayList<Supplier> suppliers = new ArrayList<>();
 	private ArrayList<Product> products = new ArrayList<>();
@@ -181,15 +181,15 @@ public class Database {
 		return products;
 	}
 
-	public Product getProductById(int id){
-		for(Product p:products){
-			if(p.getID() == id){
+	public Product getProductById(int id) {
+		for (Product p : products) {
+			if (p.getID() == id) {
 				return p;
 			}
 		}
 		return null;
 	}
-	
+
 	public ArrayList<Delivery> getDeliveries() {
 		return deliveries;
 	}
@@ -205,6 +205,8 @@ public class Database {
 	public ArrayList<User> getUsers() {
 		return users;
 	}
+	
+	
 
 	// Unfinished methods to update objects in database
 	public boolean updateCustomer(Customer cust) {
@@ -331,13 +333,19 @@ public class Database {
 		EncryptionModule em;
 		try {
 			em = new EncryptionModule();
-			addUser(new User(User.ADMINISTRATOR, "Eoin", em.encrypt("nioe", "testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Szymon", em.encrypt("nomyzs", "testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Alan", em.encrypt("nala", "testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Ha", em.encrypt("ah", "testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Siobhain", em.encrypt("niahbois", "testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Giovanni", em.encrypt("innavoig", "testSalt"), "testSalt"));
-			
+			addUser(new User(User.ADMINISTRATOR, "Eoin", em.encrypt("nioe",
+					"testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Szymon", em.encrypt("nomyzs",
+					"testSalt"), "testSalt"));
+			addUser(new User(User.ADMINISTRATOR, "Alan", em.encrypt("nala",
+					"testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Ha", em.encrypt("ah",
+					"testSalt"), "testSalt"));
+			addUser(new User(User.ADMINISTRATOR, "Siobhain", em.encrypt(
+					"niahbois", "testSalt"), "testSalt"));
+			addUser(new User(User.NORMAL_USER, "Giovanni", em.encrypt(
+					"innavoig", "testSalt"), "testSalt"));
+
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -345,9 +353,12 @@ public class Database {
 	}
 
 	private void generateCustomers() {
-		addCustomer(new Customer("Carphone Warehouse", "4758439", "cwarehouse@customers.com", "Dublin"));
-		addCustomer(new Customer("Meteor", "3534594", "meteor@customers.com", "Cork"));
-		addCustomer(new Customer("Vodafone", "6849932", "vodafone@customer.com", "Wicklow"));
+		addCustomer(new Customer("Carphone Warehouse", "4758439",
+				"cwarehouse@customers.com", "Dublin"));
+		addCustomer(new Customer("Meteor", "3534594", "meteor@customers.com",
+				"Cork"));
+		addCustomer(new Customer("Vodafone", "6849932",
+				"vodafone@customer.com", "Wicklow"));
 	}
 
 	private void generateSuppliers() {
@@ -358,12 +369,9 @@ public class Database {
 	}
 
 	private void generateProducts() {
-		addProduct(new Product("iPhone 5s", 500.00, 100.00, 0,
-				suppliers.get(0)));
-		addProduct(new Product("iPhone 4", 250.00, 50.00, 0,
-				suppliers.get(0)));
-		addProduct(new Product("Galaxy S5", 480.00, 70.00, 0,
-				suppliers.get(1)));
+		addProduct(new Product("iPhone 5s", 500.00, 100.00, 0, suppliers.get(0)));
+		addProduct(new Product("iPhone 4", 250.00, 50.00, 0, suppliers.get(0)));
+		addProduct(new Product("Galaxy S5", 480.00, 70.00, 0, suppliers.get(1)));
 	}
 
 	private void generateOrders() {
@@ -372,7 +380,7 @@ public class Database {
 		order1.add(new LineItem(2, 10));
 		ArrayList<LineItem> order2 = new ArrayList<>();
 		order2.add(new LineItem(3, 20));
-		
+
 		addOrder(new Order(7500.0, suppliers.get(0), 1, order1));
 		addOrder(new Order(9600.0, suppliers.get(1), 2, order2));
 	}
@@ -389,31 +397,38 @@ public class Database {
 	}
 
 	/**
-	 * Return existing User on username+password match, otherwise return an unauthorized user.
-	 * @param username The username of the User.
-	 * @param password A String password.
-	 * @return User that matches the username and password, otherwise an unauthorized User object.
+	 * Return existing User on username+password match, otherwise return an
+	 * unauthorized user.
+	 * 
+	 * @param username
+	 *            The username of the User.
+	 * @param password
+	 *            A String password.
+	 * @return User that matches the username and password, otherwise an
+	 *         unauthorized User object.
 	 */
 	public User authorizeUser(String username, String password) {
-		for(User user : users){
-			if(user.getUsername().toLowerCase().equals(username.toLowerCase())){
+		for (User user : users) {
+			if (user.getUsername().toLowerCase().equals(username.toLowerCase())) {
 				try {
 					EncryptionModule em = new EncryptionModule();
-					String passwordDigest = em.encrypt(password, user.getSalt());
-					if(user.getPasswordDigest().equals(passwordDigest)){
-						return user;						
+					String passwordDigest = em
+							.encrypt(password, user.getSalt());
+					if (user.getPasswordDigest().equals(passwordDigest)) {
+						return user;
 					}
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 					break;
-				}		
+				}
 			}
 		}
 		return new User(User.NO_AUTHORIZATION, "Not authorised", null, null);
 	}
-	
+
 	/**
-	 * Inner class that uses MD5 to generate password digests. 
+	 * Inner class that uses MD5 to generate password digests.
+	 * 
 	 * @author Szymon
 	 */
 	private class EncryptionModule {
@@ -422,9 +437,10 @@ public class Database {
 		private EncryptionModule() throws NoSuchAlgorithmException {
 			md = MessageDigest.getInstance("MD5");
 		}
-		
+
 		/**
 		 * Returns a random 8-byte salt as a String.
+		 * 
 		 * @return Random 8-byte string.
 		 */
 		private String getRandomSalt() {
@@ -436,8 +452,11 @@ public class Database {
 
 		/**
 		 * Returns the password digest, created using the given salt.
-		 * @param password The password to encrypt.
-		 * @param salt The salt used to protect against dictionary attacks.
+		 * 
+		 * @param password
+		 *            The password to encrypt.
+		 * @param salt
+		 *            The salt used to protect against dictionary attacks.
 		 * @return Password digest as a String.
 		 */
 		private String encrypt(String password, String salt) {
@@ -449,6 +468,7 @@ public class Database {
 
 	// Return instance of database
 	public static Database getInstance() {
+		
 		return db;
 	}
 }
