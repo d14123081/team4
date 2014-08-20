@@ -66,6 +66,10 @@ public class RetailSystemModel {
 		return deliveries;
 	}
 
+	public User authoriseUser(String username, String password){
+		return database.authorizeUser(username, password);
+	}
+	
 	//User class methods
 	public void addUser(User u){
 		database.addUser(u);

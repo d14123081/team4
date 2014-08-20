@@ -27,7 +27,6 @@ public class RetailSystemController
 implements RetailModelListener, RetailViewListener
 {
 	private User user;
-	private Database database;
 	
 	private ArrayList<RetailSystemView> views = new ArrayList<RetailSystemView>();
 	private RetailSystemModel model;
@@ -35,7 +34,6 @@ implements RetailModelListener, RetailViewListener
 	public RetailSystemController(RetailSystemModel model, ArrayList<RetailSystemView> views){
 		this.model = model;
 		this.views = views;
-		this.database = Database.getInstance();
 		
 		this.model.addRetailModelListener(this);
 		
@@ -78,7 +76,7 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void suppliersChanged() {
-		ArrayList<Supplier> suppliers = database.getSuppliers();
+		ArrayList<Supplier> suppliers = model.getSuppliers();
 		for(RetailSystemView v:views){
 			v.updateSupplierList(suppliers);
 		}
@@ -92,7 +90,7 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void doLogin(String username, String password) {
-		user = database.authorizeUser(username, password);
+		user = model.authoriseUser(username, password);
 		
 		//check auth level here, decide what to do/show next
 		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
