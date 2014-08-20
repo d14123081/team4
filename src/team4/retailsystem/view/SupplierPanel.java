@@ -147,6 +147,10 @@ public class SupplierPanel extends JPanel implements ActionListener,
 
     }
 
+    public void addListener(RetailViewListener r){
+		listeners.add(r);
+	}
+    
     public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
         gbl.setConstraints(panel, gbc);
         this.add(panel);
