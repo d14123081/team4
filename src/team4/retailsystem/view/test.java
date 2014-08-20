@@ -11,7 +11,7 @@ public class test extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Log In Frame");
 
-        this.setContentPane(new CustomerPanel());
+        this.setContentPane(new SupplierPanel());
 
         this.setVisible(true);
     }

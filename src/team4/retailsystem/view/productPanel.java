@@ -18,10 +18,12 @@ public class productPanel extends JFrame{
 	public static final String jbutton = null;
 
 	JTextField nameField;
-	JTextField textField1;
-	JTextField textField2;
-	JTextField textField3;
-	JTextField textField4;
+	JTextField costField;
+	JTextField markUpField;
+	JTextField stockField;
+	JTextField supplierField;
+	JTextField productIDField;
+	
 	
 	public productPanel(){
 	            
@@ -47,32 +49,32 @@ public class productPanel extends JFrame{
 	                 JLabel costLabel = new JLabel("Enter Cost of Product");
 	                 myPanel.add(costLabel);
 	                 //Add Textbox
-	                 textField1 = new JTextField("Enter Cost of Product",40);
-	                 myPanel.add(textField1);     
+	                 costField = new JTextField("Enter Cost of Product",40);
+	                 myPanel.add(costField);     
 	                 //Add button as before
 	                 
 	                 
 	                 JLabel markUpLabel = new JLabel("Enter MarkUp of Product");
 	                 myPanel.add(markUpLabel);
 	                 //Add Textbox
-	                 textField2 = new JTextField("Enter MarkUp of Product",40);
-	                 myPanel.add(textField2);     
+	                 markUpField = new JTextField("Enter MarkUp of Product",40);
+	                 myPanel.add(markUpField);     
 	                 //Add button as before
 	                 
 	                 
 	                 JLabel stockLabel = new JLabel("Enter Stock Level of Product");
 	                 myPanel.add(stockLabel);
 	                 //Add Textbox
-	                 textField3 = new JTextField("Enter Stock Level of Product",40);
-	                 myPanel.add(textField3);     
+	                 stockField = new JTextField("Enter Stock Level of Product",40);
+	                 myPanel.add(stockField);     
 	                 //Add button as before
 	                
 	                 
 	                 JLabel supplierLabel = new JLabel("Enter Supplier of Product");
 	                 myPanel.add(supplierLabel);
 	                 //Add Textbox
-	                 textField4 = new JTextField("Enter Supplier of Product",40);
-	                 myPanel.add(textField4);     
+	                 supplierField = new JTextField("Enter Supplier of Product",40);
+	                 myPanel.add(supplierField);     
 	                 //Add button as before
 	                 
 	                 
@@ -81,7 +83,7 @@ public class productPanel extends JFrame{
 	                 myPanel.add(jbutton);
 	                
 	                 setContentPane(myPanel);
-	                 setVisible(true);	                
+	                 setVisible(true);
 	            }
 	
 	            public static void main(String[] args){
@@ -93,10 +95,10 @@ public class productPanel extends JFrame{
 					public void actionPerformed(ActionEvent event) {
 						
 						String name = nameField.getText();
-						double cost =  Double.parseDouble(textField1.getText());
-						double markup = Double.parseDouble(textField2.getText());
-						int stockLevel = Integer.parseInt(textField3.getText());
-						int supplierId = Integer.parseInt(textField4.getText());
+						double cost =  Double.parseDouble(costField.getText());
+						double markup = Double.parseDouble(markUpField.getText());
+						int stockLevel = Integer.parseInt(stockField.getText());
+						int supplierId = Integer.parseInt(supplierField.getText());
 						
 						//validation here
 						
@@ -120,10 +122,10 @@ public class productPanel extends JFrame{
 						public void actionPerformed(ActionEvent event) {
 							
 							String name = nameField.getText();
-							double cost =  Double.parseDouble(textField1.getText());
-							double markup = Double.parseDouble(textField2.getText());
-							int stockLevel = Integer.parseInt(textField3.getText());
-							int supplierId = Integer.parseInt(textField4.getText());
+							double cost =  Double.parseDouble(costField.getText());
+							double markup = Double.parseDouble(markUpField.getText());
+							int stockLevel = Integer.parseInt(stockField.getText());
+							int supplierId = Integer.parseInt(supplierField.getText());
 							
 							//validation here
 							
@@ -141,4 +143,25 @@ public class productPanel extends JFrame{
 							}*/
 						}
 					}
+					
+					 private class DeleteProductListener implements ActionListener{
+							public void actionPerformed(ActionEvent event) {
+								int productId = Integer.parseInt(productIDField.getText());
+								
+								//validation here
+								
+								//if valid...
+								//inform RetailViewListeners of event
+								for(RetailViewListener r:listeners){
+									r.clickDeleteProduct(productId);
+								}
+								//else, show an error
+								
+								/*System.out.println("Inner class listener handling this click!");
+								
+								if(event.getSource().equals(jbutton)){
+									System.out.println("This product has been created");
+								}*/
+							}
+			            }
 }

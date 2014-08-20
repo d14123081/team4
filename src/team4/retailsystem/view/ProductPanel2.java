@@ -35,10 +35,6 @@ public class ProductPanel2 extends JPanel {
 		
 		JList list = new JList(products.toArray());
 		scrollPane.setViewportView(list);
-		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(50, 207, 117, 29);
-		add(btnNewButton);
 	
 		
 		
