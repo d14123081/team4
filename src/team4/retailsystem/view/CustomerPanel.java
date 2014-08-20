@@ -22,6 +22,8 @@ import team4.retailsystem.model.Database;
 
 public class CustomerPanel extends JPanel{
 	
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
 	private JLabel nameLabel;
 	private JLabel addressLabel;
 	private JLabel eMailLabel;
@@ -108,6 +110,9 @@ public class CustomerPanel extends JPanel{
 		 
 	}
 	
+	public void addListener(RetailViewListener r){
+		listeners.add(r);
+	}
 	
 	// **********getters and setters***************
 	
@@ -193,9 +198,14 @@ public class CustomerPanel extends JPanel{
 	    		   	// checks for invalid Email construction
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 	    	    		
-	    	    		Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
+	    	    		/*Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
 	    	    		Database db = Database.getInstance();
-	    	    		db.addCustomer(customer);
+	    	    		db.addCustomer(customer);*/
+	    	    		
+	    	    		//inform RetailViewListeners of the event, pass the information.
+					 	for(RetailViewListener r:listeners){
+					 		r.clickSaveNewCustomer(getNameTF(), getAddressTF(), getEmailTF(), getTelTF());
+					 	}
 	    	    		
 	    	    		//add to customer array/database when functionality available
 	    	    		System.out.println("Customer added to database");
@@ -219,8 +229,16 @@ public class CustomerPanel extends JPanel{
 			
 			// when remove button pressed
 			if(e.getActionCommand().equals("Remove Customer")){
-				Warning w = new Warning();
-				w.RemoveWarning();
+				
+				//inform listeners of the delete customer event
+				for(RetailViewListener r:listeners){
+			 		r.clickDeleteCustomer(Integer.parseInt(getIDTF()));
+			 	}
+				
+				//Warning w = new Warning();
+				//w.RemoveWarning();
+				
+				
 			}
 			
 			//when edit button pressed
@@ -241,6 +259,12 @@ public class CustomerPanel extends JPanel{
 					 	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 					 
 					 	//update database, return to view mode
+					 		
+					 	//inform RetailViewListeners of the event, pass the information.
+					 	for(RetailViewListener r:listeners){
+					 		r.clickUpdateCustomer(getNameTF(), getAddressTF(), getEmailTF(), getTelTF());
+					 	}
+					 		
 	    	    		System.out.println("customer details saved to data base");
 	    	    		setToViewMode();
 					 

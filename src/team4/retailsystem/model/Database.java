@@ -107,7 +107,21 @@ public class Database {
 			return false;
 		}
 	}
+	
+	public void deleteCustomerById(int id){
+		Customer temp = getCustomerById(id);
+		customers.remove(temp);
+	}
 
+	private Customer getCustomerById(int id){
+		for(Customer c:customers){
+			if(c.getID()==id){
+				return c;
+			}
+		}
+		return null;
+	}
+	
 	public boolean deleteSupplier(Supplier s) {
 		try {
 			suppliers.remove(s);

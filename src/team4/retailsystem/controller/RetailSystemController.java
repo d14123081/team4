@@ -49,7 +49,8 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void customersChanged() {
-		// TODO Auto-generated method stub
+		
+		//tell view to display updated customers list
 		
 	}
 
@@ -124,6 +125,25 @@ implements RetailModelListener, RetailViewListener
 		
 		//do something with the value here (update the model or whatever)
 		
+	}
+
+	@Override
+	public void clickUpdateCustomer(String name, String address, String email,
+			String phone) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickSaveNewCustomer(String name, String address, String email,
+			String phone) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickDeleteCustomer(int id) {
+		model.deleteCustomer(id);
 	}
 	
 }

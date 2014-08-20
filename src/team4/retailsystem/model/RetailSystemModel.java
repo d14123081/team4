@@ -93,8 +93,8 @@ public class RetailSystemModel {
 		notifyListeners(CUSTOMERS_CHANGED);
 	}
 	
-	public void deleteCustomer(Customer c){
-		database.deleteCustomer(c);
+	public void deleteCustomer(int id){
+		//database.deleteCustomer(c);
 		notifyListeners(CUSTOMERS_CHANGED);
 	}
 	

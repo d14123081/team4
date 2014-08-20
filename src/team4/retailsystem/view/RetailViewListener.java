@@ -14,4 +14,10 @@ public interface RetailViewListener {
 	public void errorAcknowledged();
 	
 	public void clickTestAdd(String value);
+	
+	public void clickUpdateCustomer(String name, String address, String email, String phone);
+	
+	public void clickSaveNewCustomer(String name, String address, String email, String phone);
+	
+	public void clickDeleteCustomer(int id);
 }
