@@ -46,5 +46,4 @@ public class EncryptionModuleTest {
 		assertNotEquals(password1, digest1);
 		assertNotEquals(password2, digest2);
 	}
-
 }
