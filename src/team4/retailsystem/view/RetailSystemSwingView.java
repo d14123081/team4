@@ -1,9 +1,14 @@
 package team4.retailsystem.view;
 
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,6 +35,13 @@ implements RetailSystemView
 	//An array of RetailViewListeners, to be informed of interface events if required
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	
+	private final static String CUSTOMER = "customer";
+	private final static String INVOICE = "invoice";
+	private final static String ORDER = "order";
+	private final static String PRODUCT = "product";
+	private final static String SUPPLIER = "supplier";
+	private final static String USER = "user";
+	
 	//Buttons for switching between the panels
 	JButton customerButton;
 	JButton invoiceButton;
@@ -38,7 +50,7 @@ implements RetailSystemView
 	JButton supplierButton;
 	JButton userButton;
 	
-	private JPanel contentPane;//The main content frame for the frame, holds everything else
+	private Container contentPane;//The main content frame for the frame, holds everything else
 	private JPanel buttonPanel;//holds the row of buttons at the top
 	private JPanel contentPanel;//holds whichever of the 'panels' it's told to
 	
@@ -61,7 +73,7 @@ implements RetailSystemView
 
 	private void initialiseComponents(){
 		
-		contentPane = new JPanel();
+		contentPane = getContentPane();
 		buttonPanel = new JPanel();
 		contentPanel = new JPanel();
 		
@@ -85,9 +97,10 @@ implements RetailSystemView
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(300, 300, 700, 700);
 		
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 		
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		buttonPanel.add(customerButton);
 		buttonPanel.add(invoiceButton);
 		buttonPanel.add(orderButton);
@@ -96,7 +109,14 @@ implements RetailSystemView
 		buttonPanel.add(userButton);
 		//buttonPanel.add(userPanel);
 		
-		contentPanel.add(customerPanel);
+		contentPanel.setLayout(new CardLayout());
+		contentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		contentPanel.add(customerPanel, CUSTOMER);
+		contentPanel.add(invoicePanel, INVOICE);
+		contentPanel.add(orderPanel, ORDER);
+		//contentPanel.add(productPanel, PRODUCT);
+		contentPanel.add(supplierPanel, SUPPLIER);
+		contentPanel.add(userPanel, USER);
 		
 		contentPane.add(buttonPanel);
 		contentPane.add(contentPanel);
@@ -161,7 +181,7 @@ implements RetailSystemView
 		customerPanel.addListener(listener);
 		invoicePanel.addListener(listener);
 		orderPanel.addListener(listener);
-		productPanel.addListener(listener);
+		//productPanel.addListener(listener);
 		supplierPanel.addListener(listener);
 		userPanel.addListener(listener);
 	}
@@ -180,55 +200,41 @@ implements RetailSystemView
 
 	@Override
 	public void showCustomerEditingScreen() {
-		contentPanel.removeAll();
-		contentPanel.add(customerPanel);
-		this.validate();
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, CUSTOMER);
 	}
 
 	@Override
 	public void showInvoiceEditingScreen() {
-		contentPanel.removeAll();
-		contentPanel.add(invoicePanel);
-		this.validate();
-		
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, INVOICE);
 	}
 
 	@Override
 	public void showOrderEditingScreen() {
-		contentPanel.removeAll();
-		contentPanel.add(orderPanel);
-		this.validate();
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, ORDER);
 	}
 
 	@Override
 	public void showProductEditingScreen() {
-		//TODO: contentPanel is extending a JFrame instead of a panel
-		contentPanel.removeAll();
-		//contentPanel.add(productPanel);
-		this.validate();
+		//((CardLayout)(contentPanel.getLayout())).show(contentPanel, PRODUCT);
 		
 	}
 
 	@Override
 	public void showSupplierEditingScreen() {
-		contentPanel.removeAll();
-		contentPanel.add(supplierPanel);
-		this.validate();
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, SUPPLIER);
 		
+	}
+
+	@Override
+	public void showUserEditingScreen() {
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, USER);
 	}
 
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
 		supplierPanel.displaySuppliers(suppliers);
 	}
-
-	@Override
-	public void showUserEditingScreen() {
-		contentPanel.removeAll();
-		contentPanel.add(userPanel);
-		this.validate();
-	}
-
+	
 	@Override
 	public void showError(String errorMessage) {
 		// TODO Auto-generated method stub
