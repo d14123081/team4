@@ -1,5 +1,12 @@
 package team4.retailsystem.view;
 
+import java.util.ArrayList;
+import java.util.Date;
+
+import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Supplier;
+
 /**
  * An interface to describe the behaviour of any object that is listening to the
  * retail view for events.
@@ -27,8 +34,14 @@ public interface RetailViewListener {
 	public void clickDeleteProduct(int productId);
 	
 	//order panel events
+	public void clickCreateOrder(double cost, ArrayList<LineItem> lineItems, Supplier supplier, int deliveryId);
+	public void clickUpdateOrder(double cost, ArrayList<LineItem> lineItems, Supplier supplier, int deliveryId, Date date);
+	public void clickDeleteOrder(int orderId);
 	
 	//invoice panel events
+	public void clickCreateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
+	public void clickUpdateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
+	public void clickDeleteInvoice(int invoiceId);
 	
 	//user panel events
 	public void clickAddUser(String username, String pass, int authLevel);
