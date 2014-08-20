@@ -18,6 +18,8 @@ import team4.retailsystem.model.Supplier;
 public class SupplierPanel extends JPanel implements ActionListener,
         ListSelectionListener {
 
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
     private JPanel buttonPanel;
     private JScrollPane supplierPanel;
     private JPanel addSupplierPanel;
@@ -41,7 +43,7 @@ public class SupplierPanel extends JPanel implements ActionListener,
             .compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]"
                     + "{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|((["
                     + "a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
-    private Pattern telPattern = Pattern.compile("\\d{7}"); // checking 8
+    private Pattern telPattern = Pattern.compile("\\d{7,10}"); // checking 8
                                                             // digital number
                                                             // only
     private boolean isNewOrder = false;
@@ -50,7 +52,9 @@ public class SupplierPanel extends JPanel implements ActionListener,
 
     private ArrayList<Supplier> suppliers;
 
-    public SupplierPanel() {
+    public SupplierPanel(ArrayList<Supplier> suppliers) {
+    	this.suppliers = suppliers;
+    	
         GridBagLayout gbl = new GridBagLayout();
         setLayout(gbl);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -143,6 +147,10 @@ public class SupplierPanel extends JPanel implements ActionListener,
 
     }
 
+    public void addListener(RetailViewListener r){
+		listeners.add(r);
+	}
+    
     public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
         gbl.setConstraints(panel, gbc);
         this.add(panel);
@@ -188,7 +196,15 @@ public class SupplierPanel extends JPanel implements ActionListener,
         else if (arg0.getSource().equals(finishButton)) {
             if (isNewOrder == true) {
                 if (isCorrectDetail() == true) {
-                    addSupplierToDB();
+                	
+                    //addSupplierToDB();
+                    
+                    //inform listeners of event
+                	for(RetailViewListener r:listeners){
+                		r.clickAddSupplier(nameField.getText(), addressField.getText(),
+                							emailField.getText(), telephoneField.getText());
+                	}
+                	
                     supplierArrayList.add(nameField.getText() + "   ");
                     supplierList.setListData(supplierArrayList.toArray());
                     setInitialConditionForButtons();
@@ -229,6 +245,13 @@ public class SupplierPanel extends JPanel implements ActionListener,
         }
     }
 
+    public void displaySuppliers(ArrayList<Supplier> suppliers){
+    	supplierArrayList.clear();
+    	for (Supplier s : suppliers) {
+            supplierArrayList.add(s.getName() + "   \n");
+        }
+    }
+    
     @Override
     public void valueChanged(ListSelectionEvent arg0) {
         index = supplierList.getSelectedIndex();
@@ -301,8 +324,8 @@ public class SupplierPanel extends JPanel implements ActionListener,
     }
 
     public void addSupplierToDB() {
-        Database.getInstance().addSupplier(
-                new Supplier(nameField.getText(), emailField.getText(),
-                        addressField.getText(), telephoneField.getText()));
+        //Database.getInstance().addSupplier(
+                //new Supplier(nameField.getText(), emailField.getText(),
+                       // addressField.getText(), telephoneField.getText()));
     }
 }

@@ -2,6 +2,7 @@ package team4.retailsystem.view;
 
 import java.util.ArrayList;
 
+import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
 /**
@@ -85,7 +86,7 @@ implements RetailSystemView
 	}
 
 	@Override
-	public void showProductEditingSCreen() {
+	public void showProductEditingScreen() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -111,5 +112,11 @@ implements RetailSystemView
 		for(RetailViewListener r:listeners){
 			r.errorAcknowledged();
 		}
+	}
+
+	@Override
+	public void updateSupplierList(ArrayList<Supplier> suppliers) {
+		// TODO Auto-generated method stub
+		
 	}
 }
