@@ -28,8 +28,8 @@ public class TestPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				for(RetailViewListener r:listeners){
-					r.clickTestAdd(textField.getText());
+				for(RetailViewListener listener:listeners){
+					listener.clickTestAdd(textField.getText());
 				}
 				
 			}
