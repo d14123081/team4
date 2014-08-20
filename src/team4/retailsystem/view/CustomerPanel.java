@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,6 +17,7 @@ import javax.swing.JTextField;
 import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Database;
 
 
 public class CustomerPanel extends JPanel{
@@ -154,21 +156,29 @@ public class CustomerPanel extends JPanel{
 
 	public class TextFieldListener implements ActionListener{
 	    public void actionPerformed(ActionEvent e){
+	    	
+	    	ArrayList<Customer> customers = Database.getInstance().getCustomers();
+	    	for(Customer customer : customers){
+	    		if(customer.getName().equals(nameTF.getText())){
+	    			addressTF.setText(customer.getAddress());
+	    			eMailTF.setText(customer.getEmail());
+	    			idTF.setText(""+customer.getID());
+	    			telTF.setText(customer.getTelephoneNumber());
+	    		}
+	    	}
 	    	System.out.println("put customer information in textfields");
 	    	
-	}
+	    }
 	    
 	}
 	
-	
-	
-	
-	class CRUDListener implements ActionListener{
+		class CRUDListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(e.getActionCommand().equals("Clear fields")){
 				clearTextFields();
 			}
-			if(e.getActionCommand().equals("Create new Customer"))newCustomerMode();
+			if(e.getActionCommand().equals("Create new Customer"))
+				newCustomerMode();
 			 
 			 // save new customer if conditions are met
 	    	if(e.getActionCommand().equals("Save new Customer")){
@@ -184,6 +194,9 @@ public class CustomerPanel extends JPanel{
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 	    	    		
 	    	    		Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
+	    	    		Database db = Database.getInstance();
+	    	    		db.addCustomer(customer);
+	    	    		
 	    	    		//add to customer array/database when functionality available
 	    	    		System.out.println("Customer added to database");
 	    	    		clearTextFields();
@@ -208,7 +221,6 @@ public class CustomerPanel extends JPanel{
 			if(e.getActionCommand().equals("Remove Customer")){
 				Warning w = new Warning();
 				w.RemoveWarning();
-				System.out.println("Customer removed");
 			}
 			
 			//when edit button pressed
