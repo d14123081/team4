@@ -161,7 +161,9 @@ public class RetailSystemModel {
 	}
 	
 	public void updateInvoice(int id, ArrayList<LineItem> lineitems, Customer c){
-		Invoice i = new Invoice(lineitems, c);
+		Invoice i = getInvoiceById(id);
+		i.setLineItems(lineitems);
+		i.setCustomer(c);
 		database.updateInvoice(id, i);
 		notifyListeners(INVOICES_CHANGED);
 	}
