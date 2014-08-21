@@ -363,6 +363,8 @@ public class Database {
 	}
 	
 	private void generateUsers() {
+		addNewUser("admin", "admin", User.ADMINISTRATOR);
+		addNewUser("user", "user", User.NORMAL_USER);
 		addNewUser("Eoin", "nioe", User.ADMINISTRATOR);
 		addNewUser("Szymon", "nomyzs", User.NORMAL_USER);
 		addNewUser("Alan", "nala", User.ADMINISTRATOR);
