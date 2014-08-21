@@ -56,7 +56,7 @@ public interface RetailViewListener {
 	
 	//supplier panel events
 	public void clickAddSupplier(String name, String address, String email, String phone);
-	public void clickUpdateSupplier(String name, String address, String email, String phone);
+	public void clickUpdateSupplier(int id, String name, String address, String email, String phone);
 	public void clickDeleteSupplier(int supplierId);
 	
 }

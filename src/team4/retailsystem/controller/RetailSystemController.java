@@ -48,6 +48,7 @@ implements RetailModelListener, RetailViewListener
 		invoicesChanged();
 		productsChanged();
 		customersChanged();
+		suppliersChanged();
 	}
 	
 	@Override
@@ -208,20 +209,23 @@ implements RetailModelListener, RetailViewListener
 	public void clickAddSupplier(String name, String address, String email,
 			String phone) {
 		model.addSupplier(new Supplier(name, address, email, phone));
-		
 	}
 
 	@Override
-	public void clickUpdateSupplier(String name, String address, String email,
-			String phone) {
-		// TODO Auto-generated method stub
+	public void clickUpdateSupplier(int id, String name, String address, String email, String phone) {
+		Supplier s = model.getSupplierById(id);
+		s.setName(name);
+		s.setAddress(address);
+		s.setEmail(email);
+		s.setTelephone(phone);
 		
+		model.updateSupplier(s);
 	}
 
 	@Override
-	public void clickDeleteSupplier(int supplierId) {
-		// TODO Auto-generated method stub
-		
+	public void clickDeleteSupplier(int id) {
+		Supplier s = model.getSupplierById(id);
+		model.deleteSupplier(s);
 	}
 
 	@Override
