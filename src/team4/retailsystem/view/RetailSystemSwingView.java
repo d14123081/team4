@@ -60,6 +60,7 @@ implements RetailSystemView
 	JButton productButton;
 	JButton supplierButton;
 	JButton userButton;
+	JButton logoutButton;
 	
 	private Container contentPane;//The main content container for the frame, holds everything else
 	private JPanel panelPane;//holds all (except login) panels in CardLayout
@@ -97,6 +98,7 @@ implements RetailSystemView
 		productButton = new JButton("Products");
 		supplierButton = new JButton("Suppliers");
 		userButton = new JButton("Users");
+		logoutButton = new JButton("Logout");
 		
 		loginPanel = new LogInPanel();
 		customerPanel = new CustomerPanel();
@@ -123,6 +125,7 @@ implements RetailSystemView
 		buttonPanel.add(productButton);
 		buttonPanel.add(supplierButton);
 		buttonPanel.add(userButton);
+		buttonPanel.add(logoutButton);
 		//buttonPanel.add(userPanel);
 		
 		contentPanel.setLayout(new CardLayout());
@@ -190,6 +193,14 @@ implements RetailSystemView
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showUserEditingScreen();
+			}
+			
+		});
+		
+		logoutButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showLoginScreen();
 			}
 			
 		});
