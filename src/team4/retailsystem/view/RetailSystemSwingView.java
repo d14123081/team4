@@ -40,7 +40,7 @@ implements RetailSystemView
 	
 	//Frame bounds
 	private static final int BOUNDS_X = 300, BOUNDS_Y = 300;
-	private static final int FRAME_WIDTH = 800, FRAME_HEIGHT = 650;
+	private static final int FRAME_WIDTH = 820, FRAME_HEIGHT = 650;
 	
 	//panel names for CardLayout manager
 	private final static String CUSTOMER = "customer";
