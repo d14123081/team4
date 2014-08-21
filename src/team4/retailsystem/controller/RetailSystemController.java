@@ -150,7 +150,7 @@ implements RetailModelListener, RetailViewListener
 	@Override
 	public void clickSaveNewCustomer(String name, String address, String email,
 			String phone) {
-		// TODO Auto-generated method stub
+		model.addCustomer(new Customer(name, phone, email, address));
 		
 	}
 
