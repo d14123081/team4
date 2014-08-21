@@ -40,7 +40,8 @@ public class InvoicePanel extends JPanel {
 	private JTextField totalCostField;
 	JComboBox customerComboBox;
 	private JTextField idField;
-	JCheckBox chckbxNew;
+	JCheckBox checkboxNew;
+	DefaultTableModel dtm;
 	
 	private DecimalFormat df = new DecimalFormat("0.00");
 
@@ -101,6 +102,7 @@ public class InvoicePanel extends JPanel {
 		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
+		dtm = (DefaultTableModel) invoiceTable.getModel();
 		invoiceTable.getModel().addTableModelListener(new TableModelListener()
 		{
 			@Override
@@ -139,9 +141,9 @@ public class InvoicePanel extends JPanel {
 		invoicePanel.add(idField);
 		idField.setColumns(10);
 
-		chckbxNew = new JCheckBox("New Invoice");
-		chckbxNew.setBounds(338, 7, 97, 23);
-		invoicePanel.add(chckbxNew);
+		checkboxNew = new JCheckBox("New Invoice");
+		checkboxNew.setBounds(338, 7, 97, 23);
+		invoicePanel.add(checkboxNew);
 
 		JPanel productPanel = new JPanel();
 		productPanel.setLayout(null);
@@ -162,7 +164,7 @@ public class InvoicePanel extends JPanel {
 		add(btnAdd);
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (chckbxNew.isSelected() && invoiceTable.getRowCount() > 0) {
+				if (checkboxNew.isSelected() && invoiceTable.getRowCount() > 0) {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
@@ -175,6 +177,7 @@ public class InvoicePanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickCreateInvoice(lineitems, c);
 					}
+					clearInvoice();
 				} else {
 					// throw exception
 				}
@@ -202,6 +205,8 @@ public class InvoicePanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickUpdateInvoice(id, lineitems, c);
 					}
+					clearInvoice();
+					
 				} else {
 					// throw exception
 				}
@@ -220,6 +225,7 @@ public class InvoicePanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickDeleteInvoice(id);
 					}
+					clearInvoice();
 				}
 			}
 		});
@@ -227,16 +233,13 @@ public class InvoicePanel extends JPanel {
 		//Pulls invoice from database
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				chckbxNew.setSelected(false);
+				clearInvoice();
+				checkboxNew.setSelected(false);
 				idField.setText(Integer.toString(((Invoice)invoiceList.getSelectedValue()).getID()));
 				customerComboBox.setSelectedItem(((Invoice)invoiceList.getSelectedValue()).getCustomer());
 				ArrayList<LineItem> lineitems = ((Invoice)invoiceList.getSelectedValue()).getLineItems();
-				DefaultTableModel dtm = (DefaultTableModel) invoiceTable.getModel();
-				int rowCount =dtm.getRowCount();
-				for (int i = 0;i<rowCount;i++) 
-				{
-				    dtm.removeRow(0);
-				}
+				
+				
 				for(LineItem l : lineitems)
 				{	
 					Product product = database.getProductById(l.getProductID());
@@ -248,8 +251,10 @@ public class InvoicePanel extends JPanel {
 		//Adds a product to the table
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				DefaultTableModel dtm = (DefaultTableModel) invoiceTable
-						.getModel();
+				if(idField.getText().equals(""))
+				{
+					checkboxNew.setSelected(true);
+				}
 				dtm.addRow(new Object[] { ((Product)productList.getSelectedValue()).getID(), ((Product)productList.getSelectedValue()).getName(), 1 });
 				invoiceTable.requestFocus();
 				invoiceTable.editCellAt(invoiceTable.getRowCount()-1, 2);
@@ -265,17 +270,11 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 		
-		chckbxNew.addActionListener(new ActionListener(){
+		checkboxNew.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				DefaultTableModel dtm = (DefaultTableModel) invoiceTable.getModel();
-				int rowCount =dtm.getRowCount();
-				for (int i = 0;i<rowCount;i++) 
-				{
-				    dtm.removeRow(0);
-				}
+				clearInvoice();
 				invoiceList.clearSelection();
-				idField.setText(null);
 			}
 			
 		});
@@ -295,5 +294,16 @@ public class InvoicePanel extends JPanel {
 	
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
+	}
+	
+	public void clearInvoice()
+	{
+		dtm = (DefaultTableModel) invoiceTable.getModel();
+		int rowCount =dtm.getRowCount();
+		for (int i = 0;i<rowCount;i++) 
+		{
+		    dtm.removeRow(0);
+		}
+		idField.setText(null);
 	}
 }
