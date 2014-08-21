@@ -90,7 +90,7 @@ public class SupplierPanel extends JPanel implements ActionListener,
         gbc.gridwidth = 1;
         addPanelName("Add & Edit Supplier", addSupplierPanel);
         addPanel(addSupplierPanel, gbl, gbc);
-        addSupplierPanel.setLayout(new GridLayout(9, 0));
+        addSupplierPanel.setLayout(new GridLayout(10, 0));
 
         nameLabel = new JLabel("Name");
         addSupplierPanel.add(nameLabel);
@@ -109,29 +109,22 @@ public class SupplierPanel extends JPanel implements ActionListener,
         emailLabel = new JLabel("Email");
         addSupplierPanel.add(emailLabel);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 0));
         emailField = new JTextField();
-        panel.add(emailField);
-        addSupplierPanel.add(panel);
+        addSupplierPanel.add(emailField);
 
         telephoneLabel = new JLabel("Telephone");
         addSupplierPanel.add(telephoneLabel);
 
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayout(2, 0));
         telephoneField = new JTextField();
-        panel1.add(telephoneField);
-        addSupplierPanel.add(panel1);
+        addSupplierPanel.add(telephoneField);
 
         setEditableForField(false);
 
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayout(1, 2));
-        addSupplierPanel.add(panel2);
+        addSupplierPanel.add(new JPanel());
+        
         finishButton = new JButton("SUBMIT");
         finishButton.addActionListener(this);
-        panel2.add(finishButton);
+        addSupplierPanel.add(finishButton);
 
         getSupplierArrayList();
 
