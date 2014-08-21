@@ -130,6 +130,7 @@ implements RetailSystemView
 		contentPane.add(contentPanel);
 		
 		setContentPane(contentPane);
+		setResizable(false);
 	}
 	
 	private void addButtonListeners(){
@@ -240,7 +241,7 @@ implements RetailSystemView
 
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
-		supplierPanel.displaySuppliers(suppliers);
+		supplierPanel.updateSupplierList(suppliers);
 	}
 	
 	@Override
