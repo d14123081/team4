@@ -10,6 +10,8 @@ import java.security.SecureRandom;
  */
 import java.util.ArrayList;
 
+import team4.retailsystem.utils.EncryptionModule;
+
 public class Database {
 
 	private static Database db = new Database();
@@ -443,46 +445,6 @@ public class Database {
 			}
 		}
 		return new User(User.NO_AUTHORIZATION, "Not authorised", null, null);
-	}
-
-	/**
-	 * Inner class that uses MD5 to generate password digests.
-	 * 
-	 * @author Szymon
-	 */
-	private class EncryptionModule {
-		private MessageDigest md;
-
-		private EncryptionModule() throws NoSuchAlgorithmException {
-			md = MessageDigest.getInstance("MD5");
-		}
-
-		/**
-		 * Returns a random 8-byte salt as a String.
-		 * 
-		 * @return Random 8-byte string.
-		 */
-		private String getRandomSalt() {
-			SecureRandom random = new SecureRandom();
-			byte bytes[] = new byte[8];
-			random.nextBytes(bytes);
-			return new String(bytes);
-		}
-
-		/**
-		 * Returns the password digest, created using the given salt.
-		 * 
-		 * @param password
-		 *            The password to encrypt.
-		 * @param salt
-		 *            The salt used to protect against dictionary attacks.
-		 * @return Password digest as a String.
-		 */
-		private String encrypt(String password, String salt) {
-			md.reset();
-			md.update(salt.getBytes());
-			return new String(md.digest(password.getBytes()));
-		}
 	}
 
 	// Return instance of database
