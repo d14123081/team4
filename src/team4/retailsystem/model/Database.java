@@ -112,15 +112,6 @@ public class Database {
 		Customer temp = getCustomerById(id);
 		customers.remove(temp);
 	}
-
-	private Customer getCustomerById(int id){
-		for(Customer c:customers){
-			if(c.getID()==id){
-				return c;
-			}
-		}
-		return null;
-	}
 	
 	public boolean deleteSupplier(Supplier s) {
 		try {
@@ -185,6 +176,15 @@ public class Database {
 	// Select * from table
 	public ArrayList<Customer> getCustomers() {
 		return customers;
+	}
+	
+	public Customer getCustomerById(int id){
+		for(Customer c:customers){
+			if(c.getID()==id){
+				return c;
+			}
+		}
+		return null;
 	}
 
 	public ArrayList<Supplier> getSuppliers() {
