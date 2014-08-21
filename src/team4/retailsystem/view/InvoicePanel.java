@@ -109,7 +109,8 @@ public class InvoicePanel extends JPanel {
 					double cost=0.0;
 					for(int i = 0; i < invoiceTable.getRowCount(); i++)
 					{
-						cost += ((Product)database.getProductById((int)invoiceTable.getValueAt(i, 0))).getPrice() * (int)invoiceTable.getValueAt(i, 2);
+						Product p = database.getProductById((int)invoiceTable.getValueAt(i, 0));
+						cost += p.getPrice() * (int)invoiceTable.getValueAt(i, 2);
 					}
 					totalCostField.setText(df.format(cost));	
 			}
