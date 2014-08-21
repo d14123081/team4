@@ -141,10 +141,15 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickUpdateCustomer(String name, String address, String email,
+	public void clickUpdateCustomer(int id, String name, String address, String email,
 			String phone) {
-		// TODO Auto-generated method stub
+		Customer c = Database.getInstance().getCustomerById(id);
+		c.setName(name);
+		c.setAddress(address);
+		c.setEmail(email);
+		c.setTelephoneNumber(phone);
 		
+		model.updateCustomer(c);
 	}
 
 	@Override

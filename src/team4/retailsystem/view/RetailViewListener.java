@@ -27,7 +27,7 @@ public interface RetailViewListener {
 	public void doLogin(String username, String password);
 	
 	//customer panel events
-	public void clickUpdateCustomer(String name, String address, String email, String phone);
+	public void clickUpdateCustomer(int id, String name, String address, String email, String phone);
 	public void clickSaveNewCustomer(String name, String address, String email, String phone);
 	public void clickDeleteCustomer(int id);
 	

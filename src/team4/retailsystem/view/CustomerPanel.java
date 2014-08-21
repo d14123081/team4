@@ -3,13 +3,18 @@ package team4.retailsystem.view;
 
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -18,11 +23,21 @@ import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Invoice;
 
 
 public class CustomerPanel extends JPanel{
 	
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
+	private static final String NAME_FIELD = "name";
+	private static final String NAME_COMBO = "combo";
+	
+	private JPanel namePanel;
+	//private JPanel nameFieldPanel;
+	//private JPanel nameComboPanel;
+	
+	JComboBox customerComboBox;
 	
 	private JLabel nameLabel;
 	private JLabel addressLabel;
@@ -49,6 +64,11 @@ public class CustomerPanel extends JPanel{
 		 
 	//	 this.setLayout(this, EAST);
 		
+		 namePanel = new JPanel();
+		 namePanel.setLayout(new CardLayout());
+		 customerComboBox = new JComboBox();
+		 customerComboBox.addActionListener(new ComboBoxListener());
+		 
 		 nameLabel = new JLabel("Name:");
 		 nameLabel.setHorizontalAlignment(PROPERTIES);
 		 addressLabel = new JLabel("Address:");
@@ -88,8 +108,11 @@ public class CustomerPanel extends JPanel{
 		 back.addActionListener(new CRUDListener());
 		 
 		 //adding to components to panel
+		 namePanel.add(customerComboBox,NAME_COMBO);
+		 namePanel.add(nameTF,NAME_FIELD);
+		 
 		 this.add(nameLabel);
-		 this.add(nameTF);
+		 this.add(namePanel);
 		 this.add(addressLabel);
 		 this.add(addressTF);
 		 this.add(eMailLabel);
@@ -155,7 +178,18 @@ public class CustomerPanel extends JPanel{
 	}
 	
 	
-	
+	private class ComboBoxListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Customer customer = ((Customer)customerComboBox.getSelectedItem());
+			addressTF.setText(customer.getAddress());
+			eMailTF.setText(customer.getEmail());
+			idTF.setText(""+customer.getID());
+			telTF.setText(customer.getTelephoneNumber());
+		}
+		
+	}
 	
 	// *********listeners and methods************
 
@@ -262,7 +296,7 @@ public class CustomerPanel extends JPanel{
 					 		
 					 	//inform RetailViewListeners of the event, pass the information.
 					 	for(RetailViewListener r:listeners){
-					 		r.clickUpdateCustomer(getNameTF(), getAddressTF(), getEmailTF(), getTelTF());
+					 		r.clickUpdateCustomer(Integer.parseInt(getIDTF()), getNameTF(), getAddressTF(), getEmailTF(), getTelTF());
 					 	}
 					 		
 	    	    		System.out.println("customer details saved to data base");
@@ -280,6 +314,13 @@ public class CustomerPanel extends JPanel{
 	
 	//default panel view 
 	public void setToViewMode(){
+		
+		//switch the text field for the combobox
+ 		((CardLayout)(namePanel.getLayout())).show(namePanel, NAME_COMBO);
+ 		if(customerComboBox.getItemCount()>0){
+			customerComboBox.setSelectedIndex(customerComboBox.getItemCount()-1);
+		}
+		
 		idTF.setEditable(false);
 		 eMailTF.setEditable(false);
 		 addressTF.setEditable(false);
@@ -306,6 +347,13 @@ public class CustomerPanel extends JPanel{
  	
  	//panel view edit customer
  	public void editCustomerMode(){
+ 		
+ 		//switch the text field for the combobox
+ 		((CardLayout)(namePanel.getLayout())).show(namePanel, NAME_COMBO);
+ 		/*if(customerComboBox.getItemCount()>0){
+			customerComboBox.setSelectedIndex(0);
+		}*/
+ 		
  		idTF.setEditable(false);
 		 eMailTF.setEditable(true);
 		 addressTF.setEditable(true);
@@ -320,6 +368,10 @@ public class CustomerPanel extends JPanel{
  	
  	//panel view new customer 
  	public void newCustomerMode(){
+ 		
+ 		//switch the combobox for the text field
+ 		((CardLayout)(namePanel.getLayout())).show(namePanel, NAME_FIELD);
+ 		
  		 idTF.setEditable(false);
 		 eMailTF.setEditable(true);
 		 nameTF.setEditable(true);
@@ -331,5 +383,13 @@ public class CustomerPanel extends JPanel{
 		 edit.setEnabled(false);
 		 back.setText("back");
  		
+		 clearTextFields();
  	}
+ 	
+ 	public void updateCustomerList(ArrayList<Customer> customers){
+		customerComboBox.setModel(new DefaultComboBoxModel(customers.toArray()));
+		if(customerComboBox.getItemCount()>0){
+			customerComboBox.setSelectedIndex(customerComboBox.getItemCount()-1);
+		}
+	}
 }

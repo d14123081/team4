@@ -262,7 +262,7 @@ implements RetailSystemView
 	@Override
 	public void updateCustomers(ArrayList<Customer> customers) {
 		invoicePanel.updateCustomerList(customers);
-		
+		customerPanel.updateCustomerList(customers);
 	}
 
 }
