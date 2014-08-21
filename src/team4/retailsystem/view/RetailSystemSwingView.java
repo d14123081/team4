@@ -15,7 +15,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
@@ -243,6 +246,22 @@ implements RetailSystemView
 	@Override
 	public void showError(String errorMessage) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateInvoices(ArrayList<Invoice> invoices) {
+		invoicePanel.updateInvoiceList(invoices);
+	}
+
+	@Override
+	public void updateProducts(ArrayList<Product> products) {
+		invoicePanel.updateProductList(products);
+	}
+
+	@Override
+	public void updateCustomers(ArrayList<Customer> customers) {
+		invoicePanel.updateCustomerList(customers);
 		
 	}
 

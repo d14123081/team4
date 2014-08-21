@@ -2,6 +2,9 @@ package team4.retailsystem.view;
 
 import java.util.ArrayList;
 
+import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
@@ -16,6 +19,12 @@ public interface RetailSystemView {
 	public void addRetailViewListener(RetailViewListener listener);
 	
 	public void showLoginScreen();
+	
+	public void updateInvoices(ArrayList<Invoice> invoices);
+	
+	public void updateProducts(ArrayList<Product> products);
+	
+	public void updateCustomers(ArrayList<Customer> customers);
 	
 	public void showMainMenuScreen(User user);
 	

@@ -2,6 +2,9 @@ package team4.retailsystem.view;
 
 import java.util.ArrayList;
 
+import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
@@ -116,6 +119,24 @@ implements RetailSystemView
 
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateInvoices(ArrayList<Invoice> invoices) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateProducts(ArrayList<Product> products) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateCustomers(ArrayList<Customer> customers) {
 		// TODO Auto-generated method stub
 		
 	}

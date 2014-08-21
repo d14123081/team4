@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
@@ -53,7 +54,7 @@ public class InvoicePanel extends JPanel {
 		invoiceListScrollPane.setBounds(10, 11, 138, 252);
 		invoiceListPanel.add(invoiceListScrollPane);
 
-		invoiceList = new JList(database.getInvoices().toArray());
+		invoiceList = new JList();
 		invoiceListScrollPane.setViewportView(invoiceList);
 
 		JPanel invoicePanel = new JPanel();
@@ -63,7 +64,7 @@ public class InvoicePanel extends JPanel {
 		add(invoicePanel);
 		invoicePanel.setLayout(null);
 
-		customerComboBox = new JComboBox(database.getCustomers().toArray());
+		customerComboBox = new JComboBox();
 		customerComboBox.setBounds(10, 243, 138, 20);
 		invoicePanel.add(customerComboBox);
 
@@ -133,7 +134,7 @@ public class InvoicePanel extends JPanel {
 		productScrollPane.setBounds(10, 11, 138, 252);
 		productPanel.add(productScrollPane);
 
-		productList = new JList(database.getProducts().toArray());
+		productList = new JList();
 		productScrollPane.setViewportView(productList);
 
 		JButton btnAdd = new JButton("Add");
@@ -206,6 +207,7 @@ public class InvoicePanel extends JPanel {
 		//Pulls invoice frmo database
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				chckbxNew.setSelected(false);
 				idField.setText(Integer.toString(((Invoice)invoiceList.getSelectedValue()).getID()));
 				customerComboBox.setSelectedItem(((Invoice)invoiceList.getSelectedValue()).getCustomer());
 				ArrayList<LineItem> lineitems = ((Invoice)invoiceList.getSelectedValue()).getLineItems();
@@ -241,6 +243,18 @@ public class InvoicePanel extends JPanel {
 		});
 	}
 
+	public void updateInvoiceList(ArrayList<Invoice> invoices){
+		invoiceList.setListData(invoices.toArray());
+	}
+	
+	public void updateProductList(ArrayList<Product> products){
+		productList.setListData(products.toArray());;
+	}
+	
+	public void updateCustomerList(ArrayList<Customer> customers){
+		customerComboBox.setModel(new DefaultComboBoxModel(customers.toArray()));
+	}
+	
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}

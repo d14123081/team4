@@ -43,6 +43,11 @@ implements RetailModelListener, RetailViewListener
 			r.addRetailViewListener(this);
 			r.showLoginScreen();
 		}
+		
+		//fire change events to populate view for the first time.
+		invoicesChanged();
+		productsChanged();
+		customersChanged();
 	}
 	
 	@Override
@@ -53,21 +58,23 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void customersChanged() {
-		
-		//tell view to display updated customers list
-		
+		for(RetailSystemView v:views){
+			v.updateCustomers(model.getCustomers());
+		}
 	}
 
 	@Override
 	public void invoicesChanged() {
-		// TODO Auto-generated method stub
-		
+		for(RetailSystemView v:views){
+			v.updateInvoices(model.getInvoices());
+		}
 	}
 
 	@Override
 	public void productsChanged() {
-		// TODO Auto-generated method stub
-		
+		for(RetailSystemView v:views){
+			v.updateProducts(model.getProducts());
+		}
 	}
 
 	@Override
