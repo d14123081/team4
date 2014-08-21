@@ -87,6 +87,10 @@ public class LogInPanel extends JPanel implements ActionListener {
         invalidMsg.setVisible(false);
         //panel4.add(invalidMsg,BorderLayout.LINE_START);
         
+        //TODO: Remove this eventually...I'm sick of typing it in.
+        usernameField.setText("admin");
+        passField.setText("admin");
+        
         setVisible(true);
     }
 
