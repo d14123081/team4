@@ -79,7 +79,7 @@ public class Invoice {
 		return id;
 	}
 
-	private void setCustomer(Customer customer) {
+	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
@@ -95,7 +95,7 @@ public class Invoice {
 		this.date = date;
 	}
 
-	private void setLineItems(ArrayList<LineItem> lineItems) {
+	public void setLineItems(ArrayList<LineItem> lineItems) {
 		this.lineItems = lineItems;
 	}
 
