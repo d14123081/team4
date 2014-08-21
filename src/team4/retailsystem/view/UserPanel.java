@@ -115,7 +115,8 @@ public class UserPanel extends JPanel {
 		panel.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (usernameField.getText().equals("")
+				if (idField.getText().equals("")
+						|| usernameField.getText().equals("")
 						|| passwordField.getPassword().length == 0) {
 					// throw exception
 				} else {

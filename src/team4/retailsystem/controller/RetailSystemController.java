@@ -5,7 +5,9 @@ import java.util.Date;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Product;
 import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
 import team4.retailsystem.model.Supplier;
@@ -171,7 +173,7 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickAddUser(String username, String pass, int authLevel) {
+	public void clickCreateUser(String username, String pass, int authLevel) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -234,22 +236,43 @@ implements RetailModelListener, RetailViewListener
 		
 	}
 
-	@Override
-	public void clickCreateInvoice(double cost, ArrayList<LineItem> lineItems,
-			Customer customer, Date date) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clickUpdateInvoice(double cost, ArrayList<LineItem> lineItems,
-			Customer customer, Date date) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void clickDeleteInvoice(int invoiceId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickCreateInvoice(ArrayList<LineItem> lineItems,
+			Customer customer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickUpdateInvoice(ArrayList<LineItem> lineItems,
+			Customer customer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickSelectProduct(Product p) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clickSelectInvoice(Invoice i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void databaseCreateInvoice(double cost,
+			ArrayList<LineItem> lineItems, Customer customer, Date date) {
 		// TODO Auto-generated method stub
 		
 	}

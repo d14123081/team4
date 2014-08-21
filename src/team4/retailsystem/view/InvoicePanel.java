@@ -1,4 +1,9 @@
 package team4.retailsystem.view;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JComboBox;
@@ -11,136 +16,203 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Product;
+import team4.retailsystem.model.User;
 
+import javax.swing.border.EtchedBorder;
+import javax.swing.JList;
 
-public class InvoicePanel extends JPanel 
-{
+public class InvoicePanel extends JPanel {
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-	
-	private Database db = Database.getInstance();
-	private JTable table;
-	private JTable table_1;
-	
-	public InvoicePanel() 
-	{
-		setBounds(10, 88, 665, 296);
+
+	private Database database;
+	JList invoiceList;
+	JList productList;
+	private JTable invoiceTable;
+	private JTextField totalCostField;
+	JComboBox customerComboBox;
+	private JTextField idField;
+	JCheckBox chckbxNew;
+
+	public InvoicePanel() {
 		setLayout(null);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 56, 284, 201);
-		add(scrollPane);
-		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{"", null, null},
-			},
-			new String[] {
-				"Name", "Stock Level", "Price"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class, Double.class
-			};
+		database = Database.getInstance();
+
+		JPanel invoiceListPanel = new JPanel();
+		invoiceListPanel.setLayout(null);
+		invoiceListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		invoiceListPanel.setBounds(10, 11, 159, 274);
+		add(invoiceListPanel);
+
+		JScrollPane invoiceListScrollPane = new JScrollPane();
+		invoiceListScrollPane.setBounds(10, 11, 138, 252);
+		invoiceListPanel.add(invoiceListScrollPane);
+
+		invoiceList = new JList(database.getInvoices().toArray());
+		invoiceListScrollPane.setViewportView(invoiceList);
+
+		JPanel invoicePanel = new JPanel();
+		invoicePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		invoicePanel.setBounds(168, 11, 457, 274);
+		add(invoicePanel);
+		invoicePanel.setLayout(null);
+
+		customerComboBox = new JComboBox(database.getCustomers().toArray());
+		customerComboBox.setBounds(10, 243, 138, 20);
+		invoicePanel.add(customerComboBox);
+
+		JScrollPane invoiceScrollPane = new JScrollPane();
+		invoiceScrollPane.setBounds(10, 45, 437, 187);
+		invoicePanel.add(invoiceScrollPane);
+
+		invoiceTable = new JTable();
+		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Product ID", "Product Name", "Quantity" }) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class,
+					Integer.class };
+
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
-			boolean[] columnEditables = new boolean[] {
-				false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+		});
+
+		invoiceScrollPane.setViewportView(invoiceTable);
+
+		totalCostField = new JTextField();
+		totalCostField.setEditable(false);
+		totalCostField.setBounds(361, 243, 86, 20);
+		invoicePanel.add(totalCostField);
+		totalCostField.setColumns(10);
+
+		JLabel lblTotalCost = new JLabel("Total Cost:");
+		lblTotalCost.setBounds(275, 246, 75, 14);
+		invoicePanel.add(lblTotalCost);
+
+		JLabel lblInvoiceId = new JLabel("Invoice ID:");
+		lblInvoiceId.setBounds(10, 11, 63, 14);
+		invoicePanel.add(lblInvoiceId);
+
+		idField = new JTextField();
+		idField.setEditable(false);
+		idField.setBounds(72, 8, 123, 20);
+		invoicePanel.add(idField);
+		idField.setColumns(10);
+
+		chckbxNew = new JCheckBox("New Invoice");
+		chckbxNew.setBounds(338, 7, 97, 23);
+		invoicePanel.add(chckbxNew);
+
+		JPanel productPanel = new JPanel();
+		productPanel.setLayout(null);
+		productPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		productPanel.setBounds(624, 11, 159, 274);
+		add(productPanel);
+
+		JScrollPane productScrollPane = new JScrollPane();
+		productScrollPane.setBounds(10, 11, 138, 252);
+		productPanel.add(productScrollPane);
+
+		productList = new JList(database.getProducts().toArray());
+		productScrollPane.setViewportView(productList);
+
+		JButton btnAdd = new JButton("Add");
+		btnAdd.setBounds(205, 296, 89, 23);
+		add(btnAdd);
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxNew.isSelected() && invoiceTable.getRowCount() > 0) {
+					Customer c = (Customer) customerComboBox.getSelectedItem();
+					ArrayList<LineItem> lineitems = new ArrayList<>();
+					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
+						lineitems.add(new LineItem((int) invoiceTable
+								.getValueAt(i, 0), (int) invoiceTable
+								.getValueAt(i, 2)));
+					}
+					for (RetailViewListener r : listeners) {
+						r.clickCreateInvoice(lineitems, c);
+					}
+				} else {
+					// throw exception
+				}
+
 			}
 		});
-		table.getColumnModel().getColumn(0).setResizable(false);
-		table.getColumnModel().getColumn(1).setResizable(false);
-		table.getColumnModel().getColumn(2).setResizable(false);
-		scrollPane.setViewportView(table);
-		
-		JButton button = new JButton(">");
-		button.setBounds(304, 143, 57, 23);
-		add(button);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(371, 56, 284, 201);
-		add(scrollPane_1);
-		
-		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"Name", "Amount", "Total Cost"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class, Double.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				false, true, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.setBounds(304, 296, 89, 23);
+		add(btnUpdate);
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!idField.getText().equals("")
+						&& invoiceTable.getRowCount() > 0) {
+					Customer c = (Customer) customerComboBox.getSelectedItem();
+					ArrayList<LineItem> lineitems = new ArrayList<>();
+					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
+						lineitems.add(new LineItem((int) invoiceTable
+								.getValueAt(i, 0), (int) invoiceTable
+								.getValueAt(i, 2)));
+					}
+					for (RetailViewListener r : listeners) {
+						r.clickUpdateInvoice(lineitems, c);
+					}
+				} else {
+					// throw exception
+				}
 			}
 		});
-		table_1.getColumnModel().getColumn(0).setResizable(false);
-		table_1.getColumnModel().getColumn(1).setResizable(false);
-		table_1.getColumnModel().getColumn(2).setResizable(false);
-		scrollPane_1.setViewportView(table_1);
-		
+
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBounds(403, 296, 89, 23);
+		add(btnDelete);
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (idField.getText().equals("")) {
+					// throw exception
+				} else {
+					int id = Integer.parseInt(idField.getText());
+					for (RetailViewListener r : listeners) {
+						r.clickDeleteInvoice(id);
+					}
+				}
+			}
+		});
+
+		invoiceList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				Invoice i = (Invoice) invoiceList.getSelectedValue();
+				for (RetailViewListener r : listeners) {
+					r.clickSelectInvoice(i);
+				}
+			}
+		});
+
+		productList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				Product p = (Product) productList.getSelectedValue();
+				for (RetailViewListener r : listeners) {
+					r.clickSelectProduct(p);
+				}
+			}
+		});
+
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(566, 268, 89, 23);
+		btnCancel.setBounds(502, 296, 89, 23);
 		add(btnCancel);
-		
-		JButton btnCreate = new JButton("Submit");
-		btnCreate.setBounds(470, 268, 89, 23);
-		add(btnCreate);
-		
-		JButton btnClear = new JButton("Clear");
-		btnClear.setBounds(371, 268, 89, 23);
-		add(btnClear);
-		
-		JLabel lblCustomer = new JLabel("Customer:");
-		lblCustomer.setBounds(371, 27, 74, 14);
-		add(lblCustomer);
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(453, 24, 89, 20);
-		add(comboBox);
-		
-		JLabel lblSupplier = new JLabel("Supplier:");
-		lblSupplier.setBounds(10, 27, 60, 14);
-		add(lblSupplier);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(80, 24, 89, 20);
-		add(comboBox_1);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Cancel button
+			}
+		});
 	}
-	
-	public void addListener(RetailViewListener r){
+
+	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}
 }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
@@ -40,14 +42,19 @@ public interface RetailViewListener {
 	public void clickDeleteOrder(int orderId);
 	
 	//invoice panel events
-	public void clickCreateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
-	public void clickUpdateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
+	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer);
+	public void clickUpdateInvoice(ArrayList<LineItem> lineItems, Customer customer); //put func to change cost/date in method?
 	public void clickDeleteInvoice(int invoiceId);
+	
+	public void clickSelectProduct(Product p);
+	public void clickSelectInvoice(Invoice i);
+	public void databaseCreateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
 	
 	//user panel events
 	public void clickCreateUser(String username, String pass, int authLevel);
 	public void clickUpdateUser(String username, String pass, int authLevel);
 	public void clickDeleteUser(int userId);
+	
 	public void clickSelectUser(User u);
 	
 	//deliver panel events

@@ -118,4 +118,9 @@ public class Invoice {
 		}
 		return totalCost;
 	}
+	
+	public String toString()
+	{
+		return new String("Invoice No. " + id);
+	}
 }
