@@ -106,14 +106,12 @@ implements RetailModelListener, RetailViewListener
 		
 		//check auth level here, decide what to do/show next
 		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
-			System.out.println("NO AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showError("Unable to authorise user: "+username);
 			}
 		}
 		else
 		{
-			System.out.println("AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showMainMenuScreen(user);
 			}
