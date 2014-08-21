@@ -35,6 +35,11 @@ implements RetailSystemView
 	//An array of RetailViewListeners, to be informed of interface events if required
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	
+	//Frame bounds
+	private static final int BOUNDS_X = 300, BOUNDS_Y = 300;
+	private static final int FRAME_WIDTH = 800, FRAME_HEIGHT = 650;
+	
+	//panel names for CardLayout manager
 	private final static String CUSTOMER = "customer";
 	private final static String INVOICE = "invoice";
 	private final static String ORDER = "order";
@@ -52,7 +57,7 @@ implements RetailSystemView
 	
 	private Container contentPane;//The main content frame for the frame, holds everything else
 	private JPanel buttonPanel;//holds the row of buttons at the top
-	private JPanel contentPanel;//holds whichever of the 'panels' it's told to
+	private JPanel contentPanel;//holds whichever of the 'panels' it's told to by CardLayout manager
 	
 	//The main panel views, currently one for each aspect of the system.
 	private CustomerPanel customerPanel;
@@ -95,7 +100,7 @@ implements RetailSystemView
 	private void constructView(){
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(300, 300, 700, 700);
+		setBounds(BOUNDS_X, BOUNDS_Y, FRAME_WIDTH, FRAME_HEIGHT);
 		
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 		
