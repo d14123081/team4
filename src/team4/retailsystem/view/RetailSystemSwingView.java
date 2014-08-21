@@ -239,6 +239,12 @@ implements RetailSystemView
 			supplierButton.setVisible(false);
 			showInvoiceEditingScreen();
 		}
+		else if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
+			userButton.setVisible(true);
+			customerButton.setVisible(true);
+			supplierButton.setVisible(true);
+			showCustomerEditingScreen();
+		}
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
 	}
 
