@@ -283,10 +283,10 @@ public class Database {
 		}
 	}
 
-	public boolean updateInvoice(Invoice inv) {
+	public boolean updateInvoice(int id, Invoice inv) {
 		try {
 			for (Invoice i : invoices) {
-				if (i.getID() == inv.getID()) {
+				if (i.getID() == id) {
 					i = inv;
 					return true;
 				}

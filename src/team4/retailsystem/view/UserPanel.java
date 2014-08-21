@@ -15,25 +15,24 @@ import team4.retailsystem.model.Database;
 import team4.retailsystem.model.User;
 
 public class UserPanel extends JPanel {
-	
+
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-	
+
 	JTextField usernameTextField;
 	JTextField idTextField;
 	Database database;
 	ArrayList<User> users = new ArrayList<>();
-	JTextField usernameField;
-	JTextField idField;
-	JList list;
-	JComboBox authLevelComboBox;
+	JList userList;
+	private JTextField idField;
+	private JTextField usernameField;
+	private JPasswordField passwordField;
+	final JComboBox authComboBox;
 
 	public UserPanel() {
-		setBounds(10, 88, 665, 296);
+		setBounds(10, 88, 556, 296);
 		setLayout(null);
 		database = Database.getInstance();
 		users = database.getUsers();
-
-		list = new JList(users.toArray());
 		JPanel userListPanel = new JPanel();
 		userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
 				null));
@@ -41,118 +40,140 @@ public class UserPanel extends JPanel {
 		add(userListPanel);
 		userListPanel.setLayout(null);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 47, 138, 216);
+		scrollPane.setBounds(10, 11, 138, 252);
 		userListPanel.add(scrollPane);
-		scrollPane.setViewportView(list);
-		list.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 
-		JPanel userDetailsPanel = new JPanel();
-		userDetailsPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-				null));
-		userDetailsPanel.setBounds(171, 11, 191, 118);
-		add(userDetailsPanel);
-		userDetailsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		userList = new JList(users.toArray());
+		scrollPane.setViewportView(userList);
+		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 
-		JLabel idLabel = new JLabel("User ID No:");
-		idLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		userDetailsPanel.add(idLabel);
+		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel.setBounds(166, 11, 380, 274);
+		add(panel);
+		panel.setLayout(null);
+
+		JLabel lblUserId = new JLabel("User ID:");
+		lblUserId.setBounds(10, 16, 46, 14);
+		panel.add(lblUserId);
 
 		idField = new JTextField();
-		userDetailsPanel.add(idField);
 		idField.setEditable(false);
+		idField.setBounds(85, 8, 281, 30);
+		panel.add(idField);
 		idField.setColumns(10);
 
-		JLabel usernameLabel = new JLabel("Username:");
-		userDetailsPanel.add(usernameLabel);
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setBounds(10, 75, 58, 14);
+		panel.add(lblUsername);
+
+		JLabel lblAuthLevel = new JLabel("Auth. Level:");
+		lblAuthLevel.setBounds(10, 133, 67, 14);
+		panel.add(lblAuthLevel);
 
 		usernameField = new JTextField();
-		userDetailsPanel.add(usernameField);
 		usernameField.setColumns(10);
+		usernameField.setBounds(85, 67, 281, 30);
+		panel.add(usernameField);
 
-		JLabel authorizationLabel = new JLabel("User level:");
-		userDetailsPanel.add(authorizationLabel);
-
-		authLevelComboBox = new JComboBox();
-		userDetailsPanel.add(authLevelComboBox);
-		authLevelComboBox.setModel(new DefaultComboBoxModel(new String[] {
+		authComboBox = new JComboBox();
+		authComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Normal User", "Administrator" }));
+		authComboBox.setBounds(85, 125, 281, 30);
+		panel.add(authComboBox);
 
-		list.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				idField.setText(Integer.toString(((User) list
-						.getSelectedValue()).getID()));
-				usernameField.setText(((User) list.getSelectedValue())
-						.getUsername());
-				if (((User) list.getSelectedValue()).getAuthorizationLevel() == 1) {
-					authLevelComboBox.setSelectedIndex(0);
+		passwordField = new JPasswordField();
+		passwordField.setBounds(85, 184, 281, 30);
+		panel.add(passwordField);
+
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(10, 192, 58, 14);
+		panel.add(lblPassword);
+
+		JButton btnAdd = new JButton("Add");
+		btnAdd.setBounds(16, 240, 80, 23);
+		panel.add(btnAdd);
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (usernameField.getText().equals("")
+						|| passwordField.getPassword().length == 0) {
+					// throw exception
 				} else {
-					authLevelComboBox.setSelectedIndex(1);
+					String username = usernameField.getText();
+					String password = passwordField.getPassword().toString();
+					int authLevel = authComboBox.getSelectedIndex() + 1;
+
+					for (RetailViewListener r : listeners) {
+						r.clickCreateUser(username, password, authLevel);
+					}
 				}
 			}
 		});
-
-		JButton btnResetPin = new JButton("Reset User Pin");
-		userDetailsPanel.add(btnResetPin);
-		btnResetPin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// needs to be discussed with group
-			}
-		});
-
-		JButton btnAddUser = new JButton("Add User");
-		btnAddUser.setBounds(10, 11, 138, 23);
-		btnAddUser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				//get name, pass, authLevel
-				
-				//call listeners
-				for(RetailViewListener r:listeners){
-					//r.clickAddUser(username, pass, authLevel);
-				}
-				
-				/*database.addUser(new User());
-				users = database.getUsers();
-				list.setListData(users.toArray());*/
-			}
-		});
-		userListPanel.add(btnAddUser);
 
 		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(179, 262, 89, 23);
+		btnUpdate.setBounds(106, 240, 80, 23);
+		panel.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (idField.getText() != "") {
-					database.getUsers()
-							.get(Integer.parseInt(idField.getText()) - 1)
-							.setUsername(usernameField.getText());
-					database.getUsers()
-							.get(Integer.parseInt(idField.getText()) - 1)
-							.setAuthorizationLevel(
-									authLevelComboBox.getSelectedIndex() + 1);
+				if (idField.getText().equals("")
+						|| usernameField.getText().equals("")
+						|| passwordField.getPassword().length == 0) {
+					// throw exception
+				} else {
+					String username = usernameField.getText();
+					String password = passwordField.getPassword().toString();
+					int authLevel = authComboBox.getSelectedIndex() + 1;
+
+					for (RetailViewListener r : listeners) {
+						r.clickUpdateUser(username, password, authLevel);
+					}
 				}
 			}
 		});
-		add(btnUpdate);
 
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(273, 262, 89, 23);
+		btnDelete.setBounds(196, 240, 80, 23);
+		panel.add(btnDelete);
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (idField.getText() != "") {
-					database.deleteUser(database.getUsers().get(
-							Integer.parseInt(idField.getText()) - 1));
-					idField.setText("");
-					usernameField.setText("");
-					users = database.getUsers();
-					list.setListData(users.toArray());
+				if (idField.getText().equals("")) {
+					// throw exception
+				} else {
+					int userId = Integer.parseInt(idField.getText());
+					for (RetailViewListener r : listeners) {
+						r.clickDeleteUser(userId);
+					}
 				}
 			}
 		});
-		add(btnDelete);
+
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(286, 240, 80, 23);
+		panel.add(btnCancel);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Cancel button
+			}
+		});
+
+		userList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				idField.setText(Integer.toString(((User)userList.getSelectedValue()).getID()));
+				usernameField.setText(((User)userList.getSelectedValue()).getUsername());
+				if(((User)userList.getSelectedValue()).getAuthorizationLevel() == 1)
+				{
+					authComboBox.setSelectedIndex(0);
+				}
+				else
+				{
+					authComboBox.setSelectedIndex(1);
+				}
+				//passwordField.setText(((User)userList.getSelectedValue()).getPassword()); obviously not how its meant to be.. unsure about passwords
+			}
+		});
 	}
-	
-	public void addListener(RetailViewListener r){
+
+	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}
 }
