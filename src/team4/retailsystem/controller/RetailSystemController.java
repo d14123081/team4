@@ -195,9 +195,13 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickUpdateUser(String username, String pass, int authLevel) {
-		// TODO Auto-generated method stub
+	public void clickUpdateUser(int id, String username, String pass, int authLevel) {
 		
+		User u = model.getUserById(id);
+		u.setUsername(username);
+		
+		//TODO: password needs to be encrypted before setting it in the object.
+		//Refactor encryption class from Database to separate utils package maybe.
 	}
 
 	@Override

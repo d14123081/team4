@@ -118,12 +118,13 @@ public class UserPanel extends JPanel {
 						|| passwordField.getPassword().length == 0) {
 					// throw exception
 				} else {
+					int id = Integer.parseInt(idField.getText());
 					String username = usernameField.getText();
 					String password = passwordField.getPassword().toString();
 					int authLevel = authComboBox.getSelectedIndex() + 1;
 
 					for (RetailViewListener r : listeners) {
-						r.clickUpdateUser(username, password, authLevel);
+						r.clickUpdateUser(id, username, password, authLevel);
 					}
 				}
 			}

@@ -49,7 +49,7 @@ public interface RetailViewListener {
 	
 	//user panel events
 	public void clickCreateUser(String username, String pass, int authLevel);
-	public void clickUpdateUser(String username, String pass, int authLevel);
+	public void clickUpdateUser(int id, String username, String pass, int authLevel);
 	public void clickDeleteUser(int userId);
 	
 	//deliver panel events
