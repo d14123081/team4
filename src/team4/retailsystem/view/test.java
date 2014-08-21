@@ -1,5 +1,7 @@
 package team4.retailsystem.view;
 
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 import team4.retailsystem.model.Database;
@@ -13,7 +15,7 @@ public class test extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Log In Frame");
 
-        this.setContentPane(new LogInPanel());
+        this.setContentPane(new productPanel());
 
         this.setVisible(true);
     }

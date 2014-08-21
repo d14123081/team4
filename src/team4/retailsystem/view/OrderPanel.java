@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
@@ -18,27 +20,44 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
 
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	
-    private JPanel buttonPanel1;
+	private JPanel buttonPanel1;
     private JScrollPane orderListPanel;
     private JPanel combinePanel;
+    private JPanel orderPanel;
+    private JPanel totalPricePanel;
     private JScrollPane supplierPanel;
     private JScrollPane productPanel;
     private JButton newOrderButton;
     private JButton viewOrderedButton;
     private JButton makeOrderButton;
     private JButton editItemButton;
-    private JButton deleteItemButton;
-
+    private JButton removeItemButton;
+    private JLabel totalLabel;
+    private JTextField totalField;
+    
     private JList<Object> itemList;
     private JList<Object> supplierList;
     private JList<Object> productList;
     
     private JTable itemTable;
-    private ArrayList<Supplier> suppliers;
-    private ArrayList<Product> products;
-    private ArrayList<String> supplierArrayList;
-    private ArrayList<String> productArrayList;
+    private DefaultTableModel model;
+    private ArrayList<Supplier> suppliers = new ArrayList<>();
+    private ArrayList<Product> products = new ArrayList<>();
+    private ArrayList<String> supplierArrayList = new ArrayList<>();
+    private ArrayList<String> productArrayList = new ArrayList<>();
+    private ArrayList<LineItem> itemsArrayList = new ArrayList<>();
+    private ArrayList[][] itemsList = new ArrayList[0][0];;
+    private String[] columnNames = {"Item name", "Quantity", "Price per item"};
+    
+    private boolean isNewOrder = false;
+    private boolean isEditOrder = false;
+    private boolean isRemoveOrder = false;
+    private boolean isSelected = false;
+    
+    private double total = 0;
+    private double cost = 0;
 
+    private int index;
     
     public OrderPanel() {
         // TODO Auto-generated constructor stub
@@ -60,26 +79,73 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         buttonPanel1.add(newOrderButton,gbc);
         newOrderButton.addActionListener(this);
         
-        makeOrderButton = new JButton("Order");
-        buttonPanel1.add(makeOrderButton,gbc);
-        makeOrderButton.addActionListener(this);
+        editItemButton = new JButton("Edit");
+        editItemButton.addActionListener(this);
+        buttonPanel1.add(editItemButton);
         
+        removeItemButton = new JButton("Remove");
+        removeItemButton.addActionListener(this);
+        buttonPanel1.add(removeItemButton);
+               
         viewOrderedButton = new JButton("Orders");
         buttonPanel1.add(viewOrderedButton,gbc);
         viewOrderedButton.addActionListener(this);
         
-        
-        orderListPanel = new JScrollPane();
-        gbc.weightx = 1.8;
+        orderPanel = new JPanel();
+        gbc.weightx = 1.6;
         gbc.weighty = 2.0;
         gbc.gridy = 1;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         gbc.gridwidth = 1;
+        addPanel(orderPanel, gbl, gbc);
+        
+        GridBagLayout gbl1 = new GridBagLayout();
+        orderPanel.setLayout(gbl1);
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.fill = GridBagConstraints.BOTH;
+        
+        model = new DefaultTableModel(itemsList,columnNames);
+        itemTable = new JTable(model);
+        setItemTableSize();
+        itemTable.setEnabled(false);
+        itemTable.setRowHeight(30);
+        itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        itemTable.getSelectionModel().addListSelectionListener(this);
+        orderListPanel = new JScrollPane(itemTable);
+        
+        gbc1.gridx = 0;
+        gbc1.gridy = 0;
+        gbc1.weighty = 6.0;
+        gbc1.weightx = 1;
+        gbc1.gridwidth = 1;
         addPanelName("Order Items List", orderListPanel);
-        addScrollPane(orderListPanel, gbl, gbc);
+        addScrollPane(orderListPanel, gbl1, gbc1);
+        orderPanel.add(orderListPanel);
+        
+        totalPricePanel = new JPanel();
+        gbc1.gridy = 1;
+        gbc1.weighty = 1.0;
+        addPanel(totalPricePanel, gbl1, gbc1);
+        orderPanel.add(totalPricePanel);
+        totalPricePanel.setLayout(new BorderLayout(20, 20));
+        
+        makeOrderButton = new JButton("Submit");
+        makeOrderButton.addActionListener(this);
+        totalPricePanel.add(makeOrderButton, BorderLayout.LINE_START);
+        
+        totalLabel = new JLabel("Total Price: ");
+        totalLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        totalPricePanel.add(totalLabel, BorderLayout.CENTER);
+        
+        totalField = new JTextField("0.0",10);
+        totalField.setHorizontalAlignment(JTextField.RIGHT);
+        totalField.setBorder(null);
+        totalField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        totalField.setEditable(false);
+        totalPricePanel.add(totalField, BorderLayout.LINE_END);
         
         combinePanel = new JPanel();
-        gbc.weightx = 1.2;
+        gbc.weightx = 1.4;
         gbc.weighty = 2.0;
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -97,8 +163,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         supplierPanel = new JScrollPane(supplierList);
         addPanelName("Suppliers", supplierPanel);
         combinePanel.add(supplierPanel);
-        supplierList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        supplierList.getSelectionModel().addListSelectionListener(this);
+
         
         getProductArrayList();
         productList = new JList<Object>(productArrayList.toArray());
@@ -111,16 +176,12 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         productPanel = new JScrollPane(productList);
         addPanelName("Products", productPanel);
         combinePanel.add(productPanel);
-        productList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        productList.getSelectionModel().addListSelectionListener(this);
-        
+
+        supplierList.setEnabled(false);
+        productList.setEnabled(false);
         
         this.setVisible(true);
     }
-    
-    public void addListener(RetailViewListener r){
-		listeners.add(r);
-	}
 
     public void addPanel(JPanel panel, GridBagLayout gbl,GridBagConstraints gbc){
         gbl.setConstraints(panel, gbc);
@@ -142,24 +203,63 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     }
     @Override
     public void valueChanged(ListSelectionEvent arg0) {
-        // TODO Auto-generated method stub
-        if(arg0.getSource().equals(supplierList)){
+        if(isNewOrder == true){
+            if(supplierList.getValueIsAdjusting()){
+                productArrayList.clear();
+                index = supplierList.getSelectedIndex();
+                Supplier supplier = Database.getInstance().getSuppliers().get(index);
+                productArrayList = new ArrayList<>();
+                for(Product p : products){
+                    if(p.getSupplier().equals(supplier)){
+                        productArrayList.add(p.getName() + "   ");
+                    }
+                }
+                productList.setListData(productArrayList.toArray());
+            }
             
+            else if(productList.getValueIsAdjusting()){
+                for(Product product : products){
+                    if(productList.getSelectedValue().toString().equals(product.getName()+"   ")){
+                        cost = product.getCost();
+                        Object[] item = {productList.getSelectedValue().toString(), 1 , cost};
+                        itemsArrayList.add(new LineItem(product.getID(), 1));
+                        total = total + cost;
+                        totalField.setText(toString().valueOf(total));
+                        model.addRow(item);
+                        //productList.clearSelection();
+                        break;
+                    }
+                }
+               
+            }
         }
-        else if(arg0.getSource().equals(productList)){
+        else if(isEditOrder == true){
+           ExtraPanel p = new ExtraPanel();
+           String t = p.ExtraEditPanel();
+           warmingMsg(t);
+        }
+               
+        else if(itemTable.getSelectionModel().getValueIsAdjusting()){
+            isSelected = true;  
+            warmingMsg("hehr");
+        }
+        
+        else
+            warmingMsg("Please Select New Order to adding items");
             
-        }
-        else if(arg0.getSource().equals(itemList)){
-            
-        }
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
         // TODO Auto-generated method stub
         if(arg0.getSource().equals(newOrderButton)){
-            itemList.removeAll();
-            
+            initialCondition();
+            model.setDataVector(null, columnNames);
+            setItemTableSize();
+            isNewOrder = true;
+            supplierList.setEnabled(true);
+            productList.setEnabled(true);
+            itemTable.setEnabled(true);
         }
         
         else if(arg0.getSource().equals(viewOrderedButton)){
@@ -167,15 +267,33 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         }
         
         else if(arg0.getSource().equals(editItemButton)){
-            
+            if(isSelected == true){
+                isEditOrder = true;
+            }
+            else
+                warmingMsg("Please select item to edit");
         }
         
-        else if(arg0.getSource().equals(deleteItemButton)){
+        else if(arg0.getSource().equals(removeItemButton)){
             
         }
         
         else if(arg0.getSource().equals(makeOrderButton)){
+            if(isNewOrder == true && isEditOrder == false){
+                //Database.getInstance().addOrder(new Order(total, supplier, deliveryID, itemsArrayList));
+                initialCondition();
+                getSupplierArrayList();
+                getProductArrayList();
+                supplierList.setEnabled(false);
+                productList.setEnabled(false);
+                itemTable.setEnabled(false);
+            }
             
+            else if(isEditOrder == true){
+                
+            }
+            else
+                warmingMsg("Please select New Order, Edit or Remove button");
         }
         
         
@@ -183,17 +301,39 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
 
     public void getSupplierArrayList() {
         suppliers = Database.getInstance().getSuppliers();
-        supplierArrayList = new ArrayList<>();
+        supplierArrayList.clear();
         for (Supplier s : suppliers) {
-            supplierArrayList.add(s.getName() + "   \n");
+            supplierArrayList.add(s.getName() + "   ");
         }
     }
     
     public void getProductArrayList() {
         products = Database.getInstance().getProducts();
-        productArrayList = new ArrayList<>();
+        productArrayList.clear();
         for (Product p : products) {
-            productArrayList.add(p.getName() + "   \n");
+            productArrayList.add(p.getName() + "   ");
         }
+    }
+    
+    public void getItemArrayList(){
+        
+    }
+    
+    public void warmingMsg(String msg) {
+        JOptionPane.showMessageDialog(new JFrame(), msg, "Warming",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void initialCondition(){
+        isNewOrder = false;
+        isEditOrder = false;
+        isRemoveOrder = false;
+        isSelected = false;
+    }
+    
+    public void setItemTableSize(){
+        itemTable.getColumnModel().getColumn(1).setMaxWidth(60);
+        itemTable.getColumnModel().getColumn(2).setMinWidth(100);
+        itemTable.getColumnModel().getColumn(2).setMaxWidth(100);
     }
 }
