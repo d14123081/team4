@@ -21,7 +21,6 @@ public class UserPanel extends JPanel {
 	JTextField usernameTextField;
 	JTextField idTextField;
 	Database database;
-	ArrayList<User> users = new ArrayList<>();
 	JList userList;
 	private JTextField idField;
 	private JTextField usernameField;
@@ -32,7 +31,6 @@ public class UserPanel extends JPanel {
 		setBounds(10, 88, 556, 296);
 		setLayout(null);
 		database = Database.getInstance();
-		users = database.getUsers();
 		JPanel userListPanel = new JPanel();
 		userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
 				null));
@@ -43,7 +41,7 @@ public class UserPanel extends JPanel {
 		scrollPane.setBounds(10, 11, 138, 252);
 		userListPanel.add(scrollPane);
 
-		userList = new JList(users.toArray());
+		userList = new JList();
 		scrollPane.setViewportView(userList);
 		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 
@@ -173,6 +171,10 @@ public class UserPanel extends JPanel {
 		});
 	}
 
+	public void updateUserList(ArrayList<User> users){
+		userList.setListData(users.toArray());
+	}
+	
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}
