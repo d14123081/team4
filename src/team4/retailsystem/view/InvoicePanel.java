@@ -145,7 +145,11 @@ public class InvoicePanel extends JPanel {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-						lineitems.add(new LineItem((int) invoiceTable.getValueAt(i, 0), (int) invoiceTable.getValueAt(i, 2)));
+						
+						int productId = (int)invoiceTable.getValueAt(i, 0);
+						int quantity =  (int)invoiceTable.getValueAt(i, 2);
+						
+						lineitems.add(new LineItem(productId, quantity));
 					}
 					for (RetailViewListener r : listeners) {
 						r.clickCreateInvoice(lineitems, c);
@@ -168,9 +172,11 @@ public class InvoicePanel extends JPanel {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-						lineitems.add(new LineItem((int) invoiceTable
-								.getValueAt(i, 0), (int) invoiceTable
-								.getValueAt(i, 2)));
+						
+						int productId = (int)invoiceTable.getValueAt(i, 0);
+						int quantity =  (int)invoiceTable.getValueAt(i, 2);
+						
+						lineitems.add(new LineItem(productId, quantity));
 					}
 					for (RetailViewListener r : listeners) {
 						r.clickUpdateInvoice(id, lineitems, c);
