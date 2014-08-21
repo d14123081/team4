@@ -12,10 +12,10 @@ import javax.swing.table.DefaultTableModel;
 
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.LineItem;
-import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 
+@SuppressWarnings("serial")
 public class OrderPanel extends JPanel implements ListSelectionListener, ActionListener {
 
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
@@ -28,14 +28,12 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     private JScrollPane supplierPanel;
     private JScrollPane productPanel;
     private JButton newOrderButton;
-    private JButton viewOrderedButton;
     private JButton makeOrderButton;
     private JButton editItemButton;
     private JButton removeItemButton;
     private JLabel totalLabel;
     private JTextField totalField;
     
-    private JList<Object> itemList;
     private JList<Object> supplierList;
     private JList<Object> productList;
     
@@ -46,12 +44,11 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     private ArrayList<String> supplierArrayList = new ArrayList<>();
     private ArrayList<String> productArrayList = new ArrayList<>();
     private ArrayList<LineItem> itemsArrayList = new ArrayList<>();
-    private ArrayList[][] itemsList = new ArrayList[0][0];;
+    private Object[][] itemsList = new ArrayList[0][0];;
     private String[] columnNames = {"Item name", "Quantity", "Price per item"};
     
     private boolean isNewOrder = false;
     private boolean isEditOrder = false;
-    private boolean isRemoveOrder = false;
     private boolean isSelected = false;
     
     private double total = 0;
@@ -60,7 +57,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     private int index;
     
     public OrderPanel() {
-        // TODO Auto-generated constructor stub
         GridBagLayout gbl = new GridBagLayout();
         this.setLayout(gbl);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -86,11 +82,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         removeItemButton = new JButton("Remove");
         removeItemButton.addActionListener(this);
         buttonPanel1.add(removeItemButton);
-               
-        viewOrderedButton = new JButton("Orders");
-        buttonPanel1.add(viewOrderedButton,gbc);
-        viewOrderedButton.addActionListener(this);
-        
+                      
         orderPanel = new JPanel();
         gbc.weightx = 1.6;
         gbc.weighty = 2.0;
@@ -226,7 +218,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
                         total = total + cost;
                         totalField.setText(toString().valueOf(total));
                         model.addRow(item);
-                        //productList.clearSelection();
                         break;
                     }
                 }
@@ -251,7 +242,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
         if(arg0.getSource().equals(newOrderButton)){
             initialCondition();
             model.setDataVector(null, columnNames);
@@ -261,11 +251,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
             productList.setEnabled(true);
             itemTable.setEnabled(true);
         }
-        
-        else if(arg0.getSource().equals(viewOrderedButton)){
-            
-        }
-        
+                
         else if(arg0.getSource().equals(editItemButton)){
             if(isSelected == true){
                 isEditOrder = true;
@@ -327,7 +313,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     public void initialCondition(){
         isNewOrder = false;
         isEditOrder = false;
-        isRemoveOrder = false;
         isSelected = false;
     }
     
