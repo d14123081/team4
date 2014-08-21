@@ -114,7 +114,7 @@ public class Invoice {
 		
 		for (LineItem lineItem : lineItems) {
 			p = db.getProductById(lineItem.getProductID());
-			totalCost += p.getCost()*lineItem.getQuantity();
+			totalCost += p.getPrice() * lineItem.getQuantity();
 		}
 		return totalCost;
 	}
