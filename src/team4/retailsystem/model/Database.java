@@ -343,27 +343,25 @@ public class Database {
 		}
 	}
 
-	private void generateUsers() {
+	public void addNewUser(String username, String password, int authLevel){
 		EncryptionModule em;
 		try {
 			em = new EncryptionModule();
-			addUser(new User(User.ADMINISTRATOR, "Eoin", em.encrypt("nioe",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Szymon", em.encrypt("nomyzs",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Alan", em.encrypt("nala",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Ha", em.encrypt("ah",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Siobhain", em.encrypt(
-					"niahbois", "testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Giovanni", em.encrypt(
-					"innavoig", "testSalt"), "testSalt"));
-
-		} catch (NoSuchAlgorithmException e) {
+			addUser(new User(authLevel, username, em.encrypt(password,"testSalt"), "testSalt"));
+		}
+		catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void generateUsers() {
+		addNewUser("Eoin", "nioe", User.ADMINISTRATOR);
+		addNewUser("Szymon", "nomyzs", User.NORMAL_USER);
+		addNewUser("Alan", "nala", User.ADMINISTRATOR);
+		addNewUser("Ha", "ah", User.NORMAL_USER);
+		addNewUser("Siobhain", "niahbois", User.ADMINISTRATOR);
+		addNewUser("Giovanni", "innavoig", User.NORMAL_USER);
 	}
 
 	private void generateCustomers() {
