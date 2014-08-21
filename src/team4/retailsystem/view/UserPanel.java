@@ -29,7 +29,7 @@ public class UserPanel extends JPanel {
 	final JComboBox authComboBox;
 
 	public UserPanel() {
-		setBounds(10, 88, 493, 296);
+		setBounds(10, 88, 556, 296);
 		setLayout(null);
 		database = Database.getInstance();
 		users = database.getUsers();
@@ -49,7 +49,7 @@ public class UserPanel extends JPanel {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(166, 11, 314, 274);
+		panel.setBounds(166, 11, 380, 274);
 		add(panel);
 		panel.setLayout(null);
 
@@ -59,7 +59,7 @@ public class UserPanel extends JPanel {
 
 		idField = new JTextField();
 		idField.setEditable(false);
-		idField.setBounds(85, 8, 200, 30);
+		idField.setBounds(85, 8, 281, 30);
 		panel.add(idField);
 		idField.setColumns(10);
 
@@ -73,17 +73,17 @@ public class UserPanel extends JPanel {
 
 		usernameField = new JTextField();
 		usernameField.setColumns(10);
-		usernameField.setBounds(85, 67, 200, 30);
+		usernameField.setBounds(85, 67, 281, 30);
 		panel.add(usernameField);
 
 		authComboBox = new JComboBox();
 		authComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Normal User", "Administrator" }));
-		authComboBox.setBounds(85, 125, 200, 30);
+		authComboBox.setBounds(85, 125, 281, 30);
 		panel.add(authComboBox);
 
 		passwordField = new JPasswordField();
-		passwordField.setBounds(85, 184, 200, 30);
+		passwordField.setBounds(85, 184, 281, 30);
 		panel.add(passwordField);
 
 		JLabel lblPassword = new JLabel("Password:");
@@ -91,7 +91,7 @@ public class UserPanel extends JPanel {
 		panel.add(lblPassword);
 
 		JButton btnAdd = new JButton("Add");
-		btnAdd.setBounds(10, 240, 67, 23);
+		btnAdd.setBounds(16, 240, 80, 23);
 		panel.add(btnAdd);
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -111,7 +111,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(85, 240, 67, 23);
+		btnUpdate.setBounds(106, 240, 80, 23);
 		panel.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -132,7 +132,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(161, 240, 67, 23);
+		btnDelete.setBounds(196, 240, 80, 23);
 		panel.add(btnDelete);
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -148,7 +148,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(238, 240, 67, 23);
+		btnCancel.setBounds(286, 240, 80, 23);
 		panel.add(btnCancel);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,7 +158,17 @@ public class UserPanel extends JPanel {
 
 		userList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				
+				idField.setText(Integer.toString(((User)userList.getSelectedValue()).getID()));
+				usernameField.setText(((User)userList.getSelectedValue()).getUsername());
+				if(((User)userList.getSelectedValue()).getAuthorizationLevel() == 1)
+				{
+					authComboBox.setSelectedIndex(0);
+				}
+				else
+				{
+					authComboBox.setSelectedIndex(1);
+				}
+				//passwordField.setText(((User)userList.getSelectedValue()).getPassword()); obviously not how its meant to be.. unsure about passwords
 			}
 		});
 	}

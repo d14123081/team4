@@ -72,15 +72,29 @@ public class InvoicePanel extends JPanel {
 		invoicePanel.add(invoiceScrollPane);
 
 		invoiceTable = new JTable();
-		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Product ID", "Product Name", "Quantity" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
-					Integer.class };
-
+		invoiceTable.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Product ID", "Product Name", "Quantity"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, String.class, Integer.class
+			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
 		});
+		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
+		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
+		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
 
 		invoiceScrollPane.setViewportView(invoiceTable);
 
@@ -131,9 +145,7 @@ public class InvoicePanel extends JPanel {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-						lineitems.add(new LineItem((int) invoiceTable
-								.getValueAt(i, 0), (int) invoiceTable
-								.getValueAt(i, 2)));
+						lineitems.add(new LineItem((int) invoiceTable.getValueAt(i, 0), (int) invoiceTable.getValueAt(i, 2)));
 					}
 					for (RetailViewListener r : listeners) {
 						r.clickCreateInvoice(lineitems, c);
@@ -185,15 +197,31 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
+		//Pulls invoice frmo database
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				
+				idField.setText(Integer.toString(((Invoice)invoiceList.getSelectedValue()).getID()));
+				customerComboBox.setSelectedItem(((Invoice)invoiceList.getSelectedValue()).getCustomer());
+				ArrayList<LineItem> lineitems = ((Invoice)invoiceList.getSelectedValue()).getLineItems();
+				DefaultTableModel dtm = (DefaultTableModel) invoiceTable.getModel();
+				int rowCount =dtm.getRowCount();
+				for (int i = 0;i<rowCount;i++) 
+				{
+				    dtm.removeRow(i);
+				}
+				for(LineItem l : lineitems)
+				{	
+					dtm.addRow(new Object[] { l.getProductID(), database.getProductById(l.getProductID()), l.getQuantity() });
+				}
 			}
 		});
-
+		
+		//Adds a product to the table
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				
+				DefaultTableModel dtm = (DefaultTableModel) invoiceTable
+						.getModel();
+				dtm.addRow(new Object[] { ((Product)productList.getSelectedValue()).getID(), ((Product)productList.getSelectedValue()).getName(), null });
 			}
 		});
 
