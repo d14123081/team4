@@ -21,8 +21,6 @@ public interface RetailViewListener {
 
 	public void errorAcknowledged();
 	
-	public void clickTestAdd(String value);
-	
 	//login panel events
 	public void doLogin(String username, String password);
 	

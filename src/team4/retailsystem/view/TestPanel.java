@@ -29,7 +29,7 @@ public class TestPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				
 				for(RetailViewListener listener:listeners){
-					listener.clickTestAdd(textField.getText());
+					//listener.clickTestAdd(textField.getText());
 				}
 				
 			}
