@@ -150,7 +150,7 @@ public class RetailSystemModel {
 	}
 	
 	public void deleteCustomer(int id){
-		//database.deleteCustomer(c);
+		database.deleteCustomer(getCustomerById(id));
 		notifyListeners(CUSTOMERS_CHANGED);
 	}
 	
