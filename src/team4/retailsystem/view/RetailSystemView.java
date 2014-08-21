@@ -26,6 +26,8 @@ public interface RetailSystemView {
 	
 	public void updateCustomers(ArrayList<Customer> customers);
 	
+	public void updateUsers(ArrayList<User> users);
+	
 	public void showMainMenuScreen(User user);
 	
 	public void showCustomerEditingScreen();

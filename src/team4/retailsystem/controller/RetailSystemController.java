@@ -49,12 +49,14 @@ implements RetailModelListener, RetailViewListener
 		productsChanged();
 		customersChanged();
 		suppliersChanged();
+		usersChanged();
 	}
 	
 	@Override
 	public void usersChanged() {
-		// TODO Auto-generated method stub
-		
+		for(RetailSystemView v:views){
+			v.updateUsers(model.getUsers());
+		}
 	}
 
 	@Override
@@ -104,12 +106,14 @@ implements RetailModelListener, RetailViewListener
 		
 		//check auth level here, decide what to do/show next
 		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
+			System.out.println("NO AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showError("Unable to authorise user: "+username);
 			}
 		}
 		else
 		{
+			System.out.println("AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showMainMenuScreen(user);
 			}
@@ -186,10 +190,8 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickCreateUser(String username, String pass, int authLevel) {
-		// TODO Auto-generated method stub
-		
-		
+	public void clickCreateUser(String username, String password, int authLevel) {
+		model.addUser(username, password, authLevel);
 	}
 
 	@Override

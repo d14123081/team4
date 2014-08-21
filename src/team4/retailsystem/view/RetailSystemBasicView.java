@@ -140,4 +140,10 @@ implements RetailSystemView
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void updateUsers(ArrayList<User> users) {
+		// TODO Auto-generated method stub
+		
+	}
 }

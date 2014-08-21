@@ -123,8 +123,8 @@ public class RetailSystemModel {
 	}
 	
 	//User class methods
-	public void addUser(User u){
-		database.addUser(u);
+	public void addUser(String username, String password, int authLevel){
+		database.addNewUser(username, password, authLevel);
 		notifyListeners(USERS_CHANGED);
 	}
 	

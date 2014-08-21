@@ -22,6 +22,8 @@ import team4.retailsystem.model.User;
 
 public class LogInPanel extends JPanel implements ActionListener {
     
+	ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
     private JLabel wellcomeLabel;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
@@ -42,7 +44,7 @@ public class LogInPanel extends JPanel implements ActionListener {
         JPanel panel = new JPanel();
         this.add(panel);
         wellcomeLabel = new JLabel("Wellcome to rental system");
-        panel.add(wellcomeLabel);
+        //panel.add(wellcomeLabel);
 
         this.add(emptyPanel);
         
@@ -83,7 +85,7 @@ public class LogInPanel extends JPanel implements ActionListener {
         invalidMsg.setBorder(null);
         invalidMsg.setEditable(false);
         invalidMsg.setVisible(false);
-        panel4.add(invalidMsg,BorderLayout.LINE_START);
+        //panel4.add(invalidMsg,BorderLayout.LINE_START);
         
         setVisible(true);
     }
@@ -91,20 +93,16 @@ public class LogInPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         
-        User user = Database.getInstance().authorizeUser(usernameField.getText(), passField.getText());
-        System.out.print(user.getAuthorizationLevel());
-        switch(user.getAuthorizationLevel()){
-        case(-1):
-            invalidMsg.setVisible(true);
-            break;
-        case(1):
-            break;
-        case(2):
-            break;
+        for(RetailViewListener r:listeners){
+        	r.doLogin(usernameField.getText(), passField.getText());
         }
-        this.updateUI();
-        usernameField.setText(null);
-        passField.setText(null);
+        
+        usernameField.setText("");
+        passField.setText("");
+    }
+    
+    public void addListener(RetailViewListener r){
+    	listeners.add(r);
     }
 
 }
