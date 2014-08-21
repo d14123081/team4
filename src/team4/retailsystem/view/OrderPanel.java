@@ -16,6 +16,8 @@ import team4.retailsystem.model.Supplier;
 
 public class OrderPanel extends JPanel implements ListSelectionListener, ActionListener {
 
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+	
     private JPanel buttonPanel1;
     private JScrollPane orderListPanel;
     private JPanel combinePanel;
@@ -115,6 +117,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         
         this.setVisible(true);
     }
+    
+    public void addListener(RetailViewListener r){
+		listeners.add(r);
+	}
 
     public void addPanel(JPanel panel, GridBagLayout gbl,GridBagConstraints gbc){
         gbl.setConstraints(panel, gbc);

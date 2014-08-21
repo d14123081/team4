@@ -55,7 +55,7 @@ public class Product {
 	}
 
 	public double getPrice() {
-		return cost + (cost*markup);
+		return cost + (cost*(markup/100));
 	}
 
 	public int getStockLevel() {
@@ -76,6 +76,11 @@ public class Product {
 
 	public int getID() {
 		return ID;
+	}
+	
+	public String toString()
+	{
+		return this.name;
 	}
 
 }

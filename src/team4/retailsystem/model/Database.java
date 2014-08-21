@@ -107,7 +107,12 @@ public class Database {
 			return false;
 		}
 	}
-
+	
+	public void deleteCustomerById(int id){
+		Customer temp = getCustomerById(id);
+		customers.remove(temp);
+	}
+	
 	public boolean deleteSupplier(Supplier s) {
 		try {
 			suppliers.remove(s);
@@ -172,6 +177,15 @@ public class Database {
 	public ArrayList<Customer> getCustomers() {
 		return customers;
 	}
+	
+	public Customer getCustomerById(int id){
+		for(Customer c:customers){
+			if(c.getID()==id){
+				return c;
+			}
+		}
+		return null;
+	}
 
 	public ArrayList<Supplier> getSuppliers() {
 		return suppliers;
@@ -209,6 +223,7 @@ public class Database {
 	
 
 	// Unfinished methods to update objects in database
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateCustomer(Customer cust) {
 		try {
 			for (Customer c : customers) {
@@ -224,6 +239,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateSupplier(Supplier supp) {
 		try {
 			for (Supplier s : suppliers) {
@@ -239,6 +255,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateProduct(Product prod) {
 		try {
 			for (Product p : products) {
@@ -254,6 +271,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateDelivery(Delivery del) {
 		try {
 			for (Delivery d : deliveries) {
@@ -269,10 +287,11 @@ public class Database {
 		}
 	}
 
-	public boolean updateInvoice(Invoice inv) {
+	//TODO: This isn't updating the object in the users arraylist
+	public boolean updateInvoice(int id, Invoice inv) {
 		try {
 			for (Invoice i : invoices) {
-				if (i.getID() == inv.getID()) {
+				if (i.getID() == id) {
 					i = inv;
 					return true;
 				}
@@ -284,6 +303,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateOrder(Order order) {
 		try {
 			for (Order o : orders) {
@@ -299,6 +319,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateUser(User user) {
 		try {
 			for (User u : users) {
@@ -329,27 +350,25 @@ public class Database {
 		}
 	}
 
-	private void generateUsers() {
+	public void addNewUser(String username, String password, int authLevel){
 		EncryptionModule em;
 		try {
 			em = new EncryptionModule();
-			addUser(new User(User.ADMINISTRATOR, "Eoin", em.encrypt("nioe",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Szymon", em.encrypt("nomyzs",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Alan", em.encrypt("nala",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Ha", em.encrypt("ah",
-					"testSalt"), "testSalt"));
-			addUser(new User(User.ADMINISTRATOR, "Siobhain", em.encrypt(
-					"niahbois", "testSalt"), "testSalt"));
-			addUser(new User(User.NORMAL_USER, "Giovanni", em.encrypt(
-					"innavoig", "testSalt"), "testSalt"));
-
-		} catch (NoSuchAlgorithmException e) {
+			addUser(new User(authLevel, username, em.encrypt(password,"testSalt"), "testSalt"));
+		}
+		catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void generateUsers() {
+		addNewUser("Eoin", "nioe", User.ADMINISTRATOR);
+		addNewUser("Szymon", "nomyzs", User.NORMAL_USER);
+		addNewUser("Alan", "nala", User.ADMINISTRATOR);
+		addNewUser("Ha", "ah", User.NORMAL_USER);
+		addNewUser("Siobhain", "niahbois", User.ADMINISTRATOR);
+		addNewUser("Giovanni", "innavoig", User.NORMAL_USER);
 	}
 
 	private void generateCustomers() {
@@ -362,9 +381,9 @@ public class Database {
 	}
 
 	private void generateSuppliers() {
-		addSupplier(new Supplier("Apple", "apple@suppliers.com", "California",
+		addSupplier(new Supplier("Apple", "California","apple@suppliers.com",
 				"184234242"));
-		addSupplier(new Supplier("Samsung", "samsung@suppliers.com", "Tokyo",
+		addSupplier(new Supplier("Samsung", "Tokyo", "samsung@suppliers.com",
 				"76328843"));
 	}
 

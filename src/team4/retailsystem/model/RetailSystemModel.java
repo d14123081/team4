@@ -21,54 +21,110 @@ public class RetailSystemModel {
 	
 	private Database database;
 	private ArrayList<RetailModelListener> listeners;
-	
-	private ArrayList<User> users;
-	private ArrayList<Customer> customers;
-	private ArrayList<Invoice> invoices;
-	private ArrayList<Product> products;
-	private ArrayList<Order> orders;
-	private ArrayList<Supplier> suppliers;
-	private ArrayList<Delivery> deliveries;
 
 	public RetailSystemModel() {
 		listeners = new ArrayList<RetailModelListener>();
 		database = Database.getInstance();
-		
-		users = database.getUsers();
-		customers = database.getCustomers();
-		invoices = database.getInvoices();
-		products = database.getProducts();
-		orders = database.getOrders();
-		suppliers = database.getSuppliers();
-		deliveries = database.getDeliveries();
 	}
 	
 	//getters
 	public ArrayList<User> getUsers() {
-		return users;
+		return database.getUsers();
 	}
 	public ArrayList<Customer> getCustomers() {
-		return customers;
+		return database.getCustomers();
 	}
 	public ArrayList<Invoice> getInvoices() {
-		return invoices;
+		return database.getInvoices();
 	}
 	public ArrayList<Product> getProducts() {
-		return products;
+		return database.getProducts();
 	}
 	public ArrayList<Order> getOrders() {
-		return orders;
+		return database.getOrders();
 	}
 	public ArrayList<Supplier> getSuppliers() {
-		return suppliers;
+		return database.getSuppliers();
 	}
 	public ArrayList<Delivery> getDeliveries() {
-		return deliveries;
+		return database.getDeliveries();
+	}
+	
+	public User getUserById(int id)
+	{
+		for(User u: getUsers())
+		{
+			if(u.getID() == id)
+			{
+				return u;
+			}
+		}
+		return null;
+	}
+	
+	public Customer getCustomerById(int id){
+		for(Customer c: getCustomers())
+		{
+			if(c.getID() == id)
+			{
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	public Invoice getInvoiceById(int id)
+	{
+		for(Invoice i: getInvoices())
+		{
+			if(i.getID() == id)
+			{
+				return i;
+			}
+		}
+		return null;
+	}
+	
+	public Product getProductById(int id){
+		for(Product p: getProducts())
+		{
+			if(p.getID() == id)
+			{
+				return p;
+			}
+		}
+		return null;
 	}
 
+	public Order getOrderById(int id){
+		for(Order o: getOrders())
+		{
+			if(o.getID() == id)
+			{
+				return o;
+			}
+		}
+		return null;
+	}
+	
+	public Supplier getSupplierById(int id){
+		for(Supplier s: getSuppliers())
+		{
+			if(s.getID() == id)
+			{
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public User authoriseUser(String username, String password){
+		return database.authorizeUser(username, password);
+	}
+	
 	//User class methods
-	public void addUser(User u){
-		database.addUser(u);
+	public void addUser(String username, String password, int authLevel){
+		database.addNewUser(username, password, authLevel);
 		notifyListeners(USERS_CHANGED);
 	}
 	
@@ -93,8 +149,8 @@ public class RetailSystemModel {
 		notifyListeners(CUSTOMERS_CHANGED);
 	}
 	
-	public void deleteCustomer(Customer c){
-		database.deleteCustomer(c);
+	public void deleteCustomer(int id){
+		database.deleteCustomer(getCustomerById(id));
 		notifyListeners(CUSTOMERS_CHANGED);
 	}
 	
@@ -104,8 +160,11 @@ public class RetailSystemModel {
 		notifyListeners(INVOICES_CHANGED);
 	}
 	
-	public void updateInvoice(Invoice i){
-		database.updateInvoice(i);
+	public void updateInvoice(int id, ArrayList<LineItem> lineitems, Customer c){
+		Invoice i = getInvoiceById(id);
+		i.setLineItems(lineitems);
+		i.setCustomer(c);
+		database.updateInvoice(id, i);
 		notifyListeners(INVOICES_CHANGED);
 	}
 	

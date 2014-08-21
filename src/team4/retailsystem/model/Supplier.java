@@ -9,7 +9,7 @@ public class Supplier {
     private String telephone;
     private int ID;
 
-    public Supplier(String name, String email, String address, String telephone) 
+    public Supplier(String name, String address, String email, String telephone) 
     {
         // TODO Auto-generated constructor stub
         this.name = name;
@@ -23,7 +23,7 @@ public class Supplier {
         return this.name;
     }
     
-    public void setSupplier(String name){
+    public void setName(String name){
         this.name = name;
     }
     
@@ -54,5 +54,10 @@ public class Supplier {
     public int getID()
     {
     	return this.ID;
+    }
+    
+    @Override
+    public String toString(){
+    	return this.name;
     }
 }
