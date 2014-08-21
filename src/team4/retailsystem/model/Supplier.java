@@ -23,7 +23,7 @@ public class Supplier {
         return this.name;
     }
     
-    public void setSupplier(String name){
+    public void setName(String name){
         this.name = name;
     }
     
@@ -54,5 +54,10 @@ public class Supplier {
     public int getID()
     {
     	return this.ID;
+    }
+    
+    @Override
+    public String toString(){
+    	return this.name;
     }
 }
