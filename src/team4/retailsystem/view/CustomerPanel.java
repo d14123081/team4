@@ -91,8 +91,7 @@ public class CustomerPanel extends JPanel{
 		 idTF = new JTextField(8);
 		 telTF = new JTextField(8);
 		 
-		 nameTF.addActionListener(new TextFieldListener());
-		 
+		 //nameTF.addActionListener(new TextFieldListener()); 
 
 		 submit = new JButton("Create new Customer");
 		 submit.addActionListener(new CRUDListener());
