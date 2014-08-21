@@ -9,7 +9,7 @@ public class Order {
     private static int orderNumber = 0;
     private Supplier supplier;
     private Date date;
-    private double cost;
+    private double cost = 0.0;
     private int deliveryID;
     private int ID;
     private ArrayList<LineItem> items;
@@ -17,9 +17,13 @@ public class Order {
 
     public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items) 
     {
-        // TODO Auto-generated constructor stub
-    	this.cost = cost;
+        // TODO: cost is a derived value, shouldn't be passed in with constructor
+    	//this.cost = cost;
+    	
+    	//TODO: Supplier makes no sense...An order can have products from multiple suppliers?
+    	//come back to it later.
         this.supplier = supplier;
+        
         ID = ++orderNumber;
         this.date = new Date();
         this.deliveryID = deliveryID;
