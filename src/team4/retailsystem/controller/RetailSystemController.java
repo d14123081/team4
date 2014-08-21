@@ -187,6 +187,12 @@ implements RetailModelListener, RetailViewListener
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void clickSelectUser(User u)
+	{
+		//
+	}
 
 	@Override
 	public void clickAddSupplier(String name, String address, String email,

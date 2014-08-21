@@ -6,6 +6,7 @@ import java.util.Date;
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Supplier;
+import team4.retailsystem.model.User;
 
 /**
  * An interface to describe the behaviour of any object that is listening to the
@@ -44,9 +45,10 @@ public interface RetailViewListener {
 	public void clickDeleteInvoice(int invoiceId);
 	
 	//user panel events
-	public void clickAddUser(String username, String pass, int authLevel);
+	public void clickCreateUser(String username, String pass, int authLevel);
 	public void clickUpdateUser(String username, String pass, int authLevel);
 	public void clickDeleteUser(int userId);
+	public void clickSelectUser(User u);
 	
 	//deliver panel events
 	
