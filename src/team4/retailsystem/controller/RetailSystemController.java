@@ -1,5 +1,6 @@
 package team4.retailsystem.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
+import team4.retailsystem.utils.EncryptionModule;
 import team4.retailsystem.view.RetailSystemView;
 import team4.retailsystem.view.RetailViewListener;
 
@@ -138,14 +140,6 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickTestAdd(String value) {
-		// TODO Auto-generated method stub
-		
-		//do something with the value here (update the model or whatever)
-		
-	}
-
-	@Override
 	public void clickUpdateCustomer(int id, String name, String address, String email,
 			String phone) {
 		Customer c = Database.getInstance().getCustomerById(id);
@@ -198,10 +192,22 @@ implements RetailModelListener, RetailViewListener
 	public void clickUpdateUser(int id, String username, String pass, int authLevel) {
 		
 		User u = model.getUserById(id);
-		u.setUsername(username);
+		String salt = u.getSalt();
+		String cypherText = "";
 		
-		//TODO: password needs to be encrypted before setting it in the object.
-		//Refactor encryption class from Database to separate utils package maybe.
+		try{
+			EncryptionModule em = new EncryptionModule();
+			cypherText = em.encrypt(pass,salt);
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		u.setUsername(username);
+		u.setAuthorizationLevel(authLevel);
+		u.setPasswordDigest(cypherText);
+
+		model.updateUser(u);
 	}
 
 	@Override

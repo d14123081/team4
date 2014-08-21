@@ -74,7 +74,7 @@ public class User {
 		return username;
 	}
 	
-	protected String getSalt() {
+	public String getSalt() {
 		return salt;
 	}
 	
@@ -94,7 +94,7 @@ public class User {
 		this.username = username;
 	}
 
-	private void setPasswordDigest(String passwordDigest) {
+	public void setPasswordDigest(String passwordDigest) {
 		this.passwordDigest = passwordDigest;
 	}
 	
