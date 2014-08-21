@@ -223,6 +223,7 @@ public class Database {
 	
 
 	// Unfinished methods to update objects in database
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateCustomer(Customer cust) {
 		try {
 			for (Customer c : customers) {
@@ -238,6 +239,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateSupplier(Supplier supp) {
 		try {
 			for (Supplier s : suppliers) {
@@ -253,6 +255,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateProduct(Product prod) {
 		try {
 			for (Product p : products) {
@@ -268,6 +271,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateDelivery(Delivery del) {
 		try {
 			for (Delivery d : deliveries) {
@@ -283,6 +287,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateInvoice(int id, Invoice inv) {
 		try {
 			for (Invoice i : invoices) {
@@ -298,6 +303,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateOrder(Order order) {
 		try {
 			for (Order o : orders) {
@@ -313,6 +319,7 @@ public class Database {
 		}
 	}
 
+	//TODO: This isn't updating the object in the users arraylist
 	public boolean updateUser(User user) {
 		try {
 			for (User u : users) {
