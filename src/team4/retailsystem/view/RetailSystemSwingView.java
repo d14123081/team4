@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
@@ -282,6 +283,7 @@ implements RetailSystemView
 
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
+		orderPanel.updateSuppliersList(suppliers);
 		supplierPanel.updateSupplierList(suppliers);
 	}
 	
@@ -295,9 +297,10 @@ implements RetailSystemView
 	public void updateInvoices(ArrayList<Invoice> invoices) {
 		invoicePanel.updateInvoiceList(invoices);
 	}
-
+	
 	@Override
 	public void updateProducts(ArrayList<Product> products) {
+		orderPanel.updateProductsList(products);
 		invoicePanel.updateProductList(products);
 	}
 
@@ -310,6 +313,12 @@ implements RetailSystemView
 	@Override
 	public void updateUsers(ArrayList<User> users) {
 		userPanel.updateUserList(users);
+		
+	}
+
+	@Override
+	public void updateOrders(ArrayList<Order> orders) {
+		orderPanel.updateOrderList(orders);
 		
 	}
 
