@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 
@@ -324,6 +325,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     
     public void updateProductList(ArrayList<Product> products){
     	//TODO: This is how/where the controller will tell you the products in the model have changed
+    	//update your products panel accordingly
     }
     
     public void updateSupplierList(ArrayList<Supplier> suppliers){
@@ -332,6 +334,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     
     public void updateOrderList(ArrayList<Order> orders){
     	//TODO: This is how/where the controller will tell you the orders in the model have changed
+    	//update your order list accordingly
     }
     
     public void addListener(RetailViewListener r){
