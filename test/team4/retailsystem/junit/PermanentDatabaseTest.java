@@ -646,7 +646,6 @@ public class PermanentDatabaseTest {
 		String name1 = "name 1";
 		String name2 = "name 2";
 		String name3 = "name 3";
-		String email1 = "email 1";
 		
 		Supplier supplier1 =  new Supplier(name1,name1,name1,name1);
 		Product product1 = new Product(name1, 1, 1, 1, supplier1);
