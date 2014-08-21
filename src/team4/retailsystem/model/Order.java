@@ -43,7 +43,14 @@ public class Order {
     
     public double getCost()
     {
-    	return cost;
+		// TODO: Ugly hack, shouldn't call database like this here. Should maybe
+		// change LineItem to have costPerUnit as a property
+    	double tempCost=0.0;
+    	Database db = Database.getInstance();
+    	for(LineItem item:items){
+    		tempCost+= item.getQuantity()* db.getProductById(item.getProductID()).getCost();
+    	}
+    	return tempCost;
     }
     
     public void setCost(double cost)
