@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
@@ -28,6 +29,8 @@ public interface RetailSystemView {
 	
 	public void updateUsers(ArrayList<User> users);
 	
+	public void updateOrders(ArrayList<Order> orders);
+	
 	public void showMainMenuScreen(User user);
 	
 	public void showCustomerEditingScreen();
@@ -45,4 +48,6 @@ public interface RetailSystemView {
 	public void showUserEditingScreen();
 	
 	public void showError(String errorMessage);
+
+	
 }
