@@ -1,6 +1,7 @@
 package team4.retailsystem.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -78,6 +79,8 @@ public class LogInPanel extends JPanel implements ActionListener {
         this.add(panel4);
         panel4.setLayout(new BorderLayout());
         invalidMsg = new JTextField("Invalid Password or Username");
+        invalidMsg.setForeground(Color.RED);
+        invalidMsg.setBorder(null);
         invalidMsg.setEditable(false);
         invalidMsg.setVisible(false);
         panel4.add(invalidMsg,BorderLayout.LINE_START);
@@ -87,10 +90,21 @@ public class LogInPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-     
-        if(Database.getInstance().authorizeUser(usernameField.getText(), passField.getText())!=null){
-            
+        
+        User user = Database.getInstance().authorizeUser(usernameField.getText(), passField.getText());
+        System.out.print(user.getAuthorizationLevel());
+        switch(user.getAuthorizationLevel()){
+        case(-1):
+            invalidMsg.setVisible(true);
+            break;
+        case(1):
+            break;
+        case(2):
+            break;
         }
+        this.updateUI();
+        usernameField.setText(null);
+        passField.setText(null);
     }
 
 }
