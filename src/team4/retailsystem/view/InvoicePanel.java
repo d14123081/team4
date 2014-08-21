@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -38,6 +39,8 @@ public class InvoicePanel extends JPanel {
 	JComboBox customerComboBox;
 	private JTextField idField;
 	JCheckBox chckbxNew;
+	
+	private DecimalFormat df = new DecimalFormat("0.00");
 
 	public InvoicePanel() {
 		setLayout(null);
@@ -207,6 +210,7 @@ public class InvoicePanel extends JPanel {
 		//Pulls invoice frmo database
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				double cost=0.0;
 				chckbxNew.setSelected(false);
 				idField.setText(Integer.toString(((Invoice)invoiceList.getSelectedValue()).getID()));
 				customerComboBox.setSelectedItem(((Invoice)invoiceList.getSelectedValue()).getCustomer());
@@ -215,12 +219,15 @@ public class InvoicePanel extends JPanel {
 				int rowCount =dtm.getRowCount();
 				for (int i = 0;i<rowCount;i++) 
 				{
-				    dtm.removeRow(i);
+				    dtm.removeRow(0);
 				}
 				for(LineItem l : lineitems)
 				{	
-					dtm.addRow(new Object[] { l.getProductID(), database.getProductById(l.getProductID()), l.getQuantity() });
+					Product product = database.getProductById(l.getProductID());
+					dtm.addRow(new Object[] { l.getProductID(), product, l.getQuantity() });
+					cost += (product.getPrice()*l.getQuantity());
 				}
+				totalCostField.setText(df.format(cost));
 			}
 		});
 		
@@ -240,6 +247,20 @@ public class InvoicePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// Cancel button
 			}
+		});
+		
+		chckbxNew.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				DefaultTableModel dtm = (DefaultTableModel) invoiceTable.getModel();
+				int rowCount =dtm.getRowCount();
+				for (int i = 0;i<rowCount;i++) 
+				{
+				    dtm.removeRow(0);
+				}
+				invoiceList.clearSelection();
+			}
+			
 		});
 	}
 
