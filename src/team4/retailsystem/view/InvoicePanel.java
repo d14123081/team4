@@ -26,6 +26,8 @@ import team4.retailsystem.model.Product;
 import team4.retailsystem.model.User;
 
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.JList;
 
 public class InvoicePanel extends JPanel {
@@ -68,7 +70,7 @@ public class InvoicePanel extends JPanel {
 		invoicePanel.setLayout(null);
 
 		customerComboBox = new JComboBox();
-		customerComboBox.setBounds(10, 243, 138, 20);
+		customerComboBox.setBounds(10, 243, 185, 20);
 		invoicePanel.add(customerComboBox);
 
 		JScrollPane invoiceScrollPane = new JScrollPane();
@@ -99,6 +101,20 @@ public class InvoicePanel extends JPanel {
 		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
+		invoiceTable.getModel().addTableModelListener(new TableModelListener()
+		{
+			@Override
+			public void tableChanged(TableModelEvent e) 
+			{
+					double cost=0.0;
+					for(int i = 0; i < invoiceTable.getRowCount(); i++)
+					{
+						cost += ((Product)database.getProductById((int)invoiceTable.getValueAt(i, 0))).getPrice() * (int)invoiceTable.getValueAt(i, 2);
+					}
+					totalCostField.setText(df.format(cost));	
+			}
+			
+		});
 
 		invoiceScrollPane.setViewportView(invoiceTable);
 
@@ -207,10 +223,9 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
-		//Pulls invoice frmo database
+		//Pulls invoice from database
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				double cost=0.0;
 				chckbxNew.setSelected(false);
 				idField.setText(Integer.toString(((Invoice)invoiceList.getSelectedValue()).getID()));
 				customerComboBox.setSelectedItem(((Invoice)invoiceList.getSelectedValue()).getCustomer());
@@ -224,10 +239,8 @@ public class InvoicePanel extends JPanel {
 				for(LineItem l : lineitems)
 				{	
 					Product product = database.getProductById(l.getProductID());
-					dtm.addRow(new Object[] { l.getProductID(), product, l.getQuantity() });
-					cost += (product.getPrice()*l.getQuantity());
+					dtm.addRow(new Object[] { l.getProductID(), product, l.getQuantity() });	
 				}
-				totalCostField.setText(df.format(cost));
 			}
 		});
 		
@@ -236,7 +249,9 @@ public class InvoicePanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				DefaultTableModel dtm = (DefaultTableModel) invoiceTable
 						.getModel();
-				dtm.addRow(new Object[] { ((Product)productList.getSelectedValue()).getID(), ((Product)productList.getSelectedValue()).getName(), null });
+				dtm.addRow(new Object[] { ((Product)productList.getSelectedValue()).getID(), ((Product)productList.getSelectedValue()).getName(), 1 });
+				invoiceTable.requestFocus();
+				invoiceTable.editCellAt(invoiceTable.getRowCount()-1, 2);
 			}
 		});
 
@@ -259,6 +274,7 @@ public class InvoicePanel extends JPanel {
 				    dtm.removeRow(0);
 				}
 				invoiceList.clearSelection();
+				idField.setText(null);
 			}
 			
 		});

@@ -28,7 +28,7 @@ public class UserPanel extends JPanel {
 	final JComboBox authComboBox;
 
 	public UserPanel() {
-		setBounds(10, 88, 556, 296);
+		setBounds(10, 88, 642, 296);
 		setLayout(null);
 		database = Database.getInstance();
 		JPanel userListPanel = new JPanel();
@@ -47,49 +47,49 @@ public class UserPanel extends JPanel {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(166, 11, 380, 274);
+		panel.setBounds(166, 11, 465, 274);
 		add(panel);
 		panel.setLayout(null);
 
 		JLabel lblUserId = new JLabel("User ID:");
-		lblUserId.setBounds(10, 16, 46, 14);
+		lblUserId.setBounds(10, 16, 116, 14);
 		panel.add(lblUserId);
 
 		idField = new JTextField();
 		idField.setEditable(false);
-		idField.setBounds(85, 8, 281, 30);
+		idField.setBounds(174, 8, 281, 30);
 		panel.add(idField);
 		idField.setColumns(10);
 
 		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(10, 75, 58, 14);
+		lblUsername.setBounds(10, 75, 116, 14);
 		panel.add(lblUsername);
 
 		JLabel lblAuthLevel = new JLabel("Auth. Level:");
-		lblAuthLevel.setBounds(10, 133, 67, 14);
+		lblAuthLevel.setBounds(10, 133, 116, 14);
 		panel.add(lblAuthLevel);
 
 		usernameField = new JTextField();
 		usernameField.setColumns(10);
-		usernameField.setBounds(85, 67, 281, 30);
+		usernameField.setBounds(174, 67, 281, 30);
 		panel.add(usernameField);
 
 		authComboBox = new JComboBox();
 		authComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Normal User", "Administrator" }));
-		authComboBox.setBounds(85, 125, 281, 30);
+		authComboBox.setBounds(174, 125, 281, 30);
 		panel.add(authComboBox);
 
 		passwordField = new JPasswordField();
-		passwordField.setBounds(85, 184, 281, 30);
+		passwordField.setBounds(174, 184, 281, 30);
 		panel.add(passwordField);
 
 		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setBounds(10, 192, 58, 14);
+		lblPassword.setBounds(10, 192, 116, 14);
 		panel.add(lblPassword);
 
 		JButton btnAdd = new JButton("Add");
-		btnAdd.setBounds(16, 240, 80, 23);
+		btnAdd.setBounds(105, 240, 80, 23);
 		panel.add(btnAdd);
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -109,7 +109,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(106, 240, 80, 23);
+		btnUpdate.setBounds(195, 240, 80, 23);
 		panel.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -131,7 +131,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(196, 240, 80, 23);
+		btnDelete.setBounds(285, 240, 80, 23);
 		panel.add(btnDelete);
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -147,7 +147,7 @@ public class UserPanel extends JPanel {
 		});
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(286, 240, 80, 23);
+		btnCancel.setBounds(375, 240, 80, 23);
 		panel.add(btnCancel);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
