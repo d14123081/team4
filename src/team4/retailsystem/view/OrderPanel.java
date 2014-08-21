@@ -147,7 +147,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         combinePanel.setLayout(new GridLayout(2, 0));
         getSupplierArrayList();
         supplierList = new JList<Object>(supplierArrayList.toArray());
-        supplierList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        //supplierList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         supplierList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         supplierList.setVisibleRowCount(getHeight());
         supplierList.setOpaque(true);
@@ -160,7 +160,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         
         getProductArrayList();
         productList = new JList<Object>(productArrayList.toArray());
-        productList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        //productList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         productList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         productList.setVisibleRowCount(getHeight());
         productList.setOpaque(true);
