@@ -50,6 +50,7 @@ implements RetailModelListener, RetailViewListener
 		customersChanged();
 		suppliersChanged();
 		usersChanged();
+		ordersChanged();
 	}
 	
 	@Override
@@ -82,8 +83,9 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void ordersChanged() {
-		// TODO Auto-generated method stub
-		
+		for(RetailSystemView v:views){
+			v.updateOrders(model.getOrders());
+		}
 	}
 
 	@Override

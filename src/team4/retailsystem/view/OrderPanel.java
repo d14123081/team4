@@ -336,4 +336,20 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
         itemTable.getColumnModel().getColumn(2).setMinWidth(100);
         itemTable.getColumnModel().getColumn(2).setMaxWidth(100);
     }
+    
+    public void updateProductList(ArrayList<Product> products){
+    	//TODO: This is how/where the controller will tell you the products in the model have changed
+    }
+    
+    public void updateSupplierList(ArrayList<Supplier> suppliers){
+    	supplierList.setListData(suppliers.toArray());
+    }
+    
+    public void updateOrderList(ArrayList<Order> orders){
+    	//TODO: This is how/where the controller will tell you the orders in the model have changed
+    }
+    
+    public void addListener(RetailViewListener r){
+    	listeners.add(r);
+    }
 }

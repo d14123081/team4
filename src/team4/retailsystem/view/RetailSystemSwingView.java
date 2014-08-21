@@ -283,7 +283,7 @@ implements RetailSystemView
 
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
-		orderPanel.updateSuppliersList(suppliers);
+		orderPanel.updateSupplierList(suppliers);
 		supplierPanel.updateSupplierList(suppliers);
 	}
 	
@@ -300,7 +300,7 @@ implements RetailSystemView
 	
 	@Override
 	public void updateProducts(ArrayList<Product> products) {
-		orderPanel.updateProductsList(products);
+		orderPanel.updateProductList(products);
 		invoicePanel.updateProductList(products);
 	}
 
