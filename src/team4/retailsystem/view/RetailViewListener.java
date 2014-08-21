@@ -43,19 +43,14 @@ public interface RetailViewListener {
 	
 	//invoice panel events
 	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer);
-	public void clickUpdateInvoice(ArrayList<LineItem> lineItems, Customer customer); //put func to change cost/date in method?
+	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems, Customer customer); 
 	public void clickDeleteInvoice(int invoiceId);
-	
-	public void clickSelectProduct(Product p);
-	public void clickSelectInvoice(Invoice i);
 	public void databaseCreateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
 	
 	//user panel events
 	public void clickCreateUser(String username, String pass, int authLevel);
 	public void clickUpdateUser(String username, String pass, int authLevel);
 	public void clickDeleteUser(int userId);
-	
-	public void clickSelectUser(User u);
 	
 	//deliver panel events
 	

@@ -152,6 +152,7 @@ public class InvoicePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (!idField.getText().equals("")
 						&& invoiceTable.getRowCount() > 0) {
+					int id = Integer.parseInt(idField.getText());
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
@@ -160,7 +161,7 @@ public class InvoicePanel extends JPanel {
 								.getValueAt(i, 2)));
 					}
 					for (RetailViewListener r : listeners) {
-						r.clickUpdateInvoice(lineitems, c);
+						r.clickUpdateInvoice(id, lineitems, c);
 					}
 				} else {
 					// throw exception
@@ -186,19 +187,13 @@ public class InvoicePanel extends JPanel {
 
 		invoiceList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				Invoice i = (Invoice) invoiceList.getSelectedValue();
-				for (RetailViewListener r : listeners) {
-					r.clickSelectInvoice(i);
-				}
+				
 			}
 		});
 
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				Product p = (Product) productList.getSelectedValue();
-				for (RetailViewListener r : listeners) {
-					r.clickSelectProduct(p);
-				}
+				
 			}
 		});
 

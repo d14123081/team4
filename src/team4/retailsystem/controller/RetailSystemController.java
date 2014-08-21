@@ -176,6 +176,7 @@ implements RetailModelListener, RetailViewListener
 	public void clickCreateUser(String username, String pass, int authLevel) {
 		// TODO Auto-generated method stub
 		
+		
 	}
 
 	@Override
@@ -186,15 +187,10 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickDeleteUser(int userId) {
-		// TODO Auto-generated method stub
-		
+		model.deleteUser(model.getUserById(userId));
 	}
 	
-	@Override
-	public void clickSelectUser(User u)
-	{
-		//
-	}
+	
 
 	@Override
 	public void clickAddSupplier(String name, String address, String email,
@@ -240,35 +236,26 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickDeleteInvoice(int invoiceId) {
-		// TODO Auto-generated method stub
+		model.deleteInvoice(model.getInvoiceById(invoiceId));
 		
 	}
 
 	@Override
 	public void clickCreateInvoice(ArrayList<LineItem> lineItems,
 			Customer customer) {
-		// TODO Auto-generated method stub
+		model.addInvoice(new Invoice(lineItems, customer));
 		
 	}
 
 	@Override
-	public void clickUpdateInvoice(ArrayList<LineItem> lineItems,
+	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems,
 			Customer customer) {
+		model.updateInvoice(id, lineItems, customer);
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void clickSelectProduct(Product p) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clickSelectInvoice(Invoice i) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void databaseCreateInvoice(double cost,

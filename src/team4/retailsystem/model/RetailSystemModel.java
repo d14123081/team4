@@ -65,6 +65,30 @@ public class RetailSystemModel {
 	public ArrayList<Delivery> getDeliveries() {
 		return deliveries;
 	}
+	
+	public User getUserById(int id)
+	{
+		for(User u: users)
+		{
+			if(u.getID() == id)
+			{
+				return u;
+			}
+		}
+		return null;
+	}
+	
+	public Invoice getInvoiceById(int id)
+	{
+		for(Invoice i: invoices)
+		{
+			if(i.getID() == id)
+			{
+				return i;
+			}
+		}
+		return null;
+	}
 
 	public User authoriseUser(String username, String password){
 		return database.authorizeUser(username, password);
@@ -108,8 +132,9 @@ public class RetailSystemModel {
 		notifyListeners(INVOICES_CHANGED);
 	}
 	
-	public void updateInvoice(Invoice i){
-		database.updateInvoice(i);
+	public void updateInvoice(int id, ArrayList<LineItem> lineitems, Customer c){
+		Invoice i = new Invoice(lineitems, c);
+		database.updateInvoice(id, i);
 		notifyListeners(INVOICES_CHANGED);
 	}
 	

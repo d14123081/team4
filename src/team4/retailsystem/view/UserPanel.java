@@ -158,10 +158,7 @@ public class UserPanel extends JPanel {
 
 		userList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				User u = (User) userList.getSelectedValue();
-				for (RetailViewListener r : listeners) {
-					r.clickSelectUser(u);
-				}
+				
 			}
 		});
 	}
