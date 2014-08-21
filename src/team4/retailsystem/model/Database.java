@@ -374,9 +374,9 @@ public class Database {
 	}
 
 	private void generateSuppliers() {
-		addSupplier(new Supplier("Apple", "apple@suppliers.com", "California",
+		addSupplier(new Supplier("Apple", "California","apple@suppliers.com",
 				"184234242"));
-		addSupplier(new Supplier("Samsung", "samsung@suppliers.com", "Tokyo",
+		addSupplier(new Supplier("Samsung", "Tokyo", "samsung@suppliers.com",
 				"76328843"));
 	}
 
