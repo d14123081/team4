@@ -106,14 +106,12 @@ implements RetailModelListener, RetailViewListener
 		
 		//check auth level here, decide what to do/show next
 		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
-			System.out.println("NO AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showError("Unable to authorise user: "+username);
 			}
 		}
 		else
 		{
-			System.out.println("AUTH: Controller.doLogin() u:"+username+", p:"+password);
 			for(RetailSystemView r: views){
 				r.showMainMenuScreen(user);
 			}
@@ -195,9 +193,13 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickUpdateUser(String username, String pass, int authLevel) {
-		// TODO Auto-generated method stub
+	public void clickUpdateUser(int id, String username, String pass, int authLevel) {
 		
+		User u = model.getUserById(id);
+		u.setUsername(username);
+		
+		//TODO: password needs to be encrypted before setting it in the object.
+		//Refactor encryption class from Database to separate utils package maybe.
 	}
 
 	@Override

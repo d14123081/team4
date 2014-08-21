@@ -226,7 +226,6 @@ implements RetailSystemView
 	@Override
 	public void showMainMenuScreen(User user) {
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
-		System.out.println("showMainMenu() user: "+user.getUsername());
 	}
 
 	@Override
