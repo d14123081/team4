@@ -82,8 +82,8 @@ public class productPanel extends JFrame{
 	                 jbutton.addActionListener(new AddProductListener());
 	                 myPanel.add(jbutton);
 	                
-	                 setContentPane(myPanel);
-	                 setVisible(true);
+	                 //setContentPane(myPanel);
+	                 //setVisible(true);
 	            }
 	
 	            public static void main(String[] args){

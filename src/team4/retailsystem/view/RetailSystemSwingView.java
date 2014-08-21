@@ -35,6 +35,7 @@ public class RetailSystemSwingView
 extends JFrame
 implements RetailSystemView
 {
+	private final static String FRAME_TITLE = "Team4 Retail System";
 
 	//An array of RetailViewListeners, to be informed of interface events if required
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
@@ -82,6 +83,7 @@ implements RetailSystemView
 		addButtonListeners();
 		constructView();
 		
+		setTitle(FRAME_TITLE);
 		setVisible(true);
 	}
 
@@ -225,39 +227,57 @@ implements RetailSystemView
 
 	@Override
 	public void showMainMenuScreen(User user) {
+		if(user.getAuthorizationLevel() == User.NO_AUTHORIZATION){
+			//shouldn't happen
+			showError("Unauthorised access.");
+			showLoginScreen();
+		}
+		else if(user.getAuthorizationLevel() == User.NORMAL_USER){
+			//hide button for administrative activities
+			userButton.setVisible(false);
+			customerButton.setVisible(false);
+			supplierButton.setVisible(false);
+			showInvoiceEditingScreen();
+		}
+		else if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
+			userButton.setVisible(true);
+			customerButton.setVisible(true);
+			supplierButton.setVisible(true);
+			showCustomerEditingScreen();
+		}
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
 	}
 
 	@Override
 	public void showCustomerEditingScreen() {
-		((CardLayout)(panelPane.getLayout())).show(panelPane, CUSTOMER);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, CUSTOMER);
 	}
 
 	@Override
 	public void showInvoiceEditingScreen() {
-		((CardLayout)(panelPane.getLayout())).show(panelPane, INVOICE);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, INVOICE);
 	}
 
 	@Override
 	public void showOrderEditingScreen() {
-		((CardLayout)(panelPane.getLayout())).show(panelPane, ORDER);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, ORDER);
 	}
 
 	@Override
 	public void showProductEditingScreen() {
-		//((CardLayout)(panelPane.getLayout())).show(panelPane, PRODUCT);
+		//((CardLayout)(contentPanel.getLayout())).show(contentPanel, PRODUCT);
 		
 	}
 
 	@Override
 	public void showSupplierEditingScreen() {
-		((CardLayout)(panelPane.getLayout())).show(panelPane, SUPPLIER);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, SUPPLIER);
 		
 	}
 
 	@Override
 	public void showUserEditingScreen() {
-		((CardLayout)(panelPane.getLayout())).show(panelPane, USER);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, USER);
 	}
 
 	@Override
