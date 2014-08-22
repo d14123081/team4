@@ -136,7 +136,7 @@ implements RetailSystemView
 		contentPanel.add(customerPanel, CUSTOMER);
 		contentPanel.add(invoicePanel, INVOICE);
 		contentPanel.add(orderPanel, ORDER);
-		contentPanel.add(productPanel, PRODUCT);
+		//contentPanel.add(productPanel, PRODUCT);
 		contentPanel.add(supplierPanel, SUPPLIER);
 		contentPanel.add(userPanel, USER);
 		
