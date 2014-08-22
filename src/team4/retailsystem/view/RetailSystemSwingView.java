@@ -74,7 +74,7 @@ implements RetailSystemView
 	private CustomerPanel customerPanel;
 	private InvoicePanel invoicePanel;
 	private OrderPanel orderPanel;
-	private ProductPanel3 productPanel;
+	private ProductPanel productPanel;
 	private SupplierPanel supplierPanel;
 	private UserPanel userPanel;
 	
@@ -107,7 +107,7 @@ implements RetailSystemView
 		customerPanel = new CustomerPanel();
 		invoicePanel = new InvoicePanel();
 		orderPanel = new OrderPanel();
-		productPanel = new ProductPanel3();
+		productPanel = new ProductPanel();
 		supplierPanel = new SupplierPanel(Database.getInstance().getSuppliers());
 		userPanel = new UserPanel();
 	}
