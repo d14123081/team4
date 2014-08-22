@@ -23,9 +23,9 @@ public class ExtraPanel extends JFrame implements ActionListener{
     private JButton deleteButton;
     private String text;
     
-    public String ExtraEditPanel() {
+    public ExtraPanel() {
         this.setSize(300,300);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         panel = new JPanel();
         GridBagLayout gbl = new GridBagLayout();
         panel.setLayout(gbl);
@@ -121,8 +121,7 @@ public class ExtraPanel extends JFrame implements ActionListener{
         this.add(panel);
         this.setLocation((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2 -100, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2 -100);
         this.setVisible(true);
-        // TODO Auto-generated constructor stub
-        return text;
+
     }
 
     @Override
@@ -144,7 +143,6 @@ public class ExtraPanel extends JFrame implements ActionListener{
                 text += 2;
             else
                 text = "2";
-            displayField.setText(text);
         }
         else if(arg0.getSource().equals(threeButton)){
             if(text != null)
@@ -197,9 +195,14 @@ public class ExtraPanel extends JFrame implements ActionListener{
             if(text == null){
                 text = "1";
             }
-            System.exit(0);
+         
+            dispose();
         }
         displayField.setText(text);
+    }
+    
+    public String getValue(){
+        return this.displayField.getText();
     }
 
 }
