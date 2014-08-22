@@ -349,7 +349,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void updateProductList(ArrayList<Product> products){
-    	//update products list
+    	productList.setListData(products.toArray());
     }
     
     public void updateSupplierList(ArrayList<Supplier> supliers){
