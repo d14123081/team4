@@ -74,7 +74,7 @@ implements RetailSystemView
 	private CustomerPanel customerPanel;
 	private InvoicePanel invoicePanel;
 	private OrderPanel orderPanel;
-	private productPanel productPanel;
+	private ProductPanel3 productPanel;
 	private SupplierPanel supplierPanel;
 	private UserPanel userPanel;
 	
@@ -107,7 +107,7 @@ implements RetailSystemView
 		customerPanel = new CustomerPanel();
 		invoicePanel = new InvoicePanel();
 		orderPanel = new OrderPanel();
-		productPanel = new productPanel();
+		productPanel = new ProductPanel3();
 		supplierPanel = new SupplierPanel(Database.getInstance().getSuppliers());
 		userPanel = new UserPanel();
 	}
@@ -136,7 +136,7 @@ implements RetailSystemView
 		contentPanel.add(customerPanel, CUSTOMER);
 		contentPanel.add(invoicePanel, INVOICE);
 		contentPanel.add(orderPanel, ORDER);
-		//contentPanel.add(productPanel, PRODUCT);
+		contentPanel.add(productPanel, PRODUCT);
 		contentPanel.add(supplierPanel, SUPPLIER);
 		contentPanel.add(userPanel, USER);
 		
@@ -215,7 +215,7 @@ implements RetailSystemView
 		customerPanel.addListener(listener);
 		invoicePanel.addListener(listener);
 		orderPanel.addListener(listener);
-		//productPanel.addListener(listener);
+		productPanel.addListener(listener);
 		supplierPanel.addListener(listener);
 		userPanel.addListener(listener);
 		loginPanel.addListener(listener);
@@ -285,7 +285,7 @@ implements RetailSystemView
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
 		orderPanel.updateSupplierList(suppliers);
 		supplierPanel.updateSupplierList(suppliers);
-		//productPanel.updateSupplierList(suppliers);
+		productPanel.updateSupplierList(suppliers);
 	}
 	
 	@Override
@@ -303,7 +303,7 @@ implements RetailSystemView
 	public void updateProducts(ArrayList<Product> products) {
 		orderPanel.updateProductList(products);
 		invoicePanel.updateProductList(products);
-		//productPanel.updateProductList(products);
+		productPanel.updateProductList(products);
 	}
 
 	@Override
@@ -320,7 +320,7 @@ implements RetailSystemView
 
 	@Override
 	public void updateOrders(ArrayList<Order> orders) {
-		orderPanel.updateOrderList(orders);
+		//orderPanel.updateOrderList(orders);
 		
 	}
 
