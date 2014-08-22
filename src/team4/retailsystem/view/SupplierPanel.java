@@ -314,9 +314,9 @@ public class SupplierPanel extends JPanel implements ActionListener,
 
     public void getSupplierArrayList() {
         suppliers = Database.getInstance().getSuppliers();
-        supplierArrayList.clear();
+        supplierArrayList = new ArrayList<>();
         for (Supplier s : suppliers) {
-            supplierArrayList.add(s.getName() + "   \n");
+        	supplierArrayList.add(s.getName() + "   \n");
         }
     }
 
