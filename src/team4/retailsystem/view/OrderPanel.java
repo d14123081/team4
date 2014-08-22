@@ -340,6 +340,15 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         model.setValueAt(quantity, itemTable.getSelectedRow(), 1);
         totalField.setText(toString().valueOf(total));
     }
+    
+    public void updateProductList(ArrayList<Product> products){
+    	//update products list
+    }
+    
+    public void updateSupplierList(ArrayList<Supplier> supliers){
+    	supplierList.setListData(suppliers.toArray());
+    }
+    
     public void addListener(RetailViewListener listener) {
         // TODO Auto-generated method stub
 
