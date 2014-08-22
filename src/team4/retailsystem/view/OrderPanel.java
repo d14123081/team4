@@ -36,6 +36,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private JButton removeItemButton;
     private JLabel totalLabel;
     private JTextField totalField;
+    private JButton enter;
 
     private JList<Object> supplierList;
     private JList<Object> productList;
@@ -50,18 +51,16 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private Object[][] itemsList = null;
     private String[] columnNames =
             { "Item name", "Quantity", "Price per item" };
-    private int quantity;
-
+    private JTextField quantity;
+    private Supplier supplier;
     private boolean isNewOrder = false;
-    private boolean isEditOrder = false;
     private boolean isSelected = false;
-
     private ExtraPanel p;
 
     private double total = 0;
     private double cost = 0;
-
     private int index;
+
 
     public OrderPanel() {
         GridBagLayout gbl = new GridBagLayout();
@@ -69,6 +68,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
+        quantity = new JTextField();
+        quantity.addActionListener(this);
+        enter = new JButton();
+        enter.addActionListener(this);
         buttonPanel1 = new JPanel();
         gbc.ipady = 30;
         gbc.gridx = 0;
@@ -205,7 +208,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         if (supplierList.getValueIsAdjusting() == true) {
             productArrayList.clear();
             index = supplierList.getSelectedIndex();
-            Supplier supplier =
+            supplier =
                     Database.getInstance().getSuppliers().get(index);
             productArrayList.clear();
             for (Product p : products) {
@@ -213,7 +216,9 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                     productArrayList.add(p.getName() + "   ");
                 }
             }
+            productList.setEnabled(true);
             productList.setListData(productArrayList.toArray());
+            
         } else if (productList.getValueIsAdjusting() == true) {
             for (Product product : products) {
                 if (productList.getSelectedValue().toString()
@@ -227,6 +232,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                     totalField.setText(toString().valueOf(total));
                     model.addRow(item);
                     model.fireTableDataChanged();
+                    supplierList.setEnabled(false);
                     break;
                 }
             }
@@ -244,33 +250,37 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             setItemTableSize();
             isNewOrder = true;
             supplierList.setEnabled(true);
-            productList.setEnabled(true);
+            //productList.setEnabled(true);
             getSupplierArrayList();
             getProductArrayList();
         }
-
+        
         else if (arg0.getSource().equals(viewOrderedButton)) {
 
         }
-
+        
         else if (arg0.getSource().equals(editItemButton)) {
             if (isSelected == true) {
-                isEditOrder = true;
-                p = new ExtraPanel();
+                editQuantity();
+                isSelected = false;
             } else
                 warmingMsg("Please select item to edit");
+            model.fireTableDataChanged();
         }
 
         else if (arg0.getSource().equals(removeItemButton)) {
             if (isSelected == true) {
-                model.removeRow(itemTable.getSelectedRow());
                 itemsArrayList.remove(itemTable.getSelectedRow());
+                model.removeRow(itemTable.getSelectedRow());
+                model.fireTableDataChanged();
+                isSelected = false;
+                
             } else
                 warmingMsg("Please select item to edit");
         }
 
         else if (arg0.getSource().equals(makeOrderButton)) {
-            if (isNewOrder == true && isEditOrder == false) {
+            if (isNewOrder == true) {
                 //Database.getInstance().addOrder(new Order(total, itemsArrayList));
                 initialCondition();
                 getSupplierArrayList();
@@ -279,11 +289,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                 productList.setEnabled(false);
                 clearItemList();
             }
-
-            else if (isEditOrder == true) {
-                updateQuantity(p.getValue());
-                isEditOrder = false;
-            } else
+            else
                 warmingMsg("Please select New Order");
         }
 
@@ -314,7 +320,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
     public void initialCondition() {
         isNewOrder = false;
-        isEditOrder = false;
         isSelected = false;
         total = 0;
     }
@@ -328,15 +333,17 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private void clearItemList() {
         itemsList = null;
         model.setDataVector(itemsList, columnNames);
+        model.fireTableDataChanged();
     }
 
-    private void updateQuantity(String quantity){
+    private void updateQuantity(int quantity){
         total =
                 total
                         + Double.parseDouble(model.getValueAt(
                                 itemTable.getSelectedRow(), 2)
                                 .toString())
-                        * (Integer.parseInt(quantity) - 1);
+                        * (quantity - 1);
+        itemsArrayList.get(itemTable.getSelectedRow()).setQuantity(quantity);
         model.setValueAt(quantity, itemTable.getSelectedRow(), 1);
         totalField.setText(toString().valueOf(total));
     }
@@ -353,5 +360,15 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         // TODO Auto-generated method stub
 
     }
-
+    
+    public void editQuantity(){
+        p = new ExtraPanel();
+        Object[] t = {p};
+        JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
+        JDialog dialog = o.createDialog(null, "Width 100");
+        dialog.setVisible(true);
+        if(o.getValue().equals(0)){
+            updateQuantity(p.getValue());
+        }
+    }
 }
