@@ -136,7 +136,7 @@ implements RetailSystemView
 		contentPanel.add(customerPanel, CUSTOMER);
 		contentPanel.add(invoicePanel, INVOICE);
 		contentPanel.add(orderPanel, ORDER);
-		//contentPanel.add(productPanel, PRODUCT);
+		contentPanel.add(productPanel, PRODUCT);
 		contentPanel.add(supplierPanel, SUPPLIER);
 		contentPanel.add(userPanel, USER);
 		
@@ -266,7 +266,7 @@ implements RetailSystemView
 
 	@Override
 	public void showProductEditingScreen() {
-		//((CardLayout)(contentPanel.getLayout())).show(contentPanel, PRODUCT);
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, PRODUCT);
 		
 	}
 
@@ -285,6 +285,7 @@ implements RetailSystemView
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
 		orderPanel.updateSupplierList(suppliers);
 		supplierPanel.updateSupplierList(suppliers);
+		//productPanel.updateSupplierList(suppliers);
 	}
 	
 	@Override
@@ -302,6 +303,7 @@ implements RetailSystemView
 	public void updateProducts(ArrayList<Product> products) {
 		orderPanel.updateProductList(products);
 		invoicePanel.updateProductList(products);
+		//productPanel.updateProductList(products);
 	}
 
 	@Override

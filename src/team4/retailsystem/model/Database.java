@@ -392,9 +392,9 @@ public class Database {
 	}
 
 	private void generateProducts() {
-		addProduct(new Product("iPhone 5s", 500.00, 100.00, 0, suppliers.get(0)));
-		addProduct(new Product("iPhone 4", 250.00, 50.00, 0, suppliers.get(0)));
-		addProduct(new Product("Galaxy S5", 480.00, 70.00, 0, suppliers.get(1)));
+		addProduct(new Product("iPhone 5s", 500.00, 100.00, 50, suppliers.get(0)));
+		addProduct(new Product("iPhone 4", 250.00, 50.00, 75, suppliers.get(0)));
+		addProduct(new Product("Galaxy S5", 480.00, 70.00, 100, suppliers.get(1)));
 	}
 
 	private void generateOrders() {

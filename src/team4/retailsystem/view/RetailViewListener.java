@@ -30,8 +30,8 @@ public interface RetailViewListener {
 	public void clickDeleteCustomer(int id);
 	
 	//product panel events
-	public void clickCreateProduct(String name, double cost, double markup, int stockLevel, int supplierId);
-	public void clickUpdateProduct(String name, double cost, double markup, int stockLevel, int supplierId);
+	public void clickCreateProduct(String name, double cost, double markup, int stockLevel, Supplier supplier);
+	public void clickUpdateProduct(int id, String name, double cost, double markup, int stockLevel, Supplier supplier);
 	public void clickDeleteProduct(int productId);
 	
 	//order panel events

@@ -46,7 +46,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener, ActionL
     private ArrayList<String> productArrayList = new ArrayList<>();
     private ArrayList<LineItem> itemsArrayList = new ArrayList<>();
     private Object[][] itemsList = new ArrayList[0][0];;
-    private String[] columnNames = {"Item name", "Quantity", "Price per item"};
+    private String[] columnNames = {"Item name", "Id", "Quantity", "Price per item"};
     
     private boolean isNewOrder = false;
     private boolean isEditOrder = false;

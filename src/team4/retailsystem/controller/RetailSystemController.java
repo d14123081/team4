@@ -165,15 +165,22 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickCreateProduct(String name, double cost, double markup,
-			int stockLevel, int supplierId) {
-		// TODO Auto-generated method stub
+			int stockLevel, Supplier supplier) {
+		model.addProduct(new Product(name, cost, markup, stockLevel, supplier));
 		
 	}
 
 	@Override
-	public void clickUpdateProduct(String name, double cost, double markup,
-			int stockLevel, int supplierId) {
-		// TODO Auto-generated method stub
+	public void clickUpdateProduct(int id, String name, double cost, double markup,
+			int stockLevel, Supplier supplier) {
+		Product p = model.getProductById(id);
+		p.setName(name);
+		p.setCost(cost);
+		p.setMarkup(markup);
+		p.setStockLevel(stockLevel);
+		p.setSupplier(supplier);
+		
+		model.updateProduct(p);
 		
 	}
 

@@ -105,7 +105,7 @@ public class productPanel extends JFrame{
 						//if valid...
 						//inform RetailViewListeners of event
 						for(RetailViewListener r:listeners){
-							r.clickCreateProduct(name, cost, markup, stockLevel, supplierId);
+							//r.clickCreateProduct(name, cost, markup, stockLevel, supplierId);
 						}
 						//else, show an error
 						
@@ -132,7 +132,7 @@ public class productPanel extends JFrame{
 							//if valid...
 							//inform RetailViewListeners of event
 							for(RetailViewListener r:listeners){
-								r.clickUpdateProduct(name, cost, markup, stockLevel, supplierId);
+								//r.clickUpdateProduct(name, cost, markup, stockLevel, supplierId);
 							}
 							//else, show an error
 							
