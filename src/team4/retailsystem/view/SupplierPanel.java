@@ -182,7 +182,10 @@ public class SupplierPanel extends JPanel implements ActionListener,
             if (isSelected == true) {
                 isEditOrder = true;
                 setEditableForField(true);
-                Supplier supplier = suppliers.get(index);
+                //Supplier supplier = suppliers.get(index);
+                
+                Supplier supplier = (Supplier)supplierList.getSelectedValue();
+                
                 nameField.setText(supplier.getName());
                 addressField.setText(supplier.getAddress());
                 emailField.setText(supplier.getEmail());
@@ -311,7 +314,7 @@ public class SupplierPanel extends JPanel implements ActionListener,
 
     public void getSupplierArrayList() {
         suppliers = Database.getInstance().getSuppliers();
-        supplierArrayList = new ArrayList<>();
+        supplierArrayList.clear();
         for (Supplier s : suppliers) {
             supplierArrayList.add(s.getName() + "   \n");
         }
