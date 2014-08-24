@@ -36,36 +36,36 @@ public class LogInPanel extends JPanel implements ActionListener {
     public LogInPanel() {
         this.setLayout(null);
         
-        wellcomeLabel = new JLabel("Wellcome to Rentail System");
+        wellcomeLabel = new JLabel("Welcome to Retail System");
         wellcomeLabel.setFont(new Font("Tahoma", Font.BOLD, 19));
         wellcomeLabel.setBounds(276, 60, 281, 37);
         this.add(wellcomeLabel);
         
         usernameLabel = new JLabel("Username");
         usernameLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        usernameLabel.setBounds(154, 151, 76, 14);
+        usernameLabel.setBounds(294, 151, 76, 14);
         this.add(usernameLabel);
         
         usernameField = new JTextField();
         usernameField.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        usernameField.setBounds(154, 176, 210, 30);
+        usernameField.setBounds(294, 176, 210, 30);
         this.add(usernameField);
         usernameField.setColumns(24);
         
         passwordLabel = new JLabel("Password");
         passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        passwordLabel.setBounds(154, 217, 70, 14);
+        passwordLabel.setBounds(294, 217, 70, 14);
         this.add(passwordLabel);
         
         passField = new JPasswordField();
         passField.setColumns(24);
         passField.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        passField.setBounds(154, 242, 210, 30);
+        passField.setBounds(294, 242, 210, 30);
         this.add(passField);
         
         logInButton = new JButton("Log In");
         logInButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        logInButton.setBounds(154, 283, 89, 30);
+        logInButton.setBounds(294, 283, 89, 30);
         logInButton.addActionListener(this);
         this.add(logInButton);
                 
