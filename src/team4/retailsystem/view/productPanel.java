@@ -317,7 +317,7 @@ public class productPanel extends JPanel {
 				back.setVisible(true);
 				
 			}
-			}
+		}
 	}
 		
 	
