@@ -300,7 +300,28 @@ public class productPanel extends JPanel {
 		}
 		
 	}
-}	
+	
+		public void updateProductUser(User user) { 
+			
+			if(user.getAuthorizationLevel() == User.NORMAL_USER) { 
+				submit.setVisible(false); 
+				edit.setVisible(false); 
+				remove.setVisible(false); 
+				back.setVisible(false); 
+				} 
+			
+			else if (user.getAuthorizationLevel() == User.ADMINISTRATOR){
+				submit.setVisible(true);
+				edit.setVisible(true);
+				remove.setVisible(true);
+				back.setVisible(true);
+				
+			}
+			}
+	}
+		
+	
+	
 	
 		
 
