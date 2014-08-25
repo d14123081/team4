@@ -34,6 +34,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private JButton makeOrderButton;
     private JButton editItemButton;
     private JButton removeItemButton;
+    private JButton addDelivery;
     private JLabel totalLabel;
     private JTextField totalField;
     private JButton enter;
@@ -60,8 +61,13 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private double total = 0;
     private double cost = 0;
     private int index;
+    private static int viewOrders = 1;
+    private static int addDeliveryDate = 2;
 
+    private OrderedPanel ordered;
+    private CalenderPanel calender;
 
+    @SuppressWarnings("serial")
     public OrderPanel() {
         GridBagLayout gbl = new GridBagLayout();
         this.setLayout(gbl);
@@ -93,9 +99,13 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         removeItemButton.addActionListener(this);
         buttonPanel1.add(removeItemButton);
 
-        viewOrderedButton = new JButton("Orders");
+        viewOrderedButton = new JButton("View Orders");
         buttonPanel1.add(viewOrderedButton, gbc);
         viewOrderedButton.addActionListener(this);
+        
+        addDelivery = new JButton("Add Delivery");
+        buttonPanel1.add(addDelivery, gbc);
+        addDelivery.addActionListener(this);
 
         orderPanel = new JPanel();
         gbc.weightx = 1.2;
@@ -110,12 +120,23 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.fill = GridBagConstraints.BOTH;
 
-        model = new DefaultTableModel(itemsList, columnNames);
+        model = new DefaultTableModel(itemsList, columnNames){
+
+
+            boolean[] canEdit = new boolean[]{
+                    false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        };
         itemTable = new JTable(model);
         setItemTableSize();
         itemTable.setRowHeight(30);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         itemTable.getSelectionModel().addListSelectionListener(this);
+        
         orderListPanel = new JScrollPane(itemTable);
 
         gbc1.gridx = 0;
@@ -158,7 +179,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         combinePanel.setLayout(new GridLayout(2, 0));
         supplierList = new JList<Object>(supplierArrayList.toArray());
-        getSupplierArrayList();
+        //getSupplierArrayList();
         supplierList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         supplierList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         supplierList.setVisibleRowCount(getHeight());
@@ -229,7 +250,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                                     cost };
                     itemsArrayList.add(new LineItem(product.getID(), 1));
                     total = total + cost;
-                    totalField.setText(toString().valueOf(total));
+                    totalField.setText(""+total);
                     model.addRow(item);
                     model.fireTableDataChanged();
                     supplierList.setEnabled(false);
@@ -250,13 +271,15 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             setItemTableSize();
             isNewOrder = true;
             supplierList.setEnabled(true);
-            //productList.setEnabled(true);
             getSupplierArrayList();
-            getProductArrayList();
         }
         
         else if (arg0.getSource().equals(viewOrderedButton)) {
-
+            ordersList(viewOrders);   
+        }
+        
+        else if (arg0.getSource().equals(addDelivery)){
+            ordersList(addDeliveryDate);
         }
         
         else if (arg0.getSource().equals(editItemButton)) {
@@ -270,6 +293,8 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         else if (arg0.getSource().equals(removeItemButton)) {
             if (isSelected == true) {
+                total = total - Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 1).toString())* Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 2).toString());
+                totalField.setText(""+total);
                 itemsArrayList.remove(itemTable.getSelectedRow());
                 model.removeRow(itemTable.getSelectedRow());
                 model.fireTableDataChanged();
@@ -281,13 +306,17 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         else if (arg0.getSource().equals(makeOrderButton)) {
             if (isNewOrder == true) {
-                //Database.getInstance().addOrder(new Order(total, itemsArrayList));
-                initialCondition();
-                getSupplierArrayList();
-                getProductArrayList();
-                supplierList.setEnabled(false);
-                productList.setEnabled(false);
-                clearItemList();
+                if(model.getRowCount()>0){
+                    for (RetailViewListener r : listeners) {
+                        //r.clickCreateOrder(total, itemsArrayList, supplier, deliveryId);
+                    }
+                    initialCondition();
+                    supplierList.setEnabled(false);
+                    productList.setEnabled(false);
+                    clearItemList();
+                }
+                else
+                    warmingMsg("Please add item to make a new order");
             }
             else
                 warmingMsg("Please select New Order");
@@ -345,7 +374,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                         * (quantity - 1);
         itemsArrayList.get(itemTable.getSelectedRow()).setQuantity(quantity);
         model.setValueAt(quantity, itemTable.getSelectedRow(), 1);
-        totalField.setText(toString().valueOf(total));
+        totalField.setText(""+total);
     }
     
     public void updateProductList(ArrayList<Product> products){
@@ -356,9 +385,8 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     	supplierList.setListData(suppliers.toArray());
     }
     
-    public void addListener(RetailViewListener listener) {
-        // TODO Auto-generated method stub
-
+    public void addListener(RetailViewListener r) {
+        listeners.add(r);
     }
     
     public void editQuantity(){
@@ -370,5 +398,22 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         if(o.getValue().equals(0)){
             updateQuantity(p.getValue());
         }
+    }
+    
+    public void ordersList(int v){
+        ordered = new OrderedPanel();
+        calender = new CalenderPanel();
+        switch(v){
+        case 1:
+            calender.setVisible(false);
+            break;
+        case 2:
+            break;
+        }
+        Object[] t = {ordered,calender};
+        JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
+        JDialog d = o.createDialog(null, "Width 100");   
+        d.setVisible(true);
+        
     }
 }
