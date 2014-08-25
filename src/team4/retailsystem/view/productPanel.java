@@ -18,9 +18,10 @@ import javax.swing.SwingConstants;
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
+import team4.retailsystem.model.User;
 import team4.retailsystem.view.CustomerPanel.CRUDListener;
 
-public class ProductPanel3 extends JPanel {
+public class productPanel extends JPanel {
 
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	
@@ -36,7 +37,7 @@ public class ProductPanel3 extends JPanel {
 	
 	private DecimalFormat df = new DecimalFormat("0.00");
 	
-	public ProductPanel3(){
+	public productPanel(){
 		
 		this.setVisible(true);
 		this.setLayout(new GridLayout(8, 2, 15, 10));
@@ -281,7 +282,9 @@ public class ProductPanel3 extends JPanel {
 	}
 	public void addListener(RetailViewListener r){
 		listeners.add(r);
-	}
+	
+		}
+	
 	
 	public void updateProductList(ArrayList<Product> products){
 		nameCombo.setModel(new DefaultComboBoxModel(products.toArray()));
@@ -290,10 +293,14 @@ public class ProductPanel3 extends JPanel {
 		}
 	}
 	
-	public void updateSupplierList(ArrayList<Supplier> suppliers){
+	private void updateSupplierList(ArrayList<Supplier> suppliers){
 		supplierCombo.setModel(new DefaultComboBoxModel(suppliers.toArray()));
 		if (nameCombo.getItemCount() > 0) {
 			nameCombo.setSelectedIndex(nameCombo.getSelectedIndex());
 		}
+		
 	}
-}
+}	
+	
+		
+

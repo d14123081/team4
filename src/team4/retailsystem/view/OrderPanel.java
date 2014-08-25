@@ -343,6 +343,13 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     public void addListener(RetailViewListener listener) {
         // TODO Auto-generated method stub
 
-    }
+  
+		
+	}
+    public void updateProductList(ArrayList<Product> products){
+		productList.setListData(products.toArray());;
+	}
+		
+	}
 
-}
+
