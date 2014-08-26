@@ -307,4 +307,12 @@ public class InvoicePanel extends JPanel {
 		}
 		idField.setText(null);
 	}
+ 	
+ 	/**
+ 	 * A method that clears temp fields on logout.
+ 	 */
+ 	public void logout(){
+ 		clearInvoice();
+ 		checkboxNew.setSelected(false);	//set the checkbox to the default login position
+ 	}
 }

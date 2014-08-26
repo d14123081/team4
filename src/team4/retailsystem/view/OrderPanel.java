@@ -416,4 +416,13 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         d.setVisible(true);
         
     }
+ 	
+ 	/**
+ 	 * A method that clears temp fields on logout.
+ 	 */
+    public void logout(){
+        initialCondition();
+        clearItemList();
+        supplierList.setEnabled(false);
+    }
 }

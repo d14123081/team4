@@ -391,4 +391,16 @@ public class CustomerPanel extends JPanel{
 			customerComboBox.setSelectedIndex(customerComboBox.getItemCount()-1);
 		}
 	}
+ 	
+ 	/**
+ 	 * A method that clears temp fields on logout.
+ 	 */
+ 	public void logout(){
+ 		String empty = "";
+ 		setNameTF(empty);
+ 		setAddressTF(empty);
+ 		setEmailTF(empty);
+ 		setIDTF(empty);
+ 		telTF.setText(empty);
+ 	}
 }
