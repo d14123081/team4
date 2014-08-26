@@ -111,7 +111,7 @@ public class InvoicePanel extends JPanel {
 					double cost=0.0;
 					for(int i = 0; i < invoiceTable.getRowCount(); i++)
 					{
-						Product p = database.getProductById((int)invoiceTable.getValueAt(i, 0));
+						Product p = database.getProduct((int)invoiceTable.getValueAt(i, 0));
 						cost += p.getPrice() * (int)invoiceTable.getValueAt(i, 2);
 					}
 					totalCostField.setText(df.format(cost));	
@@ -245,7 +245,7 @@ public class InvoicePanel extends JPanel {
 				
 				for(LineItem l : lineitems)
 				{	
-					Product product = database.getProductById(l.getProductID());
+					Product product = database.getProduct(l.getProductID());
 					dtm.addRow(new Object[] { l.getProductID(), product, l.getQuantity() });	
 				}
 			}
