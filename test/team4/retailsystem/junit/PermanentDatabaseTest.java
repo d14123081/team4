@@ -88,7 +88,7 @@ public class PermanentDatabaseTest {
 		assertEquals(address, d.getAddress());		
 		
 		//test Update
-		d.setSupplier(newName);
+		d.setName(newName);
 		d.setTelephone(newTelephoneNo);
 		d.setEmail(newEmail);
 		d.setAddress(newAddress);
