@@ -10,7 +10,7 @@ import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Database;
-import team4.retailsystem.model.PermanentDatabase;
+import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 
@@ -34,7 +34,7 @@ public class InvoiceTest {
 		Product product2 = new Product(p2name, p2cost, p2markup, p2stockLevel, supplier);
 		
 		//Database db = Database.getInstance();
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addProduct(product1);
 		db.addProduct(product2);
 		

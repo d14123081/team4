@@ -13,17 +13,17 @@ import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
-import team4.retailsystem.model.PermanentDatabase;
+import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 import team4.retailsystem.utils.EncryptionModule;
 
-public class PermanentDatabaseTest {
+public class DatabaseTest {
 
 	@Test
 	public void testGetInstance() {
-		assertNotNull(PermanentDatabase.getInstance());
+		assertNotNull(Database.getInstance());
 	}
 	
 	@Test
@@ -39,10 +39,10 @@ public class PermanentDatabaseTest {
 		
 		//test Create
 		Customer c = new Customer(name, telephoneNo, email, address);
-		assertTrue(PermanentDatabase.getInstance().addCustomer(c));
+		assertTrue(Database.getInstance().addCustomer(c));
 		
 		//test Create & Read
-		Customer d = PermanentDatabase.getInstance().getCustomer(1);
+		Customer d = Database.getInstance().getCustomer(1);
 		assertEquals(name, d.getName());
 		assertEquals(telephoneNo, d.getTelephoneNumber());
 		assertEquals(email, d.getEmail());
@@ -53,16 +53,16 @@ public class PermanentDatabaseTest {
 		d.setTelephoneNumber(newTelephoneNo);
 		d.setEmail(newEmail);
 		d.setAddress(newAddress);
-		PermanentDatabase.getInstance().updateCustomer(d);
+		Database.getInstance().updateCustomer(d);
 		
-		Customer e = PermanentDatabase.getInstance().getCustomer(1);
+		Customer e = Database.getInstance().getCustomer(1);
 		assertEquals(newName, e.getName());
 		assertEquals(newTelephoneNo, e.getTelephoneNumber());
 		assertEquals(newEmail, e.getEmail());
 		assertEquals(newAddress, e.getAddress());		
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteCustomer(e));
+		assertTrue(Database.getInstance().deleteCustomer(e));
 	}
 
 	@Test
@@ -78,10 +78,10 @@ public class PermanentDatabaseTest {
 		
 		//test Create
 		Supplier s = new Supplier(name, email, address, telephoneNo);
-		assertTrue(PermanentDatabase.getInstance().addSupplier(s));
+		assertTrue(Database.getInstance().addSupplier(s));
 		
 		//test Create & Read
-		Supplier d = PermanentDatabase.getInstance().getSupplier(1);
+		Supplier d = Database.getInstance().getSupplier(1);
 		assertEquals(name, d.getName());
 		assertEquals(telephoneNo, d.getTelephoneNumber());
 		assertEquals(email, d.getEmail());
@@ -92,16 +92,16 @@ public class PermanentDatabaseTest {
 		d.setTelephone(newTelephoneNo);
 		d.setEmail(newEmail);
 		d.setAddress(newAddress);
-		PermanentDatabase.getInstance().updateSupplier(d);
+		Database.getInstance().updateSupplier(d);
 		
-		Supplier e = PermanentDatabase.getInstance().getSupplier(1);
+		Supplier e = Database.getInstance().getSupplier(1);
 		assertEquals(newName, e.getName());
 		assertEquals(newTelephoneNo, e.getTelephoneNumber());
 		assertEquals(newEmail, e.getEmail());
 		assertEquals(newAddress, e.getAddress());		
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteSupplier(e));
+		assertTrue(Database.getInstance().deleteSupplier(e));
 	}
 
 	@Test
@@ -122,15 +122,15 @@ public class PermanentDatabaseTest {
 		
 		Supplier supplier = new Supplier(sname, stelephoneNo, semail, saddress);
 		Supplier newSupplier = new Supplier(semail, stelephoneNo, semail, saddress);
-		PermanentDatabase.getInstance().addSupplier(supplier);		
-		PermanentDatabase.getInstance().addSupplier(newSupplier);		
+		Database.getInstance().addSupplier(supplier);		
+		Database.getInstance().addSupplier(newSupplier);		
 		
 		//test Create
 		Product s = new Product(name, cost, markup, stockLevel, supplier);
-		assertTrue(PermanentDatabase.getInstance().addProduct(s));
+		assertTrue(Database.getInstance().addProduct(s));
 		
 		//test Create & Read
-		Product d = PermanentDatabase.getInstance().getProduct(1);
+		Product d = Database.getInstance().getProduct(1);
 		assertEquals(name, d.getName());
 		assertEquals(cost, d.getCost(), .0001);
 		assertEquals(markup, d.getMarkup(), .0001);
@@ -143,9 +143,9 @@ public class PermanentDatabaseTest {
 		d.setMarkup(newMarkup);
 		d.setSupplier(newSupplier);
 		d.setStockLevel(newStockLevel);
-		PermanentDatabase.getInstance().updateProduct(d);
+		Database.getInstance().updateProduct(d);
 		
-		Product e = PermanentDatabase.getInstance().getProduct(1);
+		Product e = Database.getInstance().getProduct(1);
 		assertEquals(newName, e.getName());
 		assertEquals(newCost, e.getCost(), .0001);
 		assertEquals(newMarkup, e.getMarkup(), .0001);
@@ -153,11 +153,11 @@ public class PermanentDatabaseTest {
 		assertEquals(e.getSupplier().getName(), newSupplier.getName());
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteProduct(e));	
+		assertTrue(Database.getInstance().deleteProduct(e));	
 		
 		//clean up
-		PermanentDatabase.getInstance().deleteSupplier(supplier);
-		PermanentDatabase.getInstance().deleteSupplier(newSupplier);		
+		Database.getInstance().deleteSupplier(supplier);
+		Database.getInstance().deleteSupplier(newSupplier);		
 	}
 
 	@Test
@@ -173,10 +173,10 @@ public class PermanentDatabaseTest {
 		
 		//test create
 		User u = new User(authLevel, username, passwordDigest, salt);
-		PermanentDatabase.getInstance().addUser(u);
+		Database.getInstance().addUser(u);
 		
 		//test create & read
-		User n = PermanentDatabase.getInstance().getUser(1);
+		User n = Database.getInstance().getUser(1);
 		assertEquals(authLevel, n.getAuthorizationLevel());
 		assertEquals(username, n.getUsername());
 		assertEquals(passwordDigest, n.getPasswordDigest());
@@ -184,19 +184,19 @@ public class PermanentDatabaseTest {
 		
 		//test upadte 
 		n = new User(1, newAuthLevel, newUsername, newPasswordDigest, newSalt);
-		PermanentDatabase.getInstance().updateUser(n);
+		Database.getInstance().updateUser(n);
 		assertEquals(newAuthLevel, n.getAuthorizationLevel());
 		assertEquals(newUsername, n.getUsername());
 		assertEquals(newPasswordDigest, n.getPasswordDigest());
 		assertEquals(newSalt, n.getSalt());
 		
 		//test delete
-		assertTrue(PermanentDatabase.getInstance().deleteUser(n));		
+		assertTrue(Database.getInstance().deleteUser(n));		
 	}
 
 	@Test
 	public void testCRUDInvoice() {
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		Date date = new Date();
 		double cost = 54.0;
 		int productID = 1;
@@ -225,7 +225,7 @@ public class PermanentDatabaseTest {
 		db.addCustomer(customer);	
 		
 		//acquire the id for customer c
-		customer = PermanentDatabase.getInstance().getCustomer(1);
+		customer = Database.getInstance().getCustomer(1);
 		
 		String newCustomerName = "Average Carpets";
 		String newCustomerTel = "123445678";
@@ -281,7 +281,7 @@ public class PermanentDatabaseTest {
 		assertEquals(invoice.getID(), invoiceListItems.get(1).getOrderID());
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteInvoice(invoice));
+		assertTrue(Database.getInstance().deleteInvoice(invoice));
 		
 		//cleanup
 		db.deleteCustomer(customer);
@@ -309,7 +309,7 @@ public class PermanentDatabaseTest {
 		Order order = new Order(cost, supplier1, deliveryID, items);
 		Date deliveryDate = order.getDeliveryDate();
 		
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addSupplier(supplier1);
 		
 		//Test Create
@@ -366,22 +366,22 @@ public class PermanentDatabaseTest {
 		String email = "amazing.carpets@gmail.com";
 		String address = "54 Random Street\nDublin 4\nIreland";
 		Supplier supplier1 = new Supplier(name, email, address, telephoneNo);	
-		PermanentDatabase.getInstance().addSupplier(supplier1);
+		Database.getInstance().addSupplier(supplier1);
 		
 		String newName = "Average Carpets";	
 		String newTelephoneNo = "123445678";
 		String newEmail = "average.carpets@outlook.com";
 		String newAddress = "81 Less Random street";		
 		Supplier supplier2 = new Supplier(newName, newEmail, newAddress, newTelephoneNo);	
-		PermanentDatabase.getInstance().addSupplier(supplier2);	
+		Database.getInstance().addSupplier(supplier2);	
 
 		//test Create
 		Delivery delivery = new Delivery(supplier1, orderID);
 		Date date = delivery.getDate();
-		PermanentDatabase.getInstance().addDelivery(delivery);
+		Database.getInstance().addDelivery(delivery);
 		
 		//test Create & Read
-		delivery = PermanentDatabase.getInstance().getDelivery(1);
+		delivery = Database.getInstance().getDelivery(1);
 		assertEquals(orderID, delivery.getOrderID());
 		assertEquals(date, delivery.getDate());
 		assertEquals(supplier1.getName(), delivery.getSupplier().getName());
@@ -393,17 +393,17 @@ public class PermanentDatabaseTest {
 		delivery.setDate(new Date());
 		date = delivery.getDate();
 
-		PermanentDatabase.getInstance().updateDelivery(delivery);		
+		Database.getInstance().updateDelivery(delivery);		
 		assertEquals(orderID, delivery.getOrderID());
 		assertEquals(date, delivery.getDate());
 		assertEquals(supplier2.getName(), delivery.getSupplier().getName());
 		
 		//test Delete
-		assertTrue(PermanentDatabase.getInstance().deleteDelivery(delivery));
+		assertTrue(Database.getInstance().deleteDelivery(delivery));
 		
 		//cleanup
-		PermanentDatabase.getInstance().deleteSupplier(supplier1);
-		PermanentDatabase.getInstance().deleteSupplier(supplier2);
+		Database.getInstance().deleteSupplier(supplier1);
+		Database.getInstance().deleteSupplier(supplier2);
 	}
 
 	@Test
@@ -432,23 +432,23 @@ public class PermanentDatabaseTest {
 		String notInSysPassword = "wrong_basis";
 		User notInSys;
 		
-		PermanentDatabase.getInstance().addUser(admin);
-		PermanentDatabase.getInstance().addUser(nonAdmin);
+		Database.getInstance().addUser(admin);
+		Database.getInstance().addUser(nonAdmin);
 		
-		admin = PermanentDatabase.getInstance().authorizeUser(adminUsername, adminPassword);
-		nonAdmin = PermanentDatabase.getInstance().authorizeUser(nonAdminUsername, nonAdminPassword);
-		notInSys = PermanentDatabase.getInstance().authorizeUser(notInSysUsername, notInSysPassword);
+		admin = Database.getInstance().authorizeUser(adminUsername, adminPassword);
+		nonAdmin = Database.getInstance().authorizeUser(nonAdminUsername, nonAdminPassword);
+		notInSys = Database.getInstance().authorizeUser(notInSysUsername, notInSysPassword);
 		
 		assertEquals(User.ADMINISTRATOR, admin.getAuthorizationLevel());
 		assertEquals(User.NORMAL_USER, nonAdmin.getAuthorizationLevel());
 		assertEquals(User.NO_AUTHORIZATION, notInSys.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminWrongUsername, adminPassword).getAuthorizationLevel());			
-		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminUsername, adminWrongPassword).getAuthorizationLevel());			
-		assertEquals(User.NO_AUTHORIZATION, PermanentDatabase.getInstance().authorizeUser(adminWrongUsername, adminWrongPassword).getAuthorizationLevel());	
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminWrongUsername, adminPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminUsername, adminWrongPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminWrongUsername, adminWrongPassword).getAuthorizationLevel());	
 		
 		//clean up
-		PermanentDatabase.getInstance().deleteUser(admin);
-		PermanentDatabase.getInstance().deleteUser(nonAdmin);
+		Database.getInstance().deleteUser(admin);
+		Database.getInstance().deleteUser(nonAdmin);
 	}
 	
 	@Test
@@ -470,7 +470,7 @@ public class PermanentDatabaseTest {
 		Customer two = new Customer(name2, telNo2, email2, addr2);
 		Customer three = new Customer(name3, telNo3, email3, addr3);
 		
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addCustomer(one);
 		db.addCustomer(two);
 		db.addCustomer(three);
@@ -506,7 +506,7 @@ public class PermanentDatabaseTest {
 		Supplier two = new Supplier(name2, telNo2, email2, addr2);
 		Supplier three = new Supplier(name3, telNo3, email3, addr3);
 
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addSupplier(one);
 		db.addSupplier(two);
 		db.addSupplier(three);
@@ -538,7 +538,7 @@ public class PermanentDatabaseTest {
 		Product two = new Product(name2, 1, 1, 1, supplier);
 		Product three = new Product(name3, 1, 1, 1, supplier);
 
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addProduct(one);
 		db.addProduct(two);
 		db.addProduct(three);
@@ -566,7 +566,7 @@ public class PermanentDatabaseTest {
 		User two = new User(1, name2, email1, email1);
 		User three = new User(1, name3, email1, email1);
 
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addUser(one);
 		db.addUser(two);
 		db.addUser(three);
@@ -594,7 +594,7 @@ public class PermanentDatabaseTest {
 		Product product2 = new Product(name2, 2, 2, 2, supplier1);
 		Product product3 = new Product(name3, 3, 3, 3, supplier1);
 		
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
@@ -652,7 +652,7 @@ public class PermanentDatabaseTest {
 		Product product2 = new Product(name2, 2, 2, 2, supplier1);
 		Product product3 = new Product(name3, 3, 3, 3, supplier1);
 		
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
@@ -708,7 +708,7 @@ public class PermanentDatabaseTest {
 		Delivery two = new Delivery(supplier1, 2);
 		Delivery three = new Delivery(supplier1, 3);
 
-		PermanentDatabase db = PermanentDatabase.getInstance();
+		Database db = Database.getInstance();
 		db.addDelivery(one);
 		db.addDelivery(two);
 		db.addDelivery(three);

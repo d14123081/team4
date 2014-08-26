@@ -62,7 +62,7 @@ public class Order {
     	double tempCost=0.0;
     	Database db = Database.getInstance();
     	for(LineItem item:items){
-    		tempCost+= item.getQuantity()* db.getProductById(item.getProductID()).getCost();
+    		tempCost+= item.getQuantity()* db.getProduct(item.getProductID()).getCost();
     	}
     	return tempCost;
     }

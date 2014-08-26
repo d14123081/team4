@@ -117,7 +117,7 @@ public class Invoice {
 	private double calculateCost() {
 		double totalCost = 0;
 		for (LineItem lineItem : lineItems) {
-			PermanentDatabase db = PermanentDatabase.getInstance();
+			Database db = Database.getInstance();
 			Product p = db.getProduct(lineItem.getProductID());
 			totalCost += lineItem.getQuantity() * p.getPrice();
 		}
