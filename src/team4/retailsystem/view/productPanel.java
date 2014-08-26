@@ -302,7 +302,6 @@ public class productPanel extends JPanel {
 	}
 	
 		public void updateProductUser(User user) { 
-			
 			if(user.getAuthorizationLevel() == User.NORMAL_USER) { 
 				submit.setVisible(false); 
 				edit.setVisible(false); 

@@ -235,16 +235,18 @@ implements RetailSystemView
 		}
 		else if(user.getAuthorizationLevel() == User.NORMAL_USER){
 			//hide button for administrative activities
-			userButton.setVisible(false);
-			customerButton.setVisible(false);
-			supplierButton.setVisible(false);
+			//userButton.setVisible(false);
+			//customerButton.setVisible(false);
+			//supplierButton.setVisible(false);
 			showInvoiceEditingScreen();
+			productPanel.updateProductUser(user);
 		}
 		else if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
-			userButton.setVisible(true);
-			customerButton.setVisible(true);
-			supplierButton.setVisible(true);
+			//userButton.setVisible(true);
+			//customerButton.setVisible(true);
+			//supplierButton.setVisible(true);
 			showCustomerEditingScreen();
+			productPanel.updateProductUser(user);
 		}
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
 	}
