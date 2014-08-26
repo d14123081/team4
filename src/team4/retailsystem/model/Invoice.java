@@ -20,11 +20,7 @@ public class Invoice {
 
 	private Date date;
 	private Customer customer;
-<<<<<<< HEAD
 	//private double cost;
-=======
-	private double cost;
->>>>>>> refs/remotes/origin/master
 
 	/**
 	 * Creates a brand new invoice with current date.
@@ -39,11 +35,7 @@ public class Invoice {
 		setCustomer(customer);
 		setId(++idCounter);
 		setDate(new Date());
-<<<<<<< HEAD
 		//setCost(calculateCost());
-=======
-		setCost(calculateCost());
->>>>>>> refs/remotes/origin/master
 	}
 
 	/**
@@ -67,11 +59,7 @@ public class Invoice {
 		setCustomer(customer);
 		setId(id);
 		setDate(date);
-<<<<<<< HEAD
 		//setCost(cost);
-=======
-		setCost(cost);
->>>>>>> refs/remotes/origin/master
 	}
 
 	public ArrayList<LineItem> getLineItems() {
@@ -83,7 +71,7 @@ public class Invoice {
 	}
 
 	public double getCost() {
-		return cost;
+		return calculateCost();
 	}
 
 	public Date getDate() {
@@ -108,10 +96,6 @@ public class Invoice {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	private void setCost(double cost) {
-		this.cost = cost;
 	}
 
 	/*private void setCost(double cost) {
