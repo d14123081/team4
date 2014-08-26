@@ -142,7 +142,7 @@ implements RetailModelListener, RetailViewListener
 	@Override
 	public void clickUpdateCustomer(int id, String name, String address, String email,
 			String phone) {
-		Customer c = Database.getInstance().getCustomerById(id);
+		Customer c = Database.getInstance().getCustomer(id);
 		c.setName(name);
 		c.setAddress(address);
 		c.setEmail(email);
