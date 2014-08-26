@@ -17,6 +17,13 @@ public class Delivery {
 		deliveryDate = new Date();
 	}
 
+	public Delivery(Supplier supplier, int orderID, Date date, int id) {
+		this.deliveryID = id;
+		this.supplier = supplier;
+		this.orderID = orderID;
+		deliveryDate = date;
+	}
+
 	public Date getDate() {
 		return deliveryDate;
 	}
@@ -33,7 +40,7 @@ public class Delivery {
 		return supplier;
 	}
 
-	public void setDeliveryID(int deliveryID) {
+	private void setDeliveryID(int deliveryID) {
 		this.deliveryID = deliveryID;
 	}
 
@@ -43,5 +50,9 @@ public class Delivery {
 
 	public void setSupplier(Supplier supplier) {
 		this.supplier = supplier;
+	}
+	
+	public void setDate(Date date){
+		this.deliveryDate = date;
 	}
 }

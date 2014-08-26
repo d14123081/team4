@@ -182,7 +182,10 @@ public class SupplierPanel extends JPanel implements ActionListener,
             if (isSelected == true) {
                 isEditOrder = true;
                 setEditableForField(true);
-                Supplier supplier = suppliers.get(index);
+                //Supplier supplier = suppliers.get(index);
+                
+                Supplier supplier = (Supplier)supplierList.getSelectedValue();
+                
                 nameField.setText(supplier.getName());
                 addressField.setText(supplier.getAddress());
                 emailField.setText(supplier.getEmail());
@@ -313,13 +316,19 @@ public class SupplierPanel extends JPanel implements ActionListener,
         suppliers = Database.getInstance().getSuppliers();
         supplierArrayList = new ArrayList<>();
         for (Supplier s : suppliers) {
-            supplierArrayList.add(s.getName() + "   \n");
+        	supplierArrayList.add(s.getName() + "   \n");
         }
     }
-
-    public void addSupplierToDB() {
-        //Database.getInstance().addSupplier(
-                //new Supplier(nameField.getText(), emailField.getText(),
-                       // addressField.getText(), telephoneField.getText()));
+    
+    /*
+     * A method that clears temp fields on logout.
+     */
+    public void logout(){
+        nameField.setText(null);
+        addressField.setText(null);
+        emailField.setText(null);
+        telephoneField.setText(null);
+        isNewOrder = false;
+        setEditableForField(false);
     }
 }

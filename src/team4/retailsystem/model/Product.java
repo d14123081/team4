@@ -20,6 +20,16 @@ public class Product {
 		this.supplier = supplier;
 	}
 
+	public Product(String name, double cost, double markup,
+			int stockLevel, Supplier supplier, int id) {
+		this.ID = id;
+		this.name = name;
+		this.cost = cost;
+		this.markup = markup;
+		this.stockLevel = stockLevel;
+		this.supplier = supplier;
+	}
+
 	// ********getters and setters*********
 
 	public static int getProductCount() {
