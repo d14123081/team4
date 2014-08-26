@@ -723,4 +723,106 @@ public class PermanentDatabaseTest {
 		db.deleteDelivery(deliveries.get(1));
 		db.deleteDelivery(deliveries.get(2));	
 	}
+	
+	@Test
+	public void testGetOrdersBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Supplier supplier = new Supplier(temp,temp,temp,temp);
+		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
+		Order tooOld = new Order(1, supplier, 1, lineItems, 1, nowMinus1);
+		Order justOldEnough = new Order(1, supplier, 1, lineItems, 1, now);
+		Order justRight = new Order(1, supplier, 1, lineItems, 1, inBetween);
+		Order justNewEnough = new Order(1, supplier, 1, lineItems, 1, now500);
+		Order tooNew = new Order(1, supplier, 1, lineItems, 1, now500Plus1);	
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addOrder(justRight);
+		db.addOrder(justOldEnough);
+		db.addOrder(tooOld);
+		db.addOrder(tooNew);
+		db.addOrder(justNewEnough);
+		
+		ArrayList<Order> validOrders = db.getOrdersBetween(now, now500);
+		assertEquals(1, validOrders.get(0).getID());
+		assertEquals(2, validOrders.get(1).getID());
+		assertEquals(5, validOrders.get(2).getID());
+		
+		//cleanup
+		for(Order o: db.getOrders()){
+			db.deleteOrder(o);
+		}
+	}
+	
+	@Test
+	public void testGetInvoicesBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Customer customer = new Customer(temp,temp,temp,temp);
+		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
+		Invoice tooOld = new Invoice(lineItems, customer, 1, nowMinus1, 1);
+		Invoice justOldEnough = new Invoice(lineItems, customer, 1, now, 1);
+		Invoice justRight = new Invoice(lineItems, customer, 1, inBetween, 1);
+		Invoice justNewEnough = new Invoice(lineItems, customer, 1, now500, 1);
+		Invoice tooNew = new Invoice(lineItems, customer, 1, now500Plus1, 1);
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addInvoice(justRight);
+		db.addInvoice(justOldEnough);
+		db.addInvoice(tooOld);
+		db.addInvoice(tooNew);
+		db.addInvoice(justNewEnough);
+		
+		ArrayList<Invoice> validInvoices = db.getInvoicesBetween(now, now500);
+		assertEquals(1, validInvoices.get(0).getID());
+		assertEquals(2, validInvoices.get(1).getID());
+		assertEquals(5, validInvoices.get(2).getID());
+		
+		//cleanup
+		for(Invoice i: db.getInvoices()){
+			db.deleteInvoice(i);
+		}
+	}
+	
+	@Test
+	public void testGetDeliveriesBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Supplier supplier = new Supplier(temp,temp,temp,temp);
+		Delivery tooOld = new Delivery(supplier, 1, nowMinus1, 1);
+		Delivery justOldEnough = new Delivery(supplier, 2, now, 1);
+		Delivery justRight = new Delivery(supplier, 3, inBetween, 1);
+		Delivery justNewEnough = new Delivery(supplier, 4, now500, 1);
+		Delivery tooNew = new Delivery(supplier, 5, now500Plus1, 1);
+		
+		PermanentDatabase db = PermanentDatabase.getInstance();
+		db.addDelivery(justRight);
+		db.addDelivery(justOldEnough);
+		db.addDelivery(tooOld);
+		db.addDelivery(tooNew);
+		db.addDelivery(justNewEnough);
+		
+		ArrayList<Delivery> validDeliveries = db.getDeliveriesBetween(now, now500);
+		assertEquals(3, validDeliveries.get(0).getOrderID());
+		assertEquals(2, validDeliveries.get(1).getOrderID());
+		assertEquals(4, validDeliveries.get(2).getOrderID());
+		
+		//cleanup
+		for(Delivery d: db.getDeliveries()){
+			db.deleteDelivery(d);
+		}
+	}
 }
+>>>>>>> date_ranges_db

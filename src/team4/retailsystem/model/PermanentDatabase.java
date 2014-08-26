@@ -1,6 +1,7 @@
 package team4.retailsystem.model;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -1046,6 +1047,98 @@ public class PermanentDatabase {
 			}
 			System.err.println("Database access error: " + e.getMessage());
 		}		
+	}
+	
+	/**
+	 * Return all orders dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all orders that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Order> getOrdersBetween(Date start, Date end) {
+		ArrayList<Order> output = new ArrayList<Order>();
+		try {
+			pStatement = connection
+					.prepareStatement("SELECT * FROM ORDERS WHERE DATE >= (?) AND DATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				long dateLong = rs.getLong("date");
+				Date date = new Date(dateLong);
+				int supplierID = rs.getInt("supplierid");
+				int deliveryID = rs.getInt("deliveryid");
+				double value = rs.getDouble("value");
+				Supplier supplier = getSupplier(supplierID);
+				ArrayList<LineItem> orderItems = getOrderItems(id);
+				output.add(new Order(value, supplier, deliveryID, orderItems, id,
+						date));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;
+	}
+
+	/**
+	 * Return all deliveries dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all deliveries that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Delivery> getDeliveriesBetween(Date start, Date end){
+		ArrayList<Delivery> output = new ArrayList<Delivery>();
+		try {
+			pStatement = connection.prepareStatement("SELECT * FROM DELIVERIES WHERE DELIVERYDATE >= (?) AND DELIVERYDATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("id");
+				long deliveryDate = rs.getLong("deliverydate");
+				Date date = new Date(deliveryDate);
+				int orderID = rs.getInt("orderid");
+				int supplierID = rs.getInt("supplierid");
+				Supplier supplier = getSupplier(supplierID);
+				output.add(new Delivery(supplier, orderID, date, id));
+			}
+			rs.close();	
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;
+	}
+
+	/**
+	 * Return all invoices dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all invoices that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Invoice> getInvoicesBetween(Date start, Date end){
+		ArrayList<Invoice> output = new ArrayList<Invoice>();
+		try {
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICES WHERE DATE >= (?) AND DATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("id");
+				long dateLong = rs.getLong("date");
+				Date date = new Date(dateLong);
+				int customerID = rs.getInt("customerid");
+				double value = rs.getDouble("value");
+				Customer customer = getCustomer(customerID);
+				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
+				output.add(new Invoice(invoiceItems, customer, id, date, value));
+			}
+			rs.close();	
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;	
 	}
 
 	/**
