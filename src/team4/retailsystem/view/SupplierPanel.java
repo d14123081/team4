@@ -319,10 +319,16 @@ public class SupplierPanel extends JPanel implements ActionListener,
         	supplierArrayList.add(s.getName() + "   \n");
         }
     }
-
-    public void addSupplierToDB() {
-        //Database.getInstance().addSupplier(
-                //new Supplier(nameField.getText(), emailField.getText(),
-                       // addressField.getText(), telephoneField.getText()));
+    
+    /*
+     * A method that clears temp fields on logout.
+     */
+    public void logout(){
+        nameField.setText(null);
+        addressField.setText(null);
+        emailField.setText(null);
+        telephoneField.setText(null);
+        isNewOrder = false;
+        setEditableForField(false);
     }
 }

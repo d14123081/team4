@@ -179,4 +179,15 @@ public class UserPanel extends JPanel {
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}
+    
+    /*
+     * A method that clears temp fields on logout.
+     */
+	public void logout(){
+		String empty = "";
+		idField.setText(empty);
+		usernameField.setText(empty);
+		authComboBox.setSelectedIndex(0);
+		passwordField.setText(empty);
+	}
 }

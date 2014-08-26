@@ -18,6 +18,14 @@ public class Customer {
 		this.email = email;
 		this.address = address;
 	}
+	
+	public Customer(String name, String telephoneNumber, String email, String address, int customerID){
+		this.customerID = customerID;
+		this.name = name;
+		this.telephoneNumber = telephoneNumber;
+		this.email = email;
+		this.address = address;		
+	}
 
 	// Getters and setters
 	public String getName() {

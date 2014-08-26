@@ -162,10 +162,12 @@ public class InvoicePanel extends JPanel {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.setBounds(205, 296, 89, 23);
 		add(btnAdd);
-		btnAdd.addActionListener(new ActionListener() {
+		btnAdd.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) {
-				if (checkboxNew.isSelected() && invoiceTable.getRowCount() > 0) {
-					Customer c = (Customer) customerComboBox.getSelectedItem();
+				if (checkboxNew.isSelected() && invoiceTable.getRowCount() > 0) 
+				{
+					Customer c = (Customer)customerComboBox.getSelectedItem();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < invoiceTable.getRowCount(); i++) {
 						
@@ -174,7 +176,8 @@ public class InvoicePanel extends JPanel {
 						
 						lineitems.add(new LineItem(productId, quantity));
 					}
-					for (RetailViewListener r : listeners) {
+					for (RetailViewListener r : listeners) 
+					{
 						r.clickCreateInvoice(lineitems, c);
 					}
 					clearInvoice();
@@ -256,8 +259,6 @@ public class InvoicePanel extends JPanel {
 					checkboxNew.setSelected(true);
 				}
 				dtm.addRow(new Object[] { ((Product)productList.getSelectedValue()).getID(), ((Product)productList.getSelectedValue()).getName(), 1 });
-				invoiceTable.requestFocus();
-				invoiceTable.editCellAt(invoiceTable.getRowCount()-1, 2);
 			}
 		});
 
@@ -306,4 +307,12 @@ public class InvoicePanel extends JPanel {
 		}
 		idField.setText(null);
 	}
+ 	
+ 	/**
+ 	 * A method that clears temp fields on logout.
+ 	 */
+ 	public void logout(){
+ 		clearInvoice();
+ 		checkboxNew.setSelected(false);	//set the checkbox to the default login position
+ 	}
 }
