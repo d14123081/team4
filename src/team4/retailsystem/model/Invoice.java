@@ -35,7 +35,7 @@ public class Invoice {
 		setCustomer(customer);
 		setId(++idCounter);
 		setDate(new Date());
-		setCost(calculateCost());
+		//setCost(calculateCost());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class Invoice {
 		setCustomer(customer);
 		setId(id);
 		setDate(date);
-		setCost(cost);
+		//setCost(cost);
 	}
 
 	public ArrayList<LineItem> getLineItems() {
