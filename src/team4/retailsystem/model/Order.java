@@ -29,6 +29,16 @@ public class Order {
         this.deliveryID = deliveryID;
         this.items = items;
     }
+
+    public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items, int id, Date date) 
+    {
+    	this.cost = cost;
+        this.supplier = supplier;
+        ID = id;
+        this.date = date;
+        this.deliveryID = deliveryID;
+        this.items = items;
+    }
     
     public ArrayList<LineItem> getLineItems()
     {
