@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -16,11 +17,14 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Product;
+import team4.retailsystem.model.User;
+
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -244,7 +248,7 @@ public class InvoicePanel extends JPanel {
 				if (invoiceList.isSelectionEmpty()) {
 					checkboxNew.setSelected(true);
 				}
-				// loops is crashing when no rows in table
+				// loops is crashing when no rows in table so added this to stop it from crashing
 				if (tableModel.getRowCount() == 0) 
 				{
 					//add row, [ product id, product name, 1 ]
@@ -335,5 +339,21 @@ public class InvoicePanel extends JPanel {
 		clearInvoice();
 		checkboxNew.setSelected(false); // set the checkbox to the default login
 										// position
+	}
+	
+	public void updateUserFunctionality(User u)
+	{
+		if(u.getAuthorizationLevel() == User.NORMAL_USER)
+		{
+			btnDelete.setVisible(false);
+			btnAdd.setVisible(false);
+			btnUpdate.setVisible(false);
+			btnCancel.setVisible(false);
+			btnDelRow.setVisible(false);
+			invoiceTable.setEnabled(false);
+			productList.setEnabled(false);
+			checkboxNew.setEnabled(false);
+			customerComboBox.setEnabled(false);
+		}
 	}
 }
