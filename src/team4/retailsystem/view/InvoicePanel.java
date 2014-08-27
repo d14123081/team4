@@ -256,19 +256,21 @@ public class InvoicePanel extends JPanel {
 
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// if not updating an invoice then creates a new one
-				if (invoiceList.isSelectionEmpty()) {
-					checkboxNew.setSelected(true);
+				
+				if(!checkboxNew.isSelected() && invoiceList.isSelectionEmpty())
+				{
+					showError("You must either create a new invoice or append to an existing invoice.");
 				}
-				// loops is crashing when no rows in table so added this to stop
-				// it from crashing
+				else
+				{
+				
 				if (tableModel.getRowCount() == 0) {
 					// add row, [ product id, product name, 1 ]
 					tableModel.addRow(new Object[] {
 							((Product) productList.getSelectedValue()).getID(),
 							((Product) productList.getSelectedValue())
 									.getName(), 1 });
-				} else // if not first row in table
+				} else 
 				{
 					for (int i = 0; i < tableModel.getRowCount(); i++) {
 						// if the id == the product which was clicked id
@@ -277,8 +279,7 @@ public class InvoicePanel extends JPanel {
 							// increase value of row(i) col 2 [quantity] by +1
 							tableModel.setValueAt(
 									(int) tableModel.getValueAt(i, 2) + 1, i, 2);
-							break;// jump out of loop, dont do next if
-									// statement?
+							break;
 						}
 
 						// if it's the final row of the table and it hasnt
@@ -292,7 +293,7 @@ public class InvoicePanel extends JPanel {
 							break;
 						}
 					}
-				}
+				}}
 			}
 		});
 
@@ -350,12 +351,12 @@ public class InvoicePanel extends JPanel {
 		checkboxNew.setSelected(false); // set the checkbox to the default login
 										// position
 	}
-	
+
 	public void showError(String errorMessage) {
-		JOptionPane.showMessageDialog(null, errorMessage);	
+		JOptionPane.showMessageDialog(null, errorMessage);
 	}
 
-	public void updateUserFunctionality(User u) {
+	public void updateUser(User u) {
 		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
 			btnDelete.setVisible(false);
 			btnAdd.setVisible(false);
