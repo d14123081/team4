@@ -23,7 +23,7 @@ public class CalenderPanel extends JPanel implements ActionListener {
     private JPanel panel1;
     private JPanel panel2;
     private static JTextField displayDate;
-    private String[] day = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    private String[] day = { "Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"};
     private JButton[] dayButton = new JButton[42];
     private JButton previousButton;
     private JButton nextButton;
@@ -75,6 +75,7 @@ public class CalenderPanel extends JPanel implements ActionListener {
         nextButton.addActionListener(this);
         panelN.add(nextButton);
         panel2.add(panelN, BorderLayout.LINE_END);
+        
         displayDate();
     }
 
@@ -91,8 +92,7 @@ public class CalenderPanel extends JPanel implements ActionListener {
         calendar.set(year, month, 1);
         dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        int i = -2; // original start from sat but this panel start from
-                    // Monday, therefore set i = -2
+        int i = 0; // original start from sat but this panel start from
         for (int day = 1; day <= daysInMonth; day++) {
             dayButton[i + dayOfWeek].setText("" + day);
             i++;

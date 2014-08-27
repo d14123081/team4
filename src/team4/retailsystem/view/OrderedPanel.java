@@ -109,6 +109,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
         Object[] t = {calender};
         JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
         JDialog dialog = o.createDialog("Delivery day");
+        dialog.setSize(new Dimension(400, 350));
         dialog.setVisible(true);
         if(o.getValue().equals(0)){
             model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
