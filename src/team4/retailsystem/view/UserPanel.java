@@ -96,7 +96,7 @@ public class UserPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (usernameField.getText().equals("")
 						|| passwordField.getPassword().length == 0) {
-					// throw exception
+					showError("Please fill empty fields");
 				} else {
 					String username = usernameField.getText();
 					String password = passwordField.getPassword().toString();
@@ -105,6 +105,7 @@ public class UserPanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickCreateUser(username, password, authLevel);
 					}
+					logout();
 				}
 			}
 		});
@@ -115,10 +116,10 @@ public class UserPanel extends JPanel {
 		panel.add(btnUpdate);
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (idField.getText().equals("")
+				if (userList.isSelectionEmpty()
 						|| usernameField.getText().equals("")
 						|| passwordField.getPassword().length == 0) {
-					// throw exception
+					showError("Select a user and enter password");
 				} else {
 					int id = Integer.parseInt(idField.getText());
 					String username = usernameField.getText();
@@ -128,6 +129,7 @@ public class UserPanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickUpdateUser(id, username, password, authLevel);
 					}
+					logout();
 				}
 			}
 		});
@@ -137,13 +139,14 @@ public class UserPanel extends JPanel {
 		panel.add(btnDelete);
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (idField.getText().equals("")) {
-					// throw exception
+				if (userList.isSelectionEmpty()) {
+					showError("No user selected");
 				} else {
 					int userId = Integer.parseInt(idField.getText());
 					for (RetailViewListener r : listeners) {
 						r.clickDeleteUser(userId);
 					}
+					logout();
 				}
 			}
 		});
@@ -153,7 +156,7 @@ public class UserPanel extends JPanel {
 		panel.add(btnCancel);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Cancel button
+				logout();
 			}
 		});
 
@@ -180,6 +183,10 @@ public class UserPanel extends JPanel {
 	
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
+	}
+	
+	public void showError(String errorMessage) {
+		JOptionPane.showMessageDialog(null, errorMessage);	
 	}
     
     /*

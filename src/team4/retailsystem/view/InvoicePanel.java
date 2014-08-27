@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -82,7 +83,16 @@ public class InvoicePanel extends JPanel {
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
+
+			@Override
+			public void setValueAt(Object val, int row, int column) {
+				if (val instanceof Number && ((Number) val).doubleValue() > 0) {
+					super.setValueAt(val, row, column);
+				}
+			}
+
 		});
+
 		invoiceTable.getTableHeader().setReorderingAllowed(false);
 		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invoiceListPanel.setLayout(null);
@@ -153,7 +163,7 @@ public class InvoicePanel extends JPanel {
 					}
 					logout();
 				} else {
-					// throw exception
+					showError("Select an invoice");
 				}
 			}
 		});
@@ -176,7 +186,7 @@ public class InvoicePanel extends JPanel {
 					}
 					logout();
 				} else {
-					// throw exception
+					showError("Incomplete invoice");
 				}
 
 			}
@@ -200,15 +210,17 @@ public class InvoicePanel extends JPanel {
 					}
 					logout();
 				} else {
-					// throw exception
+					showError("Select an invoice");
 				}
 			}
 		});
 
 		btnDelRow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-					if (invoiceTable.isRowSelected(i)) {
+				for (int i = 0; i < invoiceTable.getRowCount(); i++) 
+				{
+					if (invoiceTable.isRowSelected(i)) 
+					{
 						tableModel.removeRow(i);
 						invoiceTable.clearSelection();
 						break;
@@ -244,36 +256,34 @@ public class InvoicePanel extends JPanel {
 
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				//if not updating an invoice then creates a new one
+				// if not updating an invoice then creates a new one
 				if (invoiceList.isSelectionEmpty()) {
 					checkboxNew.setSelected(true);
 				}
-				// loops is crashing when no rows in table so added this to stop it from crashing
-				if (tableModel.getRowCount() == 0) 
-				{
-					//add row, [ product id, product name, 1 ]
-					tableModel.addRow(new Object[] 
-							{
+				// loops is crashing when no rows in table so added this to stop
+				// it from crashing
+				if (tableModel.getRowCount() == 0) {
+					// add row, [ product id, product name, 1 ]
+					tableModel.addRow(new Object[] {
 							((Product) productList.getSelectedValue()).getID(),
 							((Product) productList.getSelectedValue())
 									.getName(), 1 });
-				} 
-				else //if not first row in table
+				} else // if not first row in table
 				{
-					for (int i = 0; i < tableModel.getRowCount(); i++) 
-					{
-						//if the id == the product which was clicked id
+					for (int i = 0; i < tableModel.getRowCount(); i++) {
+						// if the id == the product which was clicked id
 						if ((int) tableModel.getValueAt(i, 0) == ((Product) productList
-								.getSelectedValue()).getID()) 
-						{
-							//increase value of row(i) col 2 [quantity] by +1
+								.getSelectedValue()).getID()) {
+							// increase value of row(i) col 2 [quantity] by +1
 							tableModel.setValueAt(
 									(int) tableModel.getValueAt(i, 2) + 1, i, 2);
-							break;//jump out of loop, dont do next if statement?
+							break;// jump out of loop, dont do next if
+									// statement?
 						}
-						
-						//if it's the final row of the table and it hasnt broken the loop yet then add new row with quantity 1
-						if (i == tableModel.getRowCount()-1) {
+
+						// if it's the final row of the table and it hasnt
+						// broken the loop yet then add new row with quantity 1
+						if (i == tableModel.getRowCount() - 1) {
 							tableModel.addRow(new Object[] {
 									((Product) productList.getSelectedValue())
 											.getID(),
@@ -341,10 +351,12 @@ public class InvoicePanel extends JPanel {
 										// position
 	}
 	
-	public void updateUserFunctionality(User u)
-	{
-		if(u.getAuthorizationLevel() == User.NORMAL_USER)
-		{
+	public void showError(String errorMessage) {
+		JOptionPane.showMessageDialog(null, errorMessage);	
+	}
+
+	public void updateUserFunctionality(User u) {
+		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
 			btnDelete.setVisible(false);
 			btnAdd.setVisible(false);
 			btnUpdate.setVisible(false);
