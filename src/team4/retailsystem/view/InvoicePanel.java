@@ -79,6 +79,7 @@ public class InvoicePanel extends JPanel {
 				return columnEditables[column];
 			}
 		});
+		invoiceTable.getTableHeader().setReorderingAllowed(false);
 		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invoiceListPanel.setLayout(null);
 		invoiceListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
@@ -202,10 +203,8 @@ public class InvoicePanel extends JPanel {
 
 		btnDelRow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) 
-				{
-					if (invoiceTable.isRowSelected(i)) 
-					{
+				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
+					if (invoiceTable.isRowSelected(i)) {
 						tableModel.removeRow(i);
 						invoiceTable.clearSelection();
 						break;
@@ -241,12 +240,45 @@ public class InvoicePanel extends JPanel {
 
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				//if not updating an invoice then creates a new one
 				if (invoiceList.isSelectionEmpty()) {
 					checkboxNew.setSelected(true);
 				}
-				tableModel.addRow(new Object[] {
-						((Product) productList.getSelectedValue()).getID(),
-						((Product) productList.getSelectedValue()).getName(), 1 });
+				// loops is crashing when no rows in table
+				if (tableModel.getRowCount() == 0) 
+				{
+					//add row, [ product id, product name, 1 ]
+					tableModel.addRow(new Object[] 
+							{
+							((Product) productList.getSelectedValue()).getID(),
+							((Product) productList.getSelectedValue())
+									.getName(), 1 });
+				} 
+				else //if not first row in table
+				{
+					for (int i = 0; i < tableModel.getRowCount(); i++) 
+					{
+						//if the id == the product which was clicked id
+						if ((int) tableModel.getValueAt(i, 0) == ((Product) productList
+								.getSelectedValue()).getID()) 
+						{
+							//increase value of row(i) col 2 [quantity] by +1
+							tableModel.setValueAt(
+									(int) tableModel.getValueAt(i, 2) + 1, i, 2);
+							break;//jump out of loop, dont do next if statement?
+						}
+						
+						//if it's the final row of the table and it hasnt broken the loop yet then add new row with quantity 1
+						if (i == tableModel.getRowCount()-1) {
+							tableModel.addRow(new Object[] {
+									((Product) productList.getSelectedValue())
+											.getID(),
+									((Product) productList.getSelectedValue())
+											.getName(), 1 });
+							break;
+						}
+					}
+				}
 			}
 		});
 
