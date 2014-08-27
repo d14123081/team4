@@ -46,6 +46,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private DefaultTableModel model;
     private ArrayList<Supplier> suppliers = new ArrayList<>();
     private ArrayList<Product> products = new ArrayList<>();
+    private ArrayList<Order> orders = new ArrayList<>();
     private ArrayList<String> supplierArrayList = new ArrayList<>();
     private ArrayList<String> productArrayList = new ArrayList<>();
     private ArrayList<LineItem> itemsArrayList = new ArrayList<>();
@@ -189,8 +190,8 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         supplierPanel = new JScrollPane(supplierList);
         addPanelName("Suppliers", supplierPanel);
         combinePanel.add(supplierPanel);
-
         productList = new JList<Object>(productArrayList.toArray());
+        
         getProductArrayList();
         productList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         productList.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -231,7 +232,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             index = supplierList.getSelectedIndex();
             supplier =
                     Database.getInstance().getSuppliers().get(index);
-            productArrayList.clear();
             for (Product p : products) {
                 if (p.getSupplier().equals(supplier)) {
                     productArrayList.add(p.getName() + "   ");
@@ -378,11 +378,11 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void updateProductList(ArrayList<Product> products){
-    	productList.setListData(products.toArray());
+        productList.setListData(products.toArray());
     }
     
     public void updateSupplierList(ArrayList<Supplier> supliers){
-    	supplierList.setListData(suppliers.toArray());
+        supplierList.setListData(suppliers.toArray());
     }
     
     public void addListener(RetailViewListener r) {
@@ -393,7 +393,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         p = new ExtraPanel();
         Object[] t = {p};
         JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
-        JDialog dialog = o.createDialog(null, "Width 100");
+        JDialog dialog = o.createDialog("Edit Quantity");
         dialog.setVisible(true);
         if(o.getValue().equals(0)){
             updateQuantity(p.getValue());
@@ -401,21 +401,48 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void ordersList(int v){
-        ordered = new OrderedPanel();
-        calender = new CalenderPanel();
-        switch(v){
-        case 1:
-            calender.setVisible(false);
-            break;
-        case 2:
-            break;
-        }
+        ordered = new OrderedPanel(v);
         Object[] t = {ordered,calender};
         JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
-        JDialog d = o.createDialog(null, "Width 100");   
+        JDialog d = o.createDialog(null,"Orders List");   
+        d.setSize(480, 550);
         d.setVisible(true);
-        
+        //orderedPanel = new OrderedPanel();
+        if(o.getValue().equals(0)){
+            switch(v){
+            case 1:
+                clearItemList();
+                total = 0;
+                orders = Database.getInstance().getOrders();
+                for(Order order : orders){
+                    if(order.getID() == ordered.getOrderID()){
+                        itemsArrayList = order.getLineItems();
+                        for(LineItem items : order.getLineItems()){
+                            for(Product product : products){
+                                if(product.getID() == items.getProductID()){
+                                    Object[] item =
+                                        { product.getName(), items.getQuantity(),product.getCost()};
+                                    total = total + product.getCost()*items.getQuantity();
+                                    model.addRow(item);
+                                    model.fireTableDataChanged();
+                                }
+                            }
+                        }
+                        totalField.setText(""+total);         
+                    }
+                };
+                break;
+            case 2:
+                clearItemList();
+                for(RetailViewListener r : listeners ){
+                    //need a adding delivery day to Order
+                   // r.
+                }
+                break;
+            }
+        }   
     }
+
  	
  	/**
  	 * A method that clears temp fields on logout.
@@ -425,4 +452,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         clearItemList();
         supplierList.setEnabled(false);
     }
+    
+    
 }
