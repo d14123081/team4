@@ -16,14 +16,17 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 
 import org.omg.CORBA.SetOverrideType;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Invoice;
+import team4.retailsystem.model.User;
 
 
 public class CustomerPanel extends JPanel{
@@ -39,6 +42,7 @@ public class CustomerPanel extends JPanel{
 	
 	JComboBox customerComboBox;
 	
+	
 	private JLabel nameLabel;
 	private JLabel addressLabel;
 	private JLabel eMailLabel;
@@ -51,19 +55,16 @@ public class CustomerPanel extends JPanel{
 	private JTextField telTF;
 	private JButton submit, back, remove, edit;
 
-	/* how to implement the ID generator?
-	 * is the ID handled by the data base as an int or a string?
-	 * 
-	*/
+	
 
 	public CustomerPanel() {
 		
-		this.setSize(200, 400);
+		this.setSize(200, 300);
 		 this.setVisible(true);
 		 this.setLayout(new GridLayout(0,2,10, 30));
+		 this.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		 
-	//	 this.setLayout(this, EAST);
-		
+		 
 		 namePanel = new JPanel();
 		 namePanel.setLayout(new CardLayout());
 		 customerComboBox = new JComboBox();
@@ -85,13 +86,12 @@ public class CustomerPanel extends JPanel{
 
 		 
 		 nameTF = new JTextField(8);
-		 setNameTF("'Search here'");
 		 addressTF = new JTextField(8);
 		 eMailTF = new JTextField(8);
 		 idTF = new JTextField(8);
 		 telTF = new JTextField(8);
 		 
-		 //nameTF.addActionListener(new TextFieldListener()); 
+		// nameTF.addActionListener(new TextFieldListener()); 
 
 		 submit = new JButton("Create new Customer");
 		 submit.addActionListener(new CRUDListener());
@@ -192,7 +192,7 @@ public class CustomerPanel extends JPanel{
 	
 	// *********listeners and methods************
 
-	public class TextFieldListener implements ActionListener{
+/*	public class TextFieldListener implements ActionListener{
 	    public void actionPerformed(ActionEvent e){
 	    	
 	    	ArrayList<Customer> customers = Database.getInstance().getCustomers();
@@ -208,7 +208,7 @@ public class CustomerPanel extends JPanel{
 	    	
 	    }
 	    
-	}
+	}*/
 	
 		class CRUDListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
@@ -220,17 +220,18 @@ public class CustomerPanel extends JPanel{
 			 
 			 // save new customer if conditions are met
 	    	if(e.getActionCommand().equals("Save new Customer")){
-	    		if(getNameTF().isEmpty()||getAddressTF().isEmpty()
+	    		if(getAddressTF().isEmpty()
 	    	    	||getEmailTF().isEmpty()||getTelTF().isEmpty()){
-	    	    		
-	    				// Checks for blank fields
-	    	    		Warning w = new Warning();
-	    	    		w.blankWarning();
-	    	    		}
+	    			
+	    		
+	    	    		JOptionPane.showMessageDialog(null, "Please make sure all labels are filled in");
+	    		}
+	    				
 	    	    	
 	    		   	// checks for invalid Email construction
 	    	    	else if(getEmailTF().contains("@")&& getEmailTF().contains(".")){
 	    	    		
+
 	    	    		/*Customer customer = new Customer(getNameTF(), getTelTF(), getAddressTF(), getEmailTF() );
 	    	    		Database db = Database.getInstance();
 	    	    		db.addCustomer(customer);*/
@@ -248,44 +249,37 @@ public class CustomerPanel extends JPanel{
 		    	    		
 		    	    	}
 		    	    	else{
-		    	    		
-		    	    		Warning w = new Warning();
-		    	    		w.EmailWarning();
+		    	    		JOptionPane.showMessageDialog(null, "Please provide a valid email address");
+
 		    	      	    		
 	    	  } 
 
 	    }
 			// when back button pressed
-			if(e.getActionCommand().equals("back")){
+			if(e.getActionCommand().equals("Cancel")){
 				setToViewMode();
 			}
 			
 			// when remove button pressed
 			if(e.getActionCommand().equals("Remove Customer")){
-				
-				//inform listeners of the delete customer event
-				for(RetailViewListener r:listeners){
+	    		if(JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this customer")==0){
+	    		for(RetailViewListener r:listeners){
 			 		r.clickDeleteCustomer(Integer.parseInt(getIDTF()));
-			 	}
-				
-				//Warning w = new Warning();
-				//w.RemoveWarning();
-				
-				
+				}
 			}
-			
+			}
 			//when edit button pressed
 			if(e.getActionCommand().equals("Edit Customer")){
 				 editCustomerMode();
 				
 			}
 			
-				if(e.getActionCommand().equals("Save Changes")){
-					 if(getNameTF().isEmpty()||getAddressTF().isEmpty()
+			if(e.getActionCommand().equals("Save Changes")){
+					 if(getAddressTF().isEmpty()
 			    		       	||getEmailTF().isEmpty()||getTelTF().isEmpty()){
 			    	    		
-			    	    		Warning w = new Warning();
-			    	    		w.blankWarning();
+		    	   	JOptionPane.showMessageDialog(null, "Please make sure all labels are filled in");
+
 			    	    	}
 					
 				
@@ -303,12 +297,13 @@ public class CustomerPanel extends JPanel{
 					 
 						}
 	    	    		else{
-	    	    			Warning w = new Warning();
-		    	    		w.EmailWarning();
+		    	    		JOptionPane.showMessageDialog(null, "Please provide a valid email address");
+
 	    	    		}
 			}	    	
     	  }
-		}	
+		}
+			
 	
 	
 	//default panel view 
@@ -330,7 +325,6 @@ public class CustomerPanel extends JPanel{
 		 edit.setText("Edit Customer");
  		 submit.setText("Create new Customer");
  		 back.setText("Clear fields");
- 		 setNameTF("'Search here'");
 	}
  		 
  		
@@ -361,7 +355,7 @@ public class CustomerPanel extends JPanel{
 		 submit.setEnabled(false);
 		 remove.setEnabled(false);
 		 edit.setText("Save Changes");
-		 back.setText("back");
+		 back.setText("Cancel");
  		
  	}
  	
@@ -380,9 +374,25 @@ public class CustomerPanel extends JPanel{
 		 submit.setText("Save new Customer");
 		 remove.setEnabled(false);
 		 edit.setEnabled(false);
-		 back.setText("back");
+		 back.setText("Cancel");
  		
 		 clearTextFields();
+ 	}
+ 	
+ 	public void updateUser(User user){
+ 		//
+ 		if(user.getAuthorizationLevel()== 1){
+ 			submit.setVisible(false);
+ 			back.setVisible(false);
+ 			remove.setVisible(false);
+ 			edit.setVisible(false);
+ 		}
+ 		else{
+ 			submit.setVisible(true);
+ 			back.setVisible(true);
+ 			remove.setVisible(true);
+ 			edit.setVisible(true);
+ 		}
  	}
  	
  	public void updateCustomerList(ArrayList<Customer> customers){

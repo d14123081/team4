@@ -825,4 +825,3 @@ public class PermanentDatabaseTest {
 		}
 	}
 }
->>>>>>> date_ranges_db
