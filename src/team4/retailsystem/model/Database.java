@@ -821,15 +821,17 @@ public class Database {
 			pStatement = connection.prepareStatement("SELECT * FROM INVOICES WHERE ID=(?)");
 			pStatement.setInt(1, id);
 			ResultSet rs = pStatement.executeQuery();
-			while(rs.next()){
-				long dateLong = rs.getLong("date");
-				Date date = new Date(dateLong);
-				int customerID = rs.getInt("customerid");
-				Customer customer = getCustomer(customerID);
-				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				output = new Invoice(invoiceItems, customer, id, date);
+			if(!rs.next()){
+				rs.close();
+				return null;
 			}
+			long dateLong = rs.getLong("date");
+			Date date = new Date(dateLong);
+			int customerID = rs.getInt("customerid");
 			rs.close();	
+			Customer customer = getCustomer(customerID);
+			ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
+			output = new Invoice(invoiceItems, customer, id, date);
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
@@ -842,16 +844,18 @@ public class Database {
 			pStatement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ID=(?)");
 			pStatement.setInt(1, id);
 			ResultSet rs = pStatement.executeQuery();
-			while(rs.next()){
-				long dateLong = rs.getLong("date");
-				Date date = new Date(dateLong);
-				int supplierID = rs.getInt("supplierid");
-				int deliveryID = rs.getInt("deliveryid");
-				Supplier supplier = getSupplier(supplierID);
-				ArrayList<LineItem> orderItems = getOrderItems(id);
-				output = new Order(-1, supplier, deliveryID, orderItems, id, date);
+			if(!rs.next()){
+				rs.close();
+				return null;
 			}
-			rs.close();	
+			long dateLong = rs.getLong("date");
+			Date date = new Date(dateLong);
+			int supplierID = rs.getInt("supplierid");
+			int deliveryID = rs.getInt("deliveryid");
+			rs.close();
+			Supplier supplier = getSupplier(supplierID);
+			ArrayList<LineItem> orderItems = getOrderItems(id);
+			output = new Order(-1, supplier, deliveryID, orderItems, id, date);
 		} catch (SQLException e) {
 			System.err.println("Database query error: " + e.getMessage());
 		}
