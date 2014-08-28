@@ -22,8 +22,8 @@ public class CalenderPanel extends JPanel implements ActionListener {
     private JLabel monthYearLabel;
     private JPanel panel1;
     private JPanel panel2;
-    private JTextField displayDate;
-    private String[] day = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    private static JTextField displayDate;
+    private String[] day = { "Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"};
     private JButton[] dayButton = new JButton[42];
     private JButton previousButton;
     private JButton nextButton;
@@ -37,9 +37,11 @@ public class CalenderPanel extends JPanel implements ActionListener {
 
     public CalenderPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        displayDate = new JTextField();
+        JPanel panelT = new JPanel();
+        displayDate = new JTextField(30);
         displayDate.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(displayDate);
+        panelT.add(displayDate);
+        this.add(panelT);
         panel1 = new JPanel();
         this.add(panel1);
         panel1.setLayout(new GridLayout(7, 7));
@@ -55,17 +57,25 @@ public class CalenderPanel extends JPanel implements ActionListener {
         }
 
         panel2 = new JPanel();
+        panel2.setPreferredSize(new Dimension(this.getWidth(), 20));
         this.add(panel2);
         panel2.setLayout(new BorderLayout());
+        JPanel panelP = new JPanel();
         previousButton = new JButton("<");
         previousButton.addActionListener(this);
-        panel2.add(previousButton, BorderLayout.LINE_START);
+        panelP.add(previousButton);
+        panel2.add(panelP, BorderLayout.LINE_START);
+        JPanel panelL = new JPanel();
         monthYearLabel = new JLabel();
-        monthYearLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panel2.add(monthYearLabel, BorderLayout.CENTER);
+        //monthYearLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelL.add(monthYearLabel);
+        panel2.add(panelL, BorderLayout.CENTER);
+        JPanel panelN = new JPanel();
         nextButton = new JButton(">");
         nextButton.addActionListener(this);
-        panel2.add(nextButton, BorderLayout.LINE_END);
+        panelN.add(nextButton);
+        panel2.add(panelN, BorderLayout.LINE_END);
+        
         displayDate();
     }
 
@@ -78,12 +88,11 @@ public class CalenderPanel extends JPanel implements ActionListener {
 
     public void displayDate() {
         resetButton();
-        sdf = new java.text.SimpleDateFormat("MMMM yyyy");
+        sdf = new SimpleDateFormat("MMMM yyyy");
         calendar.set(year, month, 1);
         dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        int i = -2; // original start from sat but this panel start from
-                    // Monday, therefore set i = -2
+        int i = 0; // original start from sat but this panel start from
         for (int day = 1; day <= daysInMonth; day++) {
             dayButton[i + dayOfWeek].setText("" + day);
             i++;
@@ -110,12 +119,12 @@ public class CalenderPanel extends JPanel implements ActionListener {
 
         else {
             date.set(year, month, Integer.parseInt(arg0.getActionCommand()));
-            displayDate.setText("Delivery day: "+new SimpleDateFormat("dd/MM/yyyy").format(date.getTime()));
+            displayDate.setText("Delivery on: "+new SimpleDateFormat("dd/MM/yyyy").format(date.getTime()));
         }
     }
 
-    public Calendar getDate() {
-        return this.date;
+    public String getDate() {
+        return displayDate.getText();
     }
 
 }

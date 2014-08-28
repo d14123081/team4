@@ -296,4 +296,11 @@ public class ProductPanel extends JPanel {
 			nameCombo.setSelectedIndex(nameCombo.getSelectedIndex());
 		}
 	}
+ 	
+ 	/**
+ 	 * A method that clears temp fields on logout.
+ 	 */
+ 	public void logout(){
+ 		setToViewMode();
+ 	}
 }

@@ -319,4 +319,16 @@ public class SupplierPanel extends JPanel implements ActionListener,
         	supplierArrayList.add(s.getName() + "   \n");
         }
     }
+    
+    /*
+     * A method that clears temp fields on logout.
+     */
+    public void logout(){
+        nameField.setText(null);
+        addressField.setText(null);
+        emailField.setText(null);
+        telephoneField.setText(null);
+        isNewOrder = false;
+        setEditableForField(false);
+    }
 }

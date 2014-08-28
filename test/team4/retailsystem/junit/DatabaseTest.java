@@ -117,9 +117,9 @@ public class DatabaseTest {
 		int newStockLevel = 10;
 		
 		String sname = "Amazing Carpets";
-		String stelephoneNo = "0833903128";
-		String semail = "amazing.carpets@gmail.com";
 		String saddress = "54 Random Street\nDublin 4\nIreland";
+		String semail = "amazing.carpets@gmail.com";
+		String stelephoneNo = "0833903128";
 		
 		Supplier supplier = new Supplier(sname, saddress, semail, stelephoneNo);
 		Supplier newSupplier = new Supplier(semail, saddress, semail, stelephoneNo);
@@ -208,8 +208,8 @@ public class DatabaseTest {
 		lineItems.add(one);
 		lineItems.add(two);
 		
-		Supplier supplier1 = new Supplier("Supplier One", "supplier1@email.com", "supplier 1 road", "11111111");
-		Supplier supplier2 = new Supplier("Supplier Two", "supplier2@email.com", "supplier 2 road", "22222222");
+		Supplier supplier1 = new Supplier("Supplier One", "supplier 1 road", "supplier1@email.com", "11111111");
+		Supplier supplier2 = new Supplier("Supplier Two", "supplier 2 road", "supplier2@email.com", "22222222");
 		db.addSupplier(supplier1);
 		db.addSupplier(supplier2);
 		
@@ -309,7 +309,7 @@ public class DatabaseTest {
 		Supplier supplier1 = new Supplier("Blackthorne", "city street", "blackthorne@gmail.com", "07528934");
 		Product product1 = new Product("name", cost, 1, 1, supplier1);
 		Order order = new Order(cost, supplier1, deliveryID, items);
-		Date deliveryDate = order.getDeliveryDate();
+		Date deliveryDate = order.getOrderDate();
 		
 		Database db = Database.getInstance();
 		db.addSupplier(supplier1);
@@ -320,8 +320,8 @@ public class DatabaseTest {
 		
 		//Test Create && Read
 		order = db.getOrder(1);
-		assertEquals(cost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getDeliveryDate().getTime());
+		//assertEquals(cost, order.getCost(), 0.001);
+		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
 		assertEquals(one.getQuantity(), order.getLineItems().get(0).getQuantity());
 		assertEquals(one.getProductID(), order.getLineItems().get(0).getProductID());
@@ -337,14 +337,14 @@ public class DatabaseTest {
 		items.get(1).setProductID(productID);
 		items.get(1).setQuantity(quantity);
 		order.setCost(newCost);
-		order.setDeliveryDate(new Date());
-		deliveryDate = order.getDeliveryDate();
+		order.setOrderDate(new Date());
+		deliveryDate = order.getOrderDate();
 		order.setLineItems(items);
 		db.updateOrder(order);
 		
 		db.getOrder(1);
-		assertEquals(newCost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getDeliveryDate().getTime());
+		//assertEquals(newCost, order.getCost(), 0.001);
+		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
 		assertEquals(items.get(0).getQuantity(), order.getLineItems().get(0).getQuantity());
 		assertEquals(items.get(0).getProductID(), order.getLineItems().get(0).getProductID());
@@ -369,14 +369,14 @@ public class DatabaseTest {
 		String telephoneNo = "0833903128";
 		String email = "amazing.carpets@gmail.com";
 		String address = "54 Random Street\nDublin 4\nIreland";
-		Supplier supplier1 = new Supplier(name, email, address, telephoneNo);	
+		Supplier supplier1 = new Supplier(name, address, email, telephoneNo);	
 		Database.getInstance().addSupplier(supplier1);
 		
 		String newName = "Average Carpets";	
 		String newTelephoneNo = "123445678";
 		String newEmail = "average.carpets@outlook.com";
 		String newAddress = "81 Less Random street";		
-		Supplier supplier2 = new Supplier(newName, newEmail, newAddress, newTelephoneNo);	
+		Supplier supplier2 = new Supplier(newName, newAddress, newEmail, newTelephoneNo);	
 		Database.getInstance().addSupplier(supplier2);	
 
 		//test Create
@@ -506,9 +506,9 @@ public class DatabaseTest {
 		String addr2 = "addr 2";
 		String addr3 = "addr 3";
 
-		Supplier one = new Supplier(name1, telNo1, email1, addr1);
-		Supplier two = new Supplier(name2, telNo2, email2, addr2);
-		Supplier three = new Supplier(name3, telNo3, email3, addr3);
+		Supplier one = new Supplier(name1, addr1, email1, telNo1);
+		Supplier two = new Supplier(name2, addr2, email2, telNo2);
+		Supplier three = new Supplier(name3, addr3, email3, telNo3);
 
 		Database db = Database.getInstance();
 		db.addSupplier(one);
@@ -536,7 +536,7 @@ public class DatabaseTest {
 		String email1 = "email 1";
 		String addr1 = "addr 1";
 
-		Supplier supplier = new Supplier(name1, email1, addr1, telNo1);
+		Supplier supplier = new Supplier(name1, addr1, email1, telNo1);
 		
 		Product one = new Product(name1, 1, 1, 1, supplier);
 		Product two = new Product(name2, 1, 1, 1, supplier);
@@ -645,6 +645,7 @@ public class DatabaseTest {
 		db.deleteProduct(products.get(2));
 	}
 	
+	@Deprecated
 	@Test
 	public void testGetOrders(){
 		String name1 = "name 1";
@@ -756,6 +757,106 @@ public class DatabaseTest {
 		}
 		for(LineItem li : Database.getInstance().getInvoiceItems()){
 			Database.getInstance().deleteInvoiceItem(li);
+		}
+	}
+	@Test
+	public void testGetOrdersBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Supplier supplier = new Supplier(temp,temp,temp,temp);
+		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
+		Order tooOld = new Order(1, supplier, 1, lineItems, 1, nowMinus1);
+		Order justOldEnough = new Order(1, supplier, 1, lineItems, 1, now);
+		Order justRight = new Order(1, supplier, 1, lineItems, 1, inBetween);
+		Order justNewEnough = new Order(1, supplier, 1, lineItems, 1, now500);
+		Order tooNew = new Order(1, supplier, 1, lineItems, 1, now500Plus1);	
+		
+		Database db = Database.getInstance();
+		db.addOrder(justRight);
+		db.addOrder(justOldEnough);
+		db.addOrder(tooOld);
+		db.addOrder(tooNew);
+		db.addOrder(justNewEnough);
+		
+		ArrayList<Order> validOrders = db.getOrdersBetween(now, now500);
+		assertEquals(1, validOrders.get(0).getID());
+		assertEquals(2, validOrders.get(1).getID());
+		assertEquals(5, validOrders.get(2).getID());
+		
+		//cleanup
+		for(Order o: db.getOrders()){
+			db.deleteOrder(o);
+		}
+	}
+	
+	@Test
+	public void testGetInvoicesBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Customer customer = new Customer(temp,temp,temp,temp);
+		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
+		Invoice tooOld = new Invoice(lineItems, customer, 1, nowMinus1);
+		Invoice justOldEnough = new Invoice(lineItems, customer, 1, now);
+		Invoice justRight = new Invoice(lineItems, customer, 1, inBetween);
+		Invoice justNewEnough = new Invoice(lineItems, customer, 1, now500);
+		Invoice tooNew = new Invoice(lineItems, customer, 1, now500Plus1);
+		
+		Database db = Database.getInstance();
+		db.addInvoice(justRight);
+		db.addInvoice(justOldEnough);
+		db.addInvoice(tooOld);
+		db.addInvoice(tooNew);
+		db.addInvoice(justNewEnough);
+		
+		ArrayList<Invoice> validInvoices = db.getInvoicesBetween(now, now500);
+		assertEquals(1, validInvoices.get(0).getID());
+		assertEquals(2, validInvoices.get(1).getID());
+		assertEquals(5, validInvoices.get(2).getID());
+		
+		//cleanup
+		for(Invoice i: db.getInvoices()){
+			db.deleteInvoice(i);
+		}
+	}
+	
+	@Test
+	public void testGetDeliveriesBetween(){
+		String temp = "temp";
+		Date now = new Date();
+		Date now500 = new Date(now.getTime()+500);
+		Date inBetween = new Date(now.getTime()+200);
+		Date nowMinus1 = new Date(now.getTime()-1);
+		Date now500Plus1 = new Date(now500.getTime()+1);
+		Supplier supplier = new Supplier(temp,temp,temp,temp);
+		Delivery tooOld = new Delivery(supplier, 1, nowMinus1, 1);
+		Delivery justOldEnough = new Delivery(supplier, 2, now, 1);
+		Delivery justRight = new Delivery(supplier, 3, inBetween, 1);
+		Delivery justNewEnough = new Delivery(supplier, 4, now500, 1);
+		Delivery tooNew = new Delivery(supplier, 5, now500Plus1, 1);
+		
+		Database db = Database.getInstance();
+		db.addDelivery(justRight);
+		db.addDelivery(justOldEnough);
+		db.addDelivery(tooOld);
+		db.addDelivery(tooNew);
+		db.addDelivery(justNewEnough);
+		
+		ArrayList<Delivery> validDeliveries = db.getDeliveriesBetween(now, now500);
+		assertEquals(3, validDeliveries.get(0).getOrderID());
+		assertEquals(2, validDeliveries.get(1).getOrderID());
+		assertEquals(4, validDeliveries.get(2).getOrderID());
+		
+		//cleanup
+		for(Delivery d: db.getDeliveries()){
+			db.deleteDelivery(d);
 		}
 	}
 }
