@@ -53,7 +53,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private Object[][] itemsList = null;
     private String[] columnNames =
             { "Item name", "Quantity", "Price per item" };
-    private JTextField quantity;
     private Supplier supplier;
     private boolean isNewOrder = false;
     private boolean isSelected = false;
@@ -75,11 +74,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        quantity = new JTextField();
-        quantity.addActionListener(this);
         enter = new JButton();
         enter.addActionListener(this);
         buttonPanel1 = new JPanel();
+        buttonPanel1.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         gbc.ipady = 30;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -221,7 +219,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void addPanelName(String panelName, JScrollPane panel) {
-        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         panel.setBorder(BorderFactory.createTitledBorder(panelName));
     }
 
