@@ -307,7 +307,7 @@ public class PermanentDatabaseTest {
 		
 		Supplier supplier1 = new Supplier("Blackthorne", "city street", "blackthorne@gmail.com", "07528934");
 		Order order = new Order(cost, supplier1, deliveryID, items);
-		Date deliveryDate = order.getDeliveryDate();
+		Date deliveryDate = order.getOrderDate();
 		
 		PermanentDatabase db = PermanentDatabase.getInstance();
 		db.addSupplier(supplier1);
@@ -318,7 +318,7 @@ public class PermanentDatabaseTest {
 		//Test Create && Read
 		order = db.getOrder(1);
 		//assertEquals(cost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getDeliveryDate().getTime());
+		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
 		assertEquals(one.getQuantity(), order.getLineItems().get(0).getQuantity());
 		assertEquals(one.getProductID(), order.getLineItems().get(0).getProductID());
@@ -334,14 +334,14 @@ public class PermanentDatabaseTest {
 		items.get(1).setProductID(productID);
 		items.get(1).setQuantity(quantity);
 		order.setCost(newCost);
-		order.setDeliveryDate(new Date());
-		deliveryDate = order.getDeliveryDate();
+		order.setOrderDate(new Date());
+		deliveryDate = order.getOrderDate();
 		order.setLineItems(items);
 		db.updateOrder(order);
 		
 		db.getOrder(1);
 		//assertEquals(newCost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getDeliveryDate().getTime());
+		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
 		assertEquals(items.get(0).getQuantity(), order.getLineItems().get(0).getQuantity());
 		assertEquals(items.get(0).getProductID(), order.getLineItems().get(0).getProductID());
