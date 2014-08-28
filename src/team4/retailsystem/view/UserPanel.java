@@ -99,7 +99,7 @@ public class UserPanel extends JPanel {
 					showError("Please fill empty fields");
 				} else {
 					String username = usernameField.getText();
-					String password = passwordField.getPassword().toString();
+					String password = new String(passwordField.getPassword());
 					int authLevel = authComboBox.getSelectedIndex() + 1;
 
 					for (RetailViewListener r : listeners) {

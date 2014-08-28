@@ -136,7 +136,7 @@ public class DatabaseTest {
 		//assertEquals(cost, d.getCost(), .0001);
 		assertEquals(markup, d.getMarkup(), .0001);
 		assertEquals(stockLevel, d.getStockLevel());
-		assertEquals(d.getSupplier().getName(), supplier.getName());
+		assertEquals(supplier.getName(), d.getSupplier().getName());
 		
 		//test Update
 		d.setName(newName);
@@ -226,7 +226,7 @@ public class DatabaseTest {
 		db.addCustomer(customer);	
 		
 		//acquire the id for customer c
-		customer = Database.getInstance().getCustomer(1);
+		customer = Database.getInstance().getCustomers().get(0);
 		
 		String newCustomerName = "Average Carpets";
 		String newCustomerTel = "123445678";
@@ -242,7 +242,7 @@ public class DatabaseTest {
 		//cost = invoice.getCost();
 		
 		//test Create & Read
-		invoice = db.getInvoice(1);
+		invoice = db.getInvoices().get(0);
 		//assertEquals(cost, invoice.getCost(), .0001);
 		assertEquals(customer.getName(), invoice.getCustomer().getName());
 		assertEquals(date.getTime(), invoice.getDate().getTime());
@@ -319,7 +319,7 @@ public class DatabaseTest {
 		assertTrue(db.addOrder(order));
 		
 		//Test Create && Read
-		order = db.getOrder(1);
+		order = db.getOrders().get(0);
 		//assertEquals(cost, order.getCost(), 0.001);
 		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
@@ -341,8 +341,8 @@ public class DatabaseTest {
 		deliveryDate = order.getOrderDate();
 		order.setLineItems(items);
 		db.updateOrder(order);
-		
-		db.getOrder(1);
+
+		order = db.getOrders().get(0);
 		//assertEquals(newCost, order.getCost(), 0.001);
 		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
 		assertEquals(supplier1.getName(), order.getSupplier().getName());
