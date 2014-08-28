@@ -277,6 +277,25 @@ public class Database {
 		return false;			
 	}
 	
+	/**
+	 * Obfuscates user creation process.
+	 * @param authorizationLevel
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public boolean addUser(int authorizationLevel, String username, String password){
+		EncryptionModule em = null;
+		try {
+			em = new EncryptionModule();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return false;
+		}
+		String salt = em.getRandomSalt();
+		return addUser(new User(authorizationLevel, username, em.encrypt(password, salt), salt));
+	}
+	
 	public boolean addOrderItem(LineItem li, int orderID) {	
 		if(li==null){
 			return false;
