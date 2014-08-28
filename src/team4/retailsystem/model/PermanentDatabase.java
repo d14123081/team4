@@ -54,9 +54,8 @@ public class PermanentDatabase {
 	private static final String CREATE_INVOICES_TABLE = "CREATE TABLE INVOICES "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
 			+ "DATE INTEGER, "
-			+ "CUSTOMERID INTEGER,"
-			+ "VALUE REAL)";	
-	private static final String INVOICES_DEFINITION = "INVOICES (ID,DATE,CUSTOMERID,VALUE)";
+			+ "CUSTOMERID INTEGER)";	
+	private static final String INVOICES_DEFINITION = "INVOICES (ID,DATE,CUSTOMERID)";
 	
 	private static final String CREATE_ORDERS_TABLE = "CREATE TABLE ORDERS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
@@ -208,10 +207,9 @@ public class PermanentDatabase {
 			return false;
 		}		
 		try {
-			pStatement = connection.prepareStatement("INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement = connection.prepareStatement("INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,?,?)");
 			pStatement.setLong(1, invoice.getDate().getTime());
 			pStatement.setInt(2, invoice.getCustomer().getID());
-			pStatement.setDouble(3, invoice.getCost());
 			pStatement.executeUpdate();
 			
 			int id = 0;
@@ -237,7 +235,7 @@ public class PermanentDatabase {
 		}		
 		try {
 			pStatement = connection.prepareStatement("INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
-			pStatement.setLong(1, order.getDeliveryDate().getTime());
+			pStatement.setLong(1, order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
 			pStatement.setDouble(4, order.getCost());
@@ -548,10 +546,9 @@ public class PermanentDatabase {
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
-				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				output.add(new Invoice(invoiceItems, customer, id, date, value));
+				output.add(new Invoice(invoiceItems, customer, id, date));
 			}
 			rs.close();	
 		} catch (SQLException e) {
@@ -791,10 +788,9 @@ public class PermanentDatabase {
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
-				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				output = new Invoice(invoiceItems, customer, id, date, value);
+				output = new Invoice(invoiceItems, customer, id, date);
 			}
 			rs.close();	
 		} catch (SQLException e) {
@@ -928,11 +924,10 @@ public class PermanentDatabase {
 			return false;
 		}
 		try {
-			pStatement = connection.prepareStatement("UPDATE INVOICES SET DATE = ?, CUSTOMERID = ?, VALUE = ? WHERE ID = ?");
+			pStatement = connection.prepareStatement("UPDATE INVOICES SET DATE = ?, CUSTOMERID = ? WHERE ID = ?");
 			pStatement.setLong(1, invoice.getDate().getTime());
 			pStatement.setInt(2, invoice.getCustomer().getID());
-			pStatement.setDouble(3, invoice.getCost());
-			pStatement.setInt(4, invoice.getID());
+			pStatement.setInt(3, invoice.getID());
 			pStatement.executeUpdate();	
 			for(LineItem li : invoice.getLineItems()){
 				updateInvoiceItem(li);
@@ -950,7 +945,7 @@ public class PermanentDatabase {
 		}
 		try {
 			pStatement = connection.prepareStatement("UPDATE ORDERS SET DATE = ?, SUPPLIERID = ?, DELIVERYID = ?, VALUE = ? WHERE ID = ?");
-			pStatement.setLong(1,order.getDeliveryDate().getTime());
+			pStatement.setLong(1,order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
 			pStatement.setDouble(4, order.getCost());
@@ -1129,10 +1124,9 @@ public class PermanentDatabase {
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
-				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
-				output.add(new Invoice(invoiceItems, customer, id, date, value));
+				output.add(new Invoice(invoiceItems, customer, id, date));
 			}
 			rs.close();	
 		} catch (SQLException e) {

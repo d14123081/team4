@@ -23,7 +23,7 @@ public class InvoiceTest {
 		double p1markup = .2;
 		int p1stockLevel = 20;
 		
-		Supplier supplier = new Supplier("supplier 1", "supplier@gmail.com", "supplier street", "489702987");
+		Supplier supplier = new Supplier("supplier 1", "supplier street", "supplier@gmail.com", "489702987");
 		
 		String p2name = "product 2";
 		double p2cost = 20.99; 
