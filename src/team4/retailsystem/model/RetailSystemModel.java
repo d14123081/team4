@@ -124,7 +124,7 @@ public class RetailSystemModel {
 	
 	//User class methods
 	public void addUser(String username, String password, int authLevel){
-		database.addNewUser(username, password, authLevel);
+		database.addUser(authLevel, username, password);
 		notifyListeners(USERS_CHANGED);
 	}
 	
@@ -164,7 +164,7 @@ public class RetailSystemModel {
 		Invoice i = getInvoiceById(id);
 		i.setLineItems(lineitems);
 		i.setCustomer(c);
-		database.updateInvoice(id, i);
+		database.updateInvoice(i);
 		notifyListeners(INVOICES_CHANGED);
 	}
 	
