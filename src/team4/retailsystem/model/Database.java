@@ -3,6 +3,7 @@ package team4.retailsystem.model;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import team4.retailsystem.utils.EncryptionModule;
 
@@ -395,9 +396,7 @@ public class Database {
 		if(invoice==null){
 			return false;
 		}		
-		for(LineItem li : invoice.getLineItems()){
-			deleteInvoiceItem(li, invoice.getID());
-		}				
+		deleteInvoiceItems(invoice.getID());
 		try {
 			pStatement = connection.prepareStatement("DELETE FROM INVOICES WHERE ID=(?)");
 			pStatement.setInt(1, invoice.getID());
@@ -413,9 +412,7 @@ public class Database {
 		if(order==null){
 			return false;
 		}
-		for(LineItem li : order.getLineItems()){
-			deleteOrderItem(li, order.getID());
-		}
+		deleteOrderItems(order.getID());
 		try {
 			pStatement = connection.prepareStatement("DELETE FROM ORDERS WHERE ID=(?)");
 			pStatement.setInt(1, order.getID());
@@ -442,10 +439,7 @@ public class Database {
 		return false;	
 	}
 	
-	public boolean deleteOrderItem(LineItem lineItem, int orderID){	
-		if(lineItem==null){
-			return false;
-		}
+	public boolean deleteOrderItems(int orderID){	
 		try {
 			pStatement = connection.prepareStatement("DELETE FROM ORDERITEMS WHERE ORDERID=(?)");
 			pStatement.setInt(1, orderID);
@@ -457,13 +451,40 @@ public class Database {
 		return false;	
 	}
 	
-	public boolean deleteInvoiceItem(LineItem li, int invoiceID){		
-		if(li==null){
+	public boolean deleteOrderItem(LineItem orderItem){	
+		if(orderItem==null){
 			return false;
 		}
 		try {
+			pStatement = connection.prepareStatement("DELETE FROM ORDERITEMS WHERE ID=(?)");
+			pStatement.setInt(1, orderItem.getID());
+			pStatement.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			System.err.println("Database access error: " + e.getMessage());
+		}
+		return false;	
+	}
+	
+	public boolean deleteInvoiceItems(int invoiceID){		
+		try {
 			pStatement = connection.prepareStatement("DELETE FROM INVOICEITEMS WHERE INVOICEID=(?)");
 			pStatement.setInt(1, invoiceID);
+			pStatement.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			System.err.println("Database access error: " + e.getMessage());
+		}
+		return false;	
+	}
+	
+	public boolean deleteInvoiceItem(LineItem invoiceItem){		
+		if(invoiceItem==null){
+			return false;
+		}
+		try {
+			pStatement = connection.prepareStatement("DELETE FROM INVOICEITEMS WHERE ID=(?)");
+			pStatement.setInt(1, invoiceItem.getID());
 			pStatement.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -952,8 +973,31 @@ public class Database {
 			pStatement.setDouble(3, invoice.getCost());
 			pStatement.setInt(4, invoice.getID());
 			pStatement.executeUpdate();	
-			for(LineItem li : invoice.getLineItems()){
-				updateInvoiceItem(li);
+			
+			Iterator<LineItem> oldItemItr = getInvoiceItems(invoice.getID()).iterator();
+			LineItem oldItem = null;
+			if(oldItemItr.hasNext()){
+				oldItem = oldItemItr.next();				
+			}
+			for(LineItem newItem : invoice.getLineItems()){
+				boolean updated = false;
+				while(!updated){
+					if(oldItem == null){
+						addInvoiceItem(newItem, invoice.getID());
+						updated = true;
+					}else if(oldItem.getID() == newItem.getID()){
+						updateInvoiceItem(newItem);
+						updated = true;
+					}else{
+						deleteInvoiceItem(oldItem);
+					}
+					
+					if(oldItemItr.hasNext()){
+						oldItem = oldItemItr.next();				
+					} else {
+						oldItem = null;
+					}
+				}
 			}
 			return true;
 		} catch (SQLException e) {
@@ -974,10 +1018,32 @@ public class Database {
 			pStatement.setDouble(4, order.getCost());
 			pStatement.setInt(5, order.getID());
 			pStatement.executeUpdate();	
-			for(LineItem li : order.getLineItems()){
-				updateOrderItem(li);
+			
+			Iterator<LineItem> oldItemItr = getOrderItems(order.getID()).iterator();
+			LineItem oldItem = null;
+			if(oldItemItr.hasNext()){
+				oldItem = oldItemItr.next();				
 			}
-			return true;
+			for(LineItem newItem : order.getLineItems()){
+				boolean updated = false;
+				while(!updated){
+					if(oldItem == null){
+						addOrderItem(newItem, order.getID());
+						updated = true;
+					}else if(oldItem.getID() == newItem.getID()){
+						updateOrderItem(newItem);
+						updated = true;
+					}else{
+						deleteOrderItem(oldItem);
+					}
+					
+					if(oldItemItr.hasNext()){
+						oldItem = oldItemItr.next();				
+					} else {
+						oldItem = null;
+					}
+				}
+			}
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}

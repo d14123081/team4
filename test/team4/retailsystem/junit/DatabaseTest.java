@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Test;
 
 import team4.retailsystem.model.Customer;
@@ -77,7 +78,7 @@ public class DatabaseTest {
 		String newAddress = "81 Less Random street";
 		
 		//test Create
-		Supplier s = new Supplier(name, email, address, telephoneNo);
+		Supplier s = new Supplier(name, address, email, telephoneNo);
 		assertTrue(Database.getInstance().addSupplier(s));
 		
 		//test Create & Read
@@ -120,8 +121,8 @@ public class DatabaseTest {
 		String semail = "amazing.carpets@gmail.com";
 		String saddress = "54 Random Street\nDublin 4\nIreland";
 		
-		Supplier supplier = new Supplier(sname, stelephoneNo, semail, saddress);
-		Supplier newSupplier = new Supplier(semail, stelephoneNo, semail, saddress);
+		Supplier supplier = new Supplier(sname, saddress, semail, stelephoneNo);
+		Supplier newSupplier = new Supplier(semail, saddress, semail, stelephoneNo);
 		Database.getInstance().addSupplier(supplier);		
 		Database.getInstance().addSupplier(newSupplier);		
 		
@@ -300,17 +301,19 @@ public class DatabaseTest {
 		int productID = 1;
 		int quantity = 2;
 		LineItem one = new LineItem(productID, quantity);
-		LineItem two = new LineItem(quantity, productID);
+		LineItem two = new LineItem(productID, productID);
 		ArrayList<LineItem> items = new ArrayList<LineItem>();
 		items.add(one);
 		items.add(two);
 		
-		Supplier supplier1 = new Supplier("Blackthorne", "blackthorne@gmail.com", "city street", "07528934");
+		Supplier supplier1 = new Supplier("Blackthorne", "city street", "blackthorne@gmail.com", "07528934");
+		Product product1 = new Product("name", cost, 1, 1, supplier1);
 		Order order = new Order(cost, supplier1, deliveryID, items);
 		Date deliveryDate = order.getDeliveryDate();
 		
 		Database db = Database.getInstance();
 		db.addSupplier(supplier1);
+		db.addProduct(product1);
 		
 		//Test Create
 		assertTrue(db.addOrder(order));
@@ -355,6 +358,7 @@ public class DatabaseTest {
 
 		//cleanup
 		db.deleteSupplier(supplier1);
+		db.deleteProduct(product1);
 	}
 
 	@Test
@@ -722,5 +726,36 @@ public class DatabaseTest {
 		db.deleteDelivery(deliveries.get(0));
 		db.deleteDelivery(deliveries.get(1));
 		db.deleteDelivery(deliveries.get(2));	
+	}
+	
+	@After
+	public void cleanup(){
+		for(Customer c : Database.getInstance().getCustomers()){
+			Database.getInstance().deleteCustomer(c);
+		}
+		for(Product p : Database.getInstance().getProducts()){
+			Database.getInstance().deleteProduct(p);
+		}
+		for(Supplier s : Database.getInstance().getSuppliers()){
+			Database.getInstance().deleteSupplier(s);
+		}
+		for(User u : Database.getInstance().getUsers()){
+			Database.getInstance().deleteUser(u);
+		}
+		for(Invoice i : Database.getInstance().getInvoices()){
+			Database.getInstance().deleteInvoice(i);
+		}
+		for(Delivery d : Database.getInstance().getDeliveries()){
+			Database.getInstance().deleteDelivery(d);
+		}
+		for(Order o : Database.getInstance().getOrders()){
+			Database.getInstance().deleteOrder(o);
+		}
+		for(LineItem li : Database.getInstance().getOrderItems()){
+			Database.getInstance().deleteOrderItem(li);
+		}
+		for(LineItem li : Database.getInstance().getInvoiceItems()){
+			Database.getInstance().deleteInvoiceItem(li);
+		}
 	}
 }
