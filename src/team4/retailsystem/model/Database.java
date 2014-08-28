@@ -3,6 +3,7 @@ package team4.retailsystem.model;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 import team4.retailsystem.utils.EncryptionModule;
@@ -54,17 +55,15 @@ public class Database {
 	private static final String CREATE_INVOICES_TABLE = "CREATE TABLE INVOICES "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
 			+ "DATE INTEGER, "
-			+ "CUSTOMERID INTEGER,"
-			+ "VALUE REAL)";	
-	private static final String INVOICES_DEFINITION = "INVOICES (ID,DATE,CUSTOMERID,VALUE)";
+			+ "CUSTOMERID INTEGER)";	
+	private static final String INVOICES_DEFINITION = "INVOICES (ID,DATE,CUSTOMERID)";
 	
 	private static final String CREATE_ORDERS_TABLE = "CREATE TABLE ORDERS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
 			+ "DATE INTEGER, "
 			+ "SUPPLIERID INTEGER,"
-			+ "DELIVERYID INTEGER,"
-			+ "VALUE REAL)";
-	private static final String ORDERS_DEFINITION = "ORDERS (ID,DATE,SUPPLIERID,DELIVERYID,VALUE)";
+			+ "DELIVERYID INTEGER)";
+	private static final String ORDERS_DEFINITION = "ORDERS (ID,DATE,SUPPLIERID,DELIVERYID)";
 	
 	private static final String CREATE_ORDER_ITEMS_TABLE = "CREATE TABLE ORDERITEMS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
@@ -208,10 +207,9 @@ public class Database {
 			return false;
 		}		
 		try {
-			pStatement = connection.prepareStatement("INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,?,?,?)");
+			pStatement = connection.prepareStatement("INSERT INTO " + INVOICES_DEFINITION + " VALUES (NULL,?,?)");
 			pStatement.setLong(1, invoice.getDate().getTime());
 			pStatement.setInt(2, invoice.getCustomer().getID());
-			pStatement.setDouble(3, invoice.getCost());
 			pStatement.executeUpdate();
 			
 			int id = 0;
@@ -236,11 +234,10 @@ public class Database {
 			return false;
 		}		
 		try {
-			pStatement = connection.prepareStatement("INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
+			pStatement = connection.prepareStatement("INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,?,?,?)");
 			pStatement.setLong(1, order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
-			pStatement.setDouble(4, order.getCost());
 			pStatement.executeUpdate();
 			
 			int id = 0;
@@ -587,7 +584,6 @@ public class Database {
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
-				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
 				output.add(new Invoice(invoiceItems, customer, id, date));
@@ -610,10 +606,9 @@ public class Database {
 				Date date = new Date(dateLong);
 				int supplierID = rs.getInt("supplierid");
 				int deliveryID = rs.getInt("deliveryid");
-				double value = rs.getDouble("value");
 				Supplier supplier = getSupplier(supplierID);
 				ArrayList<LineItem> orderItems = getOrderItems(id);
-				output.add(new Order(value, supplier, deliveryID, orderItems, id, date));
+				output.add(new Order(-1, supplier, deliveryID, orderItems, id, date));
 			}
 			rs.close();	
 		} catch (SQLException e) {
@@ -830,7 +825,6 @@ public class Database {
 				long dateLong = rs.getLong("date");
 				Date date = new Date(dateLong);
 				int customerID = rs.getInt("customerid");
-				double value = rs.getDouble("value");
 				Customer customer = getCustomer(customerID);
 				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
 				output = new Invoice(invoiceItems, customer, id, date);
@@ -853,10 +847,9 @@ public class Database {
 				Date date = new Date(dateLong);
 				int supplierID = rs.getInt("supplierid");
 				int deliveryID = rs.getInt("deliveryid");
-				double value = rs.getDouble("value");
 				Supplier supplier = getSupplier(supplierID);
 				ArrayList<LineItem> orderItems = getOrderItems(id);
-				output = new Order(value, supplier, deliveryID, orderItems, id, date);
+				output = new Order(-1, supplier, deliveryID, orderItems, id, date);
 			}
 			rs.close();	
 		} catch (SQLException e) {
@@ -967,11 +960,10 @@ public class Database {
 			return false;
 		}
 		try {
-			pStatement = connection.prepareStatement("UPDATE INVOICES SET DATE = ?, CUSTOMERID = ?, VALUE = ? WHERE ID = ?");
+			pStatement = connection.prepareStatement("UPDATE INVOICES SET DATE = ?, CUSTOMERID = ? WHERE ID = ?");
 			pStatement.setLong(1, invoice.getDate().getTime());
 			pStatement.setInt(2, invoice.getCustomer().getID());
-			pStatement.setDouble(3, invoice.getCost());
-			pStatement.setInt(4, invoice.getID());
+			pStatement.setInt(3, invoice.getID());
 			pStatement.executeUpdate();	
 			
 			Iterator<LineItem> oldItemItr = getInvoiceItems(invoice.getID()).iterator();
@@ -1011,12 +1003,11 @@ public class Database {
 			return false;
 		}
 		try {
-			pStatement = connection.prepareStatement("UPDATE ORDERS SET DATE = ?, SUPPLIERID = ?, DELIVERYID = ?, VALUE = ? WHERE ID = ?");
+			pStatement = connection.prepareStatement("UPDATE ORDERS SET DATE = ?, SUPPLIERID = ?, DELIVERYID = ? WHERE ID = ?");
 			pStatement.setLong(1,order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
-			pStatement.setDouble(4, order.getCost());
-			pStatement.setInt(5, order.getID());
+			pStatement.setInt(4, order.getID());
 			pStatement.executeUpdate();	
 			
 			Iterator<LineItem> oldItemItr = getOrderItems(order.getID()).iterator();
@@ -1103,6 +1094,96 @@ public class Database {
 			System.err.println("Database access error: " + e.getMessage());
 		}
 		return false;			
+	}
+	
+	/**
+	 * Return all orders dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all orders that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Order> getOrdersBetween(Date start, Date end) {
+		ArrayList<Order> output = new ArrayList<Order>();
+		try {
+			pStatement = connection
+					.prepareStatement("SELECT * FROM ORDERS WHERE DATE >= (?) AND DATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				long dateLong = rs.getLong("date");
+				Date date = new Date(dateLong);
+				int supplierID = rs.getInt("supplierid");
+				int deliveryID = rs.getInt("deliveryid");
+				Supplier supplier = getSupplier(supplierID);
+				ArrayList<LineItem> orderItems = getOrderItems(id);
+				output.add(new Order(-1, supplier, deliveryID, orderItems, id,
+						date));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;
+	}
+
+	/**
+	 * Return all deliveries dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all deliveries that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Delivery> getDeliveriesBetween(Date start, Date end){
+		ArrayList<Delivery> output = new ArrayList<Delivery>();
+		try {
+			pStatement = connection.prepareStatement("SELECT * FROM DELIVERIES WHERE DELIVERYDATE >= (?) AND DELIVERYDATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("id");
+				long deliveryDate = rs.getLong("deliverydate");
+				Date date = new Date(deliveryDate);
+				int orderID = rs.getInt("orderid");
+				int supplierID = rs.getInt("supplierid");
+				Supplier supplier = getSupplier(supplierID);
+				output.add(new Delivery(supplier, orderID, date, id));
+			}
+			rs.close();	
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;
+	}
+
+	/**
+	 * Return all invoices dated between two points in time (inclusive).
+	 * @param start the start date in the range
+	 * @param end the end date in the range
+	 * @return all invoices that fall within the specified range as an ArrayList
+	 */
+	public ArrayList<Invoice> getInvoicesBetween(Date start, Date end){
+		ArrayList<Invoice> output = new ArrayList<Invoice>();
+		try {
+			pStatement = connection.prepareStatement("SELECT * FROM INVOICES WHERE DATE >= (?) AND DATE <= (?)");
+			pStatement.setLong(1, start.getTime());
+			pStatement.setLong(2, end.getTime());
+			ResultSet rs = pStatement.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("id");
+				long dateLong = rs.getLong("date");
+				Date date = new Date(dateLong);
+				int customerID = rs.getInt("customerid");
+				Customer customer = getCustomer(customerID);
+				ArrayList<LineItem> invoiceItems = getInvoiceItems(id);
+				output.add(new Invoice(invoiceItems, customer, id, date));
+			}
+			rs.close();	
+		} catch (SQLException e) {
+			System.err.println("Database query error: " + e.getMessage());
+		}
+		return output;	
 	}
 	
 	private void createTables(){		
