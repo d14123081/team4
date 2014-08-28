@@ -11,6 +11,7 @@ public class LineItem {
 	public LineItem(int productID, int quantity) {
 		this.productID = productID;
 		this.quantity = quantity;
+		this.id = -1;
 	}
 
 	public LineItem(int productID, int quantity, int id, int orderID) {

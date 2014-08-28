@@ -32,7 +32,7 @@ public class Order {
 
     public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items, int id, Date date) 
     {
-    	this.cost = cost;
+    	//this.cost = cost;
         this.supplier = supplier;
         ID = id;
         this.date = date;
@@ -62,7 +62,7 @@ public class Order {
     	double tempCost=0.0;
     	Database db = Database.getInstance();
     	for(LineItem item:items){
-    		tempCost+= item.getQuantity()* db.getProductById(item.getProductID()).getCost();
+    		tempCost+= item.getQuantity()* db.getProduct(item.getProductID()).getCost();
     	}
     	return tempCost;
     }
@@ -87,11 +87,11 @@ public class Order {
         return this.supplier;
     }
 
-    public Date getDeliveryDate() {
+    public Date getOrderDate() {
         return this.date;
     }
 
-    public void setDeliveryDate(Date date) {
+    public void setOrderDate(Date date) {
         this.date = date;
     }
 

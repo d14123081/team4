@@ -20,7 +20,6 @@ public class Invoice {
 
 	private Date date;
 	private Customer customer;
-	//private double cost;
 
 	/**
 	 * Creates a brand new invoice with current date.
@@ -35,7 +34,6 @@ public class Invoice {
 		setCustomer(customer);
 		setId(++idCounter);
 		setDate(new Date());
-		//setCost(calculateCost());
 	}
 
 	/**
@@ -54,12 +52,11 @@ public class Invoice {
 	 *            the cost of all the lineItem objects
 	 */
 	public Invoice(ArrayList<LineItem> lineItems, Customer customer, int id,
-			Date date, double cost) {
+			Date date) {
 		setLineItems(lineItems);
 		setCustomer(customer);
 		setId(id);
 		setDate(date);
-		//setCost(cost);
 	}
 
 	public ArrayList<LineItem> getLineItems() {
@@ -68,10 +65,6 @@ public class Invoice {
 
 	public Customer getCustomer() {
 		return customer;
-	}
-
-	public double getCost() {
-		return calculateCost();
 	}
 
 	public Date getDate() {
@@ -98,10 +91,6 @@ public class Invoice {
 		this.date = date;
 	}
 
-	/*private void setCost(double cost) {
-		this.cost = cost;
-	}*/
-
 	public void setLineItems(ArrayList<LineItem> lineItems) {
 		this.lineItems = lineItems;
 	}
@@ -114,10 +103,10 @@ public class Invoice {
 	 *            the items that make up the invoice
 	 * @return the cost of all products sold to the customer
 	 */
-	private double calculateCost() {
+	public double getCost() {
 		double totalCost = 0;
 		for (LineItem lineItem : lineItems) {
-			PermanentDatabase db = PermanentDatabase.getInstance();
+			Database db = Database.getInstance();
 			Product p = db.getProduct(lineItem.getProductID());
 			totalCost += lineItem.getQuantity() * p.getPrice();
 		}
