@@ -236,15 +236,18 @@ implements RetailSystemView
 		else if(user.getAuthorizationLevel() == User.NORMAL_USER){
 			//hide button for administrative activities
 			userButton.setVisible(false);
-			customerButton.setVisible(false);
+			//customerButton.setVisible(false);
 			supplierButton.setVisible(false);
 			showInvoiceEditingScreen();
+			customerPanel.updateUser(user);
 		}
 		else if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
 			userButton.setVisible(true);
-			customerButton.setVisible(true);
+			//customerButton.setVisible(true);
 			supplierButton.setVisible(true);
 			showCustomerEditingScreen();
+			customerPanel.updateUser(user);
+
 		}
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
 	}

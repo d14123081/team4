@@ -87,11 +87,11 @@ public class Order {
         return this.supplier;
     }
 
-    public Date getDeliveryDate() {
+    public Date getOrderDate() {
         return this.date;
     }
 
-    public void setDeliveryDate(Date date) {
+    public void setOrderDate(Date date) {
         this.date = date;
     }
 

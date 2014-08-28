@@ -235,7 +235,7 @@ public class PermanentDatabase {
 		}		
 		try {
 			pStatement = connection.prepareStatement("INSERT INTO " + ORDERS_DEFINITION + " VALUES (NULL,?,?,?,?)");
-			pStatement.setLong(1, order.getDeliveryDate().getTime());
+			pStatement.setLong(1, order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
 			pStatement.setDouble(4, order.getCost());
@@ -945,7 +945,7 @@ public class PermanentDatabase {
 		}
 		try {
 			pStatement = connection.prepareStatement("UPDATE ORDERS SET DATE = ?, SUPPLIERID = ?, DELIVERYID = ?, VALUE = ? WHERE ID = ?");
-			pStatement.setLong(1,order.getDeliveryDate().getTime());
+			pStatement.setLong(1,order.getOrderDate().getTime());
 			pStatement.setInt(2, order.getSupplier().getID());
 			pStatement.setInt(3, order.getDeliveryID());
 			pStatement.setDouble(4, order.getCost());
