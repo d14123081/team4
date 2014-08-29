@@ -303,79 +303,75 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDOrder() {
+		// test data
 		double cost = 200;
-		double newCost = 400;
 		int deliveryID = 5;
 		int productID = 1;
 		int quantity = 2;
-		LineItem one = new LineItem(productID, quantity);
-		LineItem two = new LineItem(productID, productID);
-		ArrayList<LineItem> items = new ArrayList<LineItem>();
-		items.add(one);
-		items.add(two);
+		LineItem item1 = new LineItem(productID, quantity);
+		LineItem item2 = new LineItem(quantity, productID);
+		ArrayList<LineItem> orderItems = new ArrayList<LineItem>();
+		orderItems.add(item1);
+		orderItems.add(item2);
 
-		Supplier supplier1 = new Supplier("Blackthorne", "city street",
-				"blackthorne@gmail.com", "07528934");
+		String suppData1 = "Blackthorne";
+		
+		Supplier supplier1 = new Supplier(suppData1, suppData1, suppData1, suppData1);
 		Product product1 = new Product("name", cost, 1, 1, supplier1);
-		Order order = new Order(cost, supplier1, deliveryID, items);
-		Date deliveryDate = order.getOrderDate();
+		Order order = new Order(cost, supplier1, deliveryID, orderItems);
+		Date date = order.getOrderDate();
 
 		Database db = Database.getInstance("testSystem");
 		db.addSupplier(supplier1);
 		db.addProduct(product1);
 
-		// Test Create
-		assertTrue(db.addOrder(order));
-
 		// Test Create && Read
+		assertTrue(CREATE_ERR, db.addOrder(order));
+
 		order = db.getOrders().get(0);
-		// assertEquals(cost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
-		assertEquals(supplier1.getName(), order.getSupplier().getName());
-		assertEquals(one.getQuantity(), order.getLineItems().get(0)
-				.getQuantity());
-		assertEquals(one.getProductID(), order.getLineItems().get(0)
+		assertNotNull(READ_ERR, order);
+		orderItems = order.getLineItems();
+		assertNotNull(READ_ERR, orderItems);
+		
+		assertEquals(READ_ERR, date.getTime(), order.getOrderDate().getTime());
+		assertEquals(READ_ERR, supplier1.getName(), order.getSupplier().getName());
+
+		assertEquals(READ_ERR, item1.getProductID(), orderItems.get(0).getProductID());
+		assertEquals(READ_ERR, item1.getQuantity(), orderItems.get(0).getQuantity());
+		assertEquals(READ_ERR, order.getID(), orderItems.get(0).getOrderID());
+		assertEquals(READ_ERR, item2.getProductID(), orderItems.get(1)
 				.getProductID());
-		assertEquals(order.getID(), order.getLineItems().get(0).getOrderID());
-		assertEquals(two.getQuantity(), order.getLineItems().get(1)
-				.getQuantity());
-		assertEquals(two.getProductID(), order.getLineItems().get(1)
-				.getProductID());
-		assertEquals(order.getID(), order.getLineItems().get(1).getOrderID());
+		assertEquals(READ_ERR, item2.getQuantity(), orderItems.get(1).getQuantity());
+		assertEquals(READ_ERR, order.getID(), orderItems.get(1).getOrderID());
 
 		// Test Update
-		items = order.getLineItems();
-		items.get(0).setProductID(quantity);
-		items.get(0).setQuantity(productID);
-		items.get(1).setProductID(productID);
-		items.get(1).setQuantity(quantity);
-		order.setCost(newCost);
+		orderItems.get(0).setProductID(quantity);
+		orderItems.get(0).setQuantity(productID);
+		orderItems.get(1).setProductID(productID);
+		orderItems.get(1).setQuantity(quantity);
 		order.setOrderDate(new Date());
-		deliveryDate = order.getOrderDate();
-		order.setLineItems(items);
-		db.updateOrder(order);
-
+		date = order.getOrderDate();
+		order.setLineItems(orderItems);
+		
+		assertTrue(UPDATE_ERR, db.updateOrder(order));
+		
 		order = db.getOrders().get(0);
-		// assertEquals(newCost, order.getCost(), 0.001);
-		assertEquals(deliveryDate.getTime(), order.getOrderDate().getTime());
-		assertEquals(supplier1.getName(), order.getSupplier().getName());
-		assertEquals(items.get(0).getQuantity(), order.getLineItems().get(0)
-				.getQuantity());
-		assertEquals(items.get(0).getProductID(), order.getLineItems().get(0)
-				.getProductID());
-		assertEquals(order.getID(), order.getLineItems().get(0).getOrderID());
-		assertEquals(items.get(1).getQuantity(), order.getLineItems().get(1)
-				.getQuantity());
-		assertEquals(items.get(1).getProductID(), order.getLineItems().get(1)
-				.getProductID());
-		assertEquals(order.getID(), order.getLineItems().get(1).getOrderID());
+		assertNotNull(READ_ERR,  order);
+		orderItems = order.getLineItems();
+		assertNotNull(READ_ERR, orderItems);
+		
+		assertEquals(UPDATE_ERR, date.getTime(), order.getOrderDate().getTime());
+		assertEquals(UPDATE_ERR, supplier1.getName(), order.getSupplier().getName());
+
+		assertEquals(UPDATE_ERR, quantity, orderItems.get(0).getProductID());
+		assertEquals(UPDATE_ERR, productID, orderItems.get(0).getQuantity());
+		assertEquals(UPDATE_ERR, order.getID(), orderItems.get(0).getOrderID());
+		assertEquals(UPDATE_ERR, productID, orderItems.get(1).getProductID());
+		assertEquals(UPDATE_ERR, quantity, orderItems.get(1).getQuantity());
+		assertEquals(UPDATE_ERR, order.getID(), orderItems.get(1).getOrderID());
 
 		// Test Delete
 		assertTrue(db.deleteOrder(order));
-
-		// cleanup
-		db.deleteSupplier(supplier1);
-		db.deleteProduct(product1);
 	}
 
 	@Test
