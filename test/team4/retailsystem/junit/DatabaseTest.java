@@ -376,33 +376,28 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDDelivery() {
+		// test data
+		Database db = Database.getInstance("testSystem");
 		int orderID = 2;
-
-		String name = "Amazing Carpets";
-		String telephoneNo = "0833903128";
-		String email = "amazing.carpets@gmail.com";
-		String address = "54 Random Street\nDublin 4\nIreland";
-		Supplier supplier1 = new Supplier(name, address, email, telephoneNo);
-		Database.getInstance("testSystem").addSupplier(supplier1);
-
-		String newName = "Average Carpets";
-		String newTelephoneNo = "123445678";
-		String newEmail = "average.carpets@outlook.com";
-		String newAddress = "81 Less Random street";
-		Supplier supplier2 = new Supplier(newName, newAddress, newEmail,
-				newTelephoneNo);
-		Database.getInstance("testSystem").addSupplier(supplier2);
-
-		// test Create
-		Delivery delivery = new Delivery(supplier1, orderID);
-		Date date = delivery.getDate();
-		Database.getInstance("testSystem").addDelivery(delivery);
+		String suppData1 = "Amazing Carpets";
+		String suppData2 = "Average Carpets";
+		Supplier supplier1 = new Supplier(suppData1, suppData1, suppData1, suppData1);
+		Supplier supplier2 = new Supplier(suppData2, suppData2, suppData2,
+				suppData2);		
+		db.addSupplier(supplier1);
+		db.addSupplier(supplier2);
 
 		// test Create & Read
-		delivery = Database.getInstance("testSystem").getDelivery(1);
-		assertEquals(orderID, delivery.getOrderID());
-		assertEquals(date, delivery.getDate());
-		assertEquals(supplier1.getName(), delivery.getSupplier().getName());
+		Delivery delivery = new Delivery(supplier1, orderID);
+		Date date = delivery.getDate();
+		
+		assertTrue(CREATE_ERR, db.addDelivery(delivery));
+		
+		delivery = db.getDeliveries().get(0);
+		assertNotNull(READ_ERR, delivery);
+		assertEquals(READ_ERR, orderID, delivery.getOrderID());
+		assertEquals(READ_ERR, date, delivery.getDate());
+		assertEquals(READ_ERR, supplier1.getName(), delivery.getSupplier().getName());
 
 		// test Update
 		orderID = 505;
@@ -411,17 +406,13 @@ public class DatabaseTest {
 		delivery.setDate(new Date());
 		date = delivery.getDate();
 
-		Database.getInstance("testSystem").updateDelivery(delivery);
-		assertEquals(orderID, delivery.getOrderID());
-		assertEquals(date, delivery.getDate());
-		assertEquals(supplier2.getName(), delivery.getSupplier().getName());
+		assertTrue(UPDATE_ERR, db.updateDelivery(delivery));
+		assertEquals(UPDATE_ERR, orderID, delivery.getOrderID());
+		assertEquals(UPDATE_ERR, date, delivery.getDate());
+		assertEquals(UPDATE_ERR, supplier2.getName(), delivery.getSupplier().getName());
 
 		// test Delete
-		assertTrue(Database.getInstance("testSystem").deleteDelivery(delivery));
-
-		// cleanup
-		Database.getInstance("testSystem").deleteSupplier(supplier1);
-		Database.getInstance("testSystem").deleteSupplier(supplier2);
+		assertTrue(DELETE_ERR, db.deleteDelivery(delivery));
 	}
 
 	@Test
