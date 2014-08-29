@@ -80,41 +80,47 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDSupplier() {
+		//test data
 		String name = "Amazing Carpets";
-		String newName = "Average Carpets";
-		String telephoneNo = "0833903128";
-		String newTelephoneNo = "123445678";
+		String tel = "0833903128";
 		String email = "amazing.carpets@gmail.com";
+		String addr = "54 Random Street\nDublin 4\nIreland";
+		
+		String newName = "Average Carpets";
+		String newTel = "123445678";
 		String newEmail = "average.carpets@outlook.com";
-		String address = "54 Random Street\nDublin 4\nIreland";
 		String newAddress = "81 Less Random street";
-
-		// test Create
-		Supplier s = new Supplier(name, address, email, telephoneNo);
-		assertTrue(Database.getInstance("testSystem").addSupplier(s));
-
+		
+		Database db = Database.getInstance("testSystem");
+		Supplier supplier = new Supplier(name, addr, email, tel);
+		
 		// test Create & Read
-		Supplier d = Database.getInstance("testSystem").getSupplier(1);
-		assertEquals(name, d.getName());
-		assertEquals(telephoneNo, d.getTelephoneNumber());
-		assertEquals(email, d.getEmail());
-		assertEquals(address, d.getAddress());
+		assertTrue(CREATE_ERR, db.addSupplier(supplier));
+		
+		supplier = db.getSuppliers().get(0);
+		assertNotNull(READ_ERR, supplier);
+		assertEquals(READ_ERR, name, supplier.getName());
+		assertEquals(READ_ERR, tel, supplier.getTelephoneNumber());
+		assertEquals(READ_ERR, email, supplier.getEmail());
+		assertEquals(READ_ERR, addr, supplier.getAddress());
 
 		// test Update
-		d.setName(newName);
-		d.setTelephone(newTelephoneNo);
-		d.setEmail(newEmail);
-		d.setAddress(newAddress);
-		Database.getInstance("testSystem").updateSupplier(d);
+		supplier.setName(newName);
+		supplier.setTelephone(newTel);
+		supplier.setEmail(newEmail);
+		supplier.setAddress(newAddress);
 
-		Supplier e = Database.getInstance("testSystem").getSupplier(1);
-		assertEquals(newName, e.getName());
-		assertEquals(newTelephoneNo, e.getTelephoneNumber());
-		assertEquals(newEmail, e.getEmail());
-		assertEquals(newAddress, e.getAddress());
+		assertTrue(UPDATE_ERR, db.updateSupplier(supplier));
+
+		supplier = db.getSuppliers().get(0);
+		assertNotNull(READ_ERR, supplier);
+		assertEquals(UPDATE_ERR, newName, supplier.getName());
+		assertEquals(UPDATE_ERR, newTel, supplier.getTelephoneNumber());
+		assertEquals(UPDATE_ERR, newEmail, supplier.getEmail());
+		assertEquals(UPDATE_ERR, newAddress, supplier.getAddress());
 
 		// test Delete
-		assertTrue(Database.getInstance("testSystem").deleteSupplier(e));
+		assertTrue(DELETE_ERR, db.deleteSupplier(supplier));
 	}
 
 	@Test
