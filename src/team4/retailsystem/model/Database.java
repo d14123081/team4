@@ -91,14 +91,36 @@ public class Database {
 		openConnection(dbName);
 		createTables();	
 	}
-	
+
+	/**
+	 * Get a handle to the default Database object.
+	 * <p>
+	 * The default database object being is a file named
+	 * "Retail Storage System.db". If an existing file with that name is found
+	 * in the local directory it is opened and used. If no existing files are
+	 * found, a new file is created and used instead.
+	 * 
+	 * @return a Database handle
+	 */
 	public static Database getInstance() {
 		if (db == null) {
 			db = new Database("Retail Storage System");
 		}
 		return db;
 	}
-	
+
+	/**
+	 * Get a handle to a non-default Database object.
+	 * <p>
+	 * This method allows unit tests to operate on their own database file to
+	 * keep "Retail Storage System.db" file clean. If an existing file with that
+	 * name is found in the local directory it is opened and used. If no
+	 * existing files are found, a new file is created and used instead.
+	 * 
+	 * @param dbName
+	 *            the name of the database file to use
+	 * @return a Database handle
+	 */
 	public static Database getInstance(String dbName) {
 		if (db == null) {
 			db = new Database(dbName);
@@ -126,6 +148,9 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Close the connection to the database, discard all handles.
+	 */
 	public void closeConnection() {
 		try {
 			pStatement.close();
@@ -136,7 +161,13 @@ public class Database {
 		}
 	}
 
-	// Methods to add rows to table
+	/**
+	 * Store a new Customer.
+	 * 
+	 * @param customer
+	 *            the customer to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addCustomer(Customer customer) {
 		if(customer==null){
 			return false;
@@ -155,6 +186,13 @@ public class Database {
 		return false;
 	}
 
+	/**
+	 * Store a new Supplier.
+	 * 
+	 * @param supplier
+	 *            the supplier to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addSupplier(Supplier supplier) {
 		if(supplier==null){
 			return false;
@@ -173,6 +211,13 @@ public class Database {
 		return false;		
 	}
 
+	/**
+	 * Store a new Product.
+	 * 
+	 * @param product
+	 *            the product to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addProduct(Product product) {
 		if(product==null){
 			return false;
@@ -192,6 +237,13 @@ public class Database {
 		return false;		
 	}
 
+	/**
+	 * Store a new Delivery.
+	 * 
+	 * @param delivery
+	 *            the delivery to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addDelivery(Delivery delivery) {
 		if(delivery==null){
 			return false;
@@ -209,6 +261,13 @@ public class Database {
 		return false;		
 	}
 
+	/**
+	 * Store a new Invoice.
+	 * 
+	 * @param invoice
+	 *            the invoice to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addInvoice(Invoice invoice) {
 		if(invoice==null){
 			return false;
@@ -236,6 +295,13 @@ public class Database {
 		return false;
 	}
 
+	/**
+	 * Store a new Order.
+	 * 
+	 * @param order
+	 *            the order to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addOrder(Order order) {
 		if(order==null){
 			return false;
@@ -264,6 +330,13 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Store a new User.
+	 * 
+	 * @param user
+	 *            the user to be stored in the database
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean addUser(User user) {
 		if(user==null){
 			return false;
@@ -281,13 +354,20 @@ public class Database {
 		}		
 		return false;			
 	}
-	
+
 	/**
-	 * Obfuscates user creation process.
+	 * Store a new User while obfuscating the process of user creation.
+	 * <p>
+	 * Hides complexity of salts and password digests, uses a salt generated
+	 * using a cryptographically strong random number generator.
+	 * 
 	 * @param authorizationLevel
+	 *            level of User authorization
 	 * @param username
+	 *            user login name
 	 * @param password
-	 * @return
+	 *            password as a plaintext string
+	 * @return true if the database changed as a result of the call
 	 */
 	public boolean addUser(int authorizationLevel, String username, String password){
 		EncryptionModule em = null;
@@ -300,15 +380,24 @@ public class Database {
 		String salt = em.getRandomSalt();
 		return addUser(new User(authorizationLevel, username, em.encrypt(password, salt), salt));
 	}
-	
-	public boolean addOrderItem(LineItem li, int orderID) {	
-		if(li==null){
+
+	/**
+	 * Store a new order item.
+	 * 
+	 * @param lineItem
+	 *            the LineItem to be stored in the database
+	 * @param orderID
+	 *            the ID of the order associated with the lineItem (foreign key)
+	 * @return true if the database changed as a result of the call
+	 */
+	public boolean addOrderItem(LineItem lineItem, int orderID) {	
+		if(lineItem==null){
 			return false;
 		}		
 		try {
 			pStatement = connection.prepareStatement("INSERT INTO " + ORDER_ITEMS_DEFINITION + " VALUES (NULL,?,?,?)");
-			pStatement.setInt(1, li.getProductID());
-			pStatement.setInt(2, li.getQuantity());
+			pStatement.setInt(1, lineItem.getProductID());
+			pStatement.setInt(2, lineItem.getQuantity());
 			pStatement.setInt(3, orderID);
 			pStatement.executeUpdate();
 			return true;
@@ -317,16 +406,26 @@ public class Database {
 		}		
 		return false;				
 	}
-	
-	public boolean addInvoiceItem(LineItem li, int inoviceID) {	
-		if(li==null){
+
+	/**
+	 * Store a new invoice item.
+	 * 
+	 * @param lineItem
+	 *            the LineItem to be stored in the database
+	 * @param inoviceID
+	 *            the ID of the invoice associated with the lineItem (foreign
+	 *            key)
+	 * @return true if the database changed as a result of the call
+	 */
+	public boolean addInvoiceItem(LineItem lineItem, int invoiceID) {	
+		if(lineItem==null){
 			return false;
 		}
 		try {
 			pStatement = connection.prepareStatement("INSERT INTO " + INVOICE_ITEMS_DEFINITION + " VALUES (NULL,?,?,?)");
-			pStatement.setInt(1, li.getProductID());
-			pStatement.setInt(2, li.getQuantity());
-			pStatement.setInt(3, inoviceID);
+			pStatement.setInt(1, lineItem.getProductID());
+			pStatement.setInt(2, lineItem.getQuantity());
+			pStatement.setInt(3, invoiceID);
 			pStatement.executeUpdate();
 			return true;
 		} catch (SQLException e) {
@@ -335,7 +434,14 @@ public class Database {
 		return false;				
 	}
 
-	// Remove row from table
+	/**
+	 * Delete the given customer from the database.
+	 * 
+	 * @param customer
+	 *            the customer to be removed from the database - removal happens
+	 *            based on the customer id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteCustomer(Customer customer) {
 		if(customer==null){
 			return false;
@@ -351,6 +457,14 @@ public class Database {
 		return false;		
 	}
 
+	/**
+	 * Delete the given supplier from the database.
+	 * 
+	 * @param supplier
+	 *            the supplier to be removed from the database - removal happens
+	 *            based on the supplier id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteSupplier(Supplier supplier) {
 		if(supplier==null){
 			return false;
@@ -366,6 +480,14 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Delete the given product from the database.
+	 * 
+	 * @param product
+	 *            the product to be removed from the database - removal happens
+	 *            based on the product id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteProduct(Product product) {
 		if(product==null){
 			return false;
@@ -381,6 +503,14 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Delete the given delivery from the database.
+	 * 
+	 * @param delivery
+	 *            the delivery to be removed from the database - removal happens
+	 *            based on the delivery id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteDelivery(Delivery delivery) {
 		if(delivery==null){
 			return false;
@@ -396,6 +526,15 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Delete the given invoice from the database. This also removes its
+	 * associated LineItems.
+	 * 
+	 * @param invoice
+	 *            the invoice to be removed from the database - removal happens
+	 *            based on the invoice id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteInvoice(Invoice invoice) {
 		if(invoice==null){
 			return false;
@@ -412,6 +551,15 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Delete the given order from the database. This also removes its
+	 * associated LineItems.
+	 * 
+	 * @param order
+	 *            the order to be removed from the database - removal happens
+	 *            based on the order id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteOrder(Order order) {
 		if(order==null){
 			return false;
@@ -428,6 +576,14 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Delete the given user from the database.
+	 * 
+	 * @param user
+	 *            the user to be removed from the database - removal happens
+	 *            based on the user id
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteUser(User user) {
 		if(user==null){
 			return false;
@@ -443,6 +599,13 @@ public class Database {
 		return false;	
 	}
 	
+	/**
+	 * Delete all order items associated with the given order ID (foreign key).
+	 * 
+	 * @param orderID
+	 *            ID of the associated order
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteOrderItems(int orderID){	
 		try {
 			pStatement = connection.prepareStatement("DELETE FROM ORDERITEMS WHERE ORDERID=(?)");
@@ -455,6 +618,13 @@ public class Database {
 		return false;	
 	}
 	
+	/**
+	 * Delete the given order item from the database.
+	 * 
+	 * @param orderItem
+	 *            orderItem to be deleted
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteOrderItem(LineItem orderItem){	
 		if(orderItem==null){
 			return false;
@@ -470,6 +640,14 @@ public class Database {
 		return false;	
 	}
 	
+	/**
+	 * Delete all invoice items associated with the given invoice ID (foreign
+	 * key).
+	 * 
+	 * @param invoiceID
+	 *            ID of the associated invoice
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteInvoiceItems(int invoiceID){		
 		try {
 			pStatement = connection.prepareStatement("DELETE FROM INVOICEITEMS WHERE INVOICEID=(?)");
@@ -481,7 +659,14 @@ public class Database {
 		}
 		return false;	
 	}
-	
+
+	/**
+	 * Delete the given invoice item from the database.
+	 * 
+	 * @param invoiceItem
+	 *            invoiceItem to be deleted
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean deleteInvoiceItem(LineItem invoiceItem){		
 		if(invoiceItem==null){
 			return false;
@@ -497,7 +682,11 @@ public class Database {
 		return false;	
 	}
 	
-	// Select * from table
+	/**
+	 * Get all customers from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Customers.
+	 */
 	public ArrayList<Customer> getCustomers() {
 		ArrayList<Customer> output = new ArrayList<Customer>();
 		try {
@@ -517,7 +706,12 @@ public class Database {
 		}		
 		return output;
 	}
-
+	
+	/**
+	 * Get all suppliers from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Suppliers.
+	 */
 	public ArrayList<Supplier> getSuppliers() {
 		ArrayList<Supplier> output = new ArrayList<Supplier>();
 		try {
@@ -537,7 +731,12 @@ public class Database {
 		}
 		return output;
 	}
-
+	
+	/**
+	 * Get all products from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Products.
+	 */
 	public ArrayList<Product> getProducts() {
 		ArrayList<Product> output = new ArrayList<Product>();
 		try {
@@ -560,6 +759,11 @@ public class Database {
 		return output;
 	}
 
+	/**
+	 * Get all deliveries from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Deliveries.
+	 */
 	public ArrayList<Delivery> getDeliveries() {
 		ArrayList<Delivery> output = new ArrayList<Delivery>();
 		try {
@@ -580,7 +784,12 @@ public class Database {
 		}
 		return output;
 	}
-
+	
+	/**
+	 * Get all invoices from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Invoices.
+	 */
 	public ArrayList<Invoice> getInvoices() {
 		ArrayList<Invoice> output = new ArrayList<Invoice>();
 		try {
@@ -601,7 +810,12 @@ public class Database {
 		}
 		return output;
 	}
-
+	
+	/**
+	 * Get all orders from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Orders.
+	 */
 	public ArrayList<Order> getOrders() {
 		ArrayList<Order> output = new ArrayList<Order>();
 		try {
@@ -623,7 +837,12 @@ public class Database {
 		}
 		return output;
 	}
-
+	
+	/**
+	 * Get all users from the database as an ArrayList.
+	 * 
+	 * @return ArrayList of Users.
+	 */
 	public ArrayList<User> getUsers() {
 		ArrayList<User> output = new ArrayList<User>();
 		try {
@@ -645,8 +864,10 @@ public class Database {
 	}	
 	
 	/**
-	 * Retrieve all order items associated with the given orderID.
-	 * @param orderID Unique ID number of the order.
+	 * Get all order items associated with the given orderID as an ArrayList.
+	 * 
+	 * @param orderID
+	 *            Unique ID number of the order.
 	 * @return ArrayList of LineItems associated with the given orderID.
 	 */
 	public ArrayList<LineItem> getOrderItems(int orderID){
@@ -669,7 +890,8 @@ public class Database {
 	}
 	
 	/**
-	 * Retrieve all order items in the system.
+	 * Get all order items from the database as an ArrayList.
+	 * 
 	 * @return ArrayList of LineItems.
 	 */
 	public ArrayList<LineItem> getOrderItems(){
@@ -692,8 +914,11 @@ public class Database {
 	}
 
 	/**
-	 * Retrieve all invoice items associated with the given invoiceID.
-	 * @param invoiceID Unique ID number of the invoice.
+	 * Get all invoice items associated with the given invoiceID as an
+	 * ArrayList.
+	 * 
+	 * @param invoiceID
+	 *            Unique ID number of the invoice.
 	 * @return ArrayList of LineItems associated with the given invoiceID.
 	 */
 	public ArrayList<LineItem> getInvoiceItems(int invoiceID){	
@@ -716,7 +941,8 @@ public class Database {
 	}
 	
 	/**
-	 * Retrieve all invoice items in the system.
+	 * Get all invoice items from the database as an ArrayList.
+	 * 
 	 * @return ArrayList of LineItems.
 	 */
 	public ArrayList<LineItem> getInvoiceItems(){	
@@ -738,7 +964,13 @@ public class Database {
 		return output;
 	}
 
-	// single item getters
+	/**
+	 * Retrieve a single Customer using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique customer ID (primary key)
+	 * @return customer on id match; otherwise null
+	 */
 	public Customer getCustomer(int id) {
 		Customer output = null;
 		try {
@@ -759,6 +991,13 @@ public class Database {
 		return output;		
 	}
 
+	/**
+	 * Retrieve a single Supplier using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique supplier ID (primary key)
+	 * @return supplier on id match; otherwise null
+	 */
 	public Supplier getSupplier(int id) {
 		Supplier output = null;
 		try {
@@ -779,6 +1018,13 @@ public class Database {
 		return output;
 	}
 
+	/**
+	 * Retrieve a single Product using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique product ID (primary key)
+	 * @return product on id match; otherwise null
+	 */
 	public Product getProduct(int id) {
 		Product output = null;
 		try {
@@ -801,6 +1047,13 @@ public class Database {
 		return output;
 	}
 
+	/**
+	 * Retrieve a single Delivery using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique delivery ID (primary key)
+	 * @return delivery on id match; otherwise null
+	 */
 	public Delivery getDelivery(int id) {
 		Delivery output = null;
 		try {
@@ -822,6 +1075,13 @@ public class Database {
 		return output;
 	}
 
+	/**
+	 * Retrieve a single Invoice using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique invoice ID (primary key)
+	 * @return invoice on id match; otherwise null
+	 */
 	public Invoice getInvoice(int id) {
 		Invoice output = null;
 		try {
@@ -845,6 +1105,13 @@ public class Database {
 		return output;		
 	}
 
+	/**
+	 * Retrieve a single Order using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique order ID (primary key)
+	 * @return order on id match; otherwise null
+	 */
 	public Order getOrder(int id) {
 		Order output = null;
 		try {
@@ -869,6 +1136,13 @@ public class Database {
 		return output;
 	}
 
+	/**
+	 * Retrieve a single User using the provided primary key ID.
+	 * 
+	 * @param id
+	 *            unique user ID (primary key)
+	 * @return user on id match; otherwise null
+	 */
 	public User getUser(int id) {
 		User output = null;
 		try {
@@ -889,7 +1163,18 @@ public class Database {
 		return output;
 	}
 
-	// Methods to update objects in database
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The customer to be updated will be identified using its primary key id.
+	 * The customer that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param customer
+	 *            customer with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateCustomer(Customer customer) {
 		if(customer==null){
 			return false;
@@ -909,6 +1194,18 @@ public class Database {
 		return false;			
 	}
 
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The supplier to be updated will be identified using its primary key id.
+	 * The supplier that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param supplier
+	 *            supplier with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateSupplier(Supplier supplier) {
 		if(supplier==null){
 			return false;
@@ -928,6 +1225,18 @@ public class Database {
 		return false;			
 	}
 
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The product to be updated will be identified using its primary key id.
+	 * The product that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param product
+	 *            product with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateProduct(Product product) {
 		if(product==null){
 			return false;
@@ -947,7 +1256,19 @@ public class Database {
 		}
 		return false;	
 	}
-
+	
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The delivery to be updated will be identified using its primary key id.
+	 * The delivery that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param delivery
+	 *            delivery with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateDelivery(Delivery delivery) {
 		if(delivery==null){
 			return false;
@@ -966,6 +1287,18 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The invoice to be updated will be identified using its primary key id.
+	 * The invoice that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param invoice
+	 *            invoice with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateInvoice(Invoice invoice) {
 		if(invoice==null){
 			return false;
@@ -1009,6 +1342,18 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The order to be updated will be identified using its primary key id. The
+	 * order that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param order
+	 *            order with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateOrder(Order order) {
 		if(order==null){
 			return false;
@@ -1053,6 +1398,18 @@ public class Database {
 		return false;	
 	}
 
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The user to be updated will be identified using its primary key id. The
+	 * user that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param user
+	 *            user with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateUser(User user) {
 		if(user==null){
 			return false;
@@ -1071,7 +1428,19 @@ public class Database {
 		}
 		return false;	
 	}
-	
+
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The order item to be updated will be identified using its primary key id.
+	 * The lineItem that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param lineItem
+	 *            lineItem with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateOrderItem(LineItem lineItem){
 		if(lineItem==null){
 			return false;
@@ -1089,7 +1458,19 @@ public class Database {
 		}
 		return false;	
 	}
-	
+
+	/**
+	 * Update an existing object with the values inside the supplied argument.
+	 * <p>
+	 * The invoice item to be updated will be identified using its primary key
+	 * id. The lineItem that is passed in as an argument must have a valid,
+	 * database-assigned ID for this method to work correctly.
+	 * 
+	 * @param lineItem
+	 *            lineItem with a database-assigned ID and updated instance
+	 *            variables
+	 * @return true if the database changed as a result of the call
+	 */
 	public boolean updateInvoiceItem(LineItem lineItem){
 		if(lineItem==null){
 			return false;
@@ -1107,11 +1488,14 @@ public class Database {
 		}
 		return false;			
 	}
-	
+
 	/**
-	 * Return all orders dated between two points in time (inclusive).
-	 * @param start the start date in the range
-	 * @param end the end date in the range
+	 * Get all orders that fall between the two dates (inclusive).
+	 * 
+	 * @param start
+	 *            the start date in the range
+	 * @param end
+	 *            the end date in the range
 	 * @return all orders that fall within the specified range as an ArrayList
 	 */
 	public ArrayList<Order> getOrdersBetween(Date start, Date end) {
@@ -1141,10 +1525,14 @@ public class Database {
 	}
 
 	/**
-	 * Return all deliveries dated between two points in time (inclusive).
-	 * @param start the start date in the range
-	 * @param end the end date in the range
-	 * @return all deliveries that fall within the specified range as an ArrayList
+	 * Get all deliveries that fall between the two dates (inclusive).
+	 * 
+	 * @param start
+	 *            the start date in the range
+	 * @param end
+	 *            the end date in the range
+	 * @return all deliveries that fall within the specified range as an
+	 *         ArrayList
 	 */
 	public ArrayList<Delivery> getDeliveriesBetween(Date start, Date end){
 		ArrayList<Delivery> output = new ArrayList<Delivery>();
@@ -1170,9 +1558,12 @@ public class Database {
 	}
 
 	/**
-	 * Return all invoices dated between two points in time (inclusive).
-	 * @param start the start date in the range
-	 * @param end the end date in the range
+	 * Get all invoices that fall between the two dates (inclusive).
+	 * 
+	 * @param start
+	 *            the start date in the range
+	 * @param end
+	 *            the end date in the range
 	 * @return all invoices that fall within the specified range as an ArrayList
 	 */
 	public ArrayList<Invoice> getInvoicesBetween(Date start, Date end){
@@ -1227,8 +1618,8 @@ public class Database {
 	}
 
 	/**
-	 * Return existing User on username+password match, otherwise return an
-	 * unauthorized user.
+	 * Return the associated User on username+password match, otherwise return
+	 * an unauthorized user.
 	 * 
 	 * @param username
 	 *            The username of the User.
