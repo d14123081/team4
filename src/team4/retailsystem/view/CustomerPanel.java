@@ -3,7 +3,10 @@ package team4.retailsystem.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
 
 
 import javax.swing.*;
@@ -201,15 +204,26 @@ public class CustomerPanel extends JPanel {
 
 		combinePanel.setLayout(new GridLayout(2, 0));
 
-		customerList = new JList(customerNameArrayList.toArray());
-		getcustomerNameArrayList();
+		customerList = new JList<Object>();
+		
+		customerList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+					Customer c = (Customer)customerList.getSelectedValue();
+	
+					nameTF.setText(c.getName());
+					addressTF.setText(c.getAddress());
+					eMailTF.setText(c.getEmail());
+					idTF.setText("" + c.getID());
+					telTF.setText(c.getTelephoneNumber());
+				}
+			});
+		
+		//getcustomerNameArrayList();
 		customerList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		customerList.setFont(new Font("Areal", Font.PLAIN, 16));
 		customerList.setVisibleRowCount(getHeight());
 		customerList.setOpaque(true);
 		customerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		customerList.getSelectionModel().addListSelectionListener(
-				new CustomerSelectionListener());
 		customerPanel = new JScrollPane(customerList);
 		addPanelName("Customers", customerPanel);
 		combinePanel.add(customerPanel);
@@ -251,7 +265,7 @@ public class CustomerPanel extends JPanel {
 						setToViewMode();
 				}
 			}
-			getcustomerNameArrayList();
+			//getcustomerNameArrayList();
 
 			//updatecustomerList(customers);
 		}
@@ -262,20 +276,14 @@ public class CustomerPanel extends JPanel {
 
 		public void valueChanged(ListSelectionEvent l) {
 			//
-			index = customerList.getSelectedIndex();
-			customer = Database.getInstance().getCustomers().get(index);
+			//index = customerList.getSelectedIndex();
+			Customer c = (Customer)customerList.getSelectedValue();
 
-			for (Customer c : customers) {
-				if (c.equals(customer)) {
-
-					nameTF.setText(c.getName());
-					addressTF.setText(c.getAddress());
-					eMailTF.setText(c.getEmail());
-					idTF.setText("" + c.getID());
-					telTF.setText(c.getTelephoneNumber());
-
-				}
-			}
+			nameTF.setText(c.getName());
+			addressTF.setText(c.getAddress());
+			eMailTF.setText(c.getEmail());
+			idTF.setText("" + c.getID());
+			telTF.setText(c.getTelephoneNumber());
 
 		}
 	}
@@ -307,7 +315,7 @@ public class CustomerPanel extends JPanel {
 					// add to customer array/database when functionality
 					// available
 					System.out.println("Customer added to database");
-					getcustomerNameArrayList();
+					//getcustomerNameArrayList();
 					clearTextFields();
 					setToViewMode();
 
@@ -412,17 +420,10 @@ public class CustomerPanel extends JPanel {
 		panel.setBorder(BorderFactory.createTitledBorder(panelName));
 	}
 
-	public void getcustomerNameArrayList() {
-		customers = Database.getInstance().getCustomers();
-		customerNameArrayList.clear();
-		for (Customer s : customers) {
-			customerNameArrayList.add(s.getName() + "   ");
-		}
-		customerList.setListData(customerNameArrayList.toArray());
-	}
-
 	public void updateCustomerList(ArrayList<Customer> customers) {
+		System.out.println("Customers size: "+customers.size());
 		customerList.setListData(customers.toArray());
+		
 	}
 
 	public void addListener(RetailViewListener r) {
