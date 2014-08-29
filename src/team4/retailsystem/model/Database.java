@@ -1046,6 +1046,7 @@ public class Database {
 					}
 				}
 			}
+			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
 		}
