@@ -24,7 +24,7 @@ public class DatabaseTest {
 
 	@Test
 	public void testGetInstance() {
-		assertNotNull(Database.getInstance());
+		assertNotNull(Database.getInstance("testSystem"));
 	}
 	
 	@Test
@@ -40,10 +40,10 @@ public class DatabaseTest {
 		
 		//test Create
 		Customer c = new Customer(name, telephoneNo, email, address);
-		assertTrue(Database.getInstance().addCustomer(c));
+		assertTrue(Database.getInstance("testSystem").addCustomer(c));
 		
 		//test Create & Read
-		Customer d = Database.getInstance().getCustomer(1);
+		Customer d = Database.getInstance("testSystem").getCustomer(1);
 		assertEquals(name, d.getName());
 		assertEquals(telephoneNo, d.getTelephoneNumber());
 		assertEquals(email, d.getEmail());
@@ -54,16 +54,16 @@ public class DatabaseTest {
 		d.setTelephoneNumber(newTelephoneNo);
 		d.setEmail(newEmail);
 		d.setAddress(newAddress);
-		Database.getInstance().updateCustomer(d);
+		Database.getInstance("testSystem").updateCustomer(d);
 		
-		Customer e = Database.getInstance().getCustomer(1);
+		Customer e = Database.getInstance("testSystem").getCustomer(1);
 		assertEquals(newName, e.getName());
 		assertEquals(newTelephoneNo, e.getTelephoneNumber());
 		assertEquals(newEmail, e.getEmail());
 		assertEquals(newAddress, e.getAddress());		
 		
 		//test Delete
-		assertTrue(Database.getInstance().deleteCustomer(e));
+		assertTrue(Database.getInstance("testSystem").deleteCustomer(e));
 	}
 
 	@Test
@@ -79,10 +79,10 @@ public class DatabaseTest {
 		
 		//test Create
 		Supplier s = new Supplier(name, address, email, telephoneNo);
-		assertTrue(Database.getInstance().addSupplier(s));
+		assertTrue(Database.getInstance("testSystem").addSupplier(s));
 		
 		//test Create & Read
-		Supplier d = Database.getInstance().getSupplier(1);
+		Supplier d = Database.getInstance("testSystem").getSupplier(1);
 		assertEquals(name, d.getName());
 		assertEquals(telephoneNo, d.getTelephoneNumber());
 		assertEquals(email, d.getEmail());
@@ -93,16 +93,16 @@ public class DatabaseTest {
 		d.setTelephone(newTelephoneNo);
 		d.setEmail(newEmail);
 		d.setAddress(newAddress);
-		Database.getInstance().updateSupplier(d);
+		Database.getInstance("testSystem").updateSupplier(d);
 		
-		Supplier e = Database.getInstance().getSupplier(1);
+		Supplier e = Database.getInstance("testSystem").getSupplier(1);
 		assertEquals(newName, e.getName());
 		assertEquals(newTelephoneNo, e.getTelephoneNumber());
 		assertEquals(newEmail, e.getEmail());
 		assertEquals(newAddress, e.getAddress());		
 		
 		//test Delete
-		assertTrue(Database.getInstance().deleteSupplier(e));
+		assertTrue(Database.getInstance("testSystem").deleteSupplier(e));
 	}
 
 	@Test
@@ -123,15 +123,15 @@ public class DatabaseTest {
 		
 		Supplier supplier = new Supplier(sname, saddress, semail, stelephoneNo);
 		Supplier newSupplier = new Supplier(semail, saddress, semail, stelephoneNo);
-		Database.getInstance().addSupplier(supplier);		
-		Database.getInstance().addSupplier(newSupplier);		
+		Database.getInstance("testSystem").addSupplier(supplier);		
+		Database.getInstance("testSystem").addSupplier(newSupplier);		
 		
 		//test Create
 		Product s = new Product(name, cost, markup, stockLevel, supplier);
-		assertTrue(Database.getInstance().addProduct(s));
+		assertTrue(Database.getInstance("testSystem").addProduct(s));
 		
 		//test Create & Read
-		Product d = Database.getInstance().getProduct(1);
+		Product d = Database.getInstance("testSystem").getProduct(1);
 		assertEquals(name, d.getName());
 		//assertEquals(cost, d.getCost(), .0001);
 		assertEquals(markup, d.getMarkup(), .0001);
@@ -144,9 +144,9 @@ public class DatabaseTest {
 		d.setMarkup(newMarkup);
 		d.setSupplier(newSupplier);
 		d.setStockLevel(newStockLevel);
-		Database.getInstance().updateProduct(d);
+		Database.getInstance("testSystem").updateProduct(d);
 		
-		Product e = Database.getInstance().getProduct(1);
+		Product e = Database.getInstance("testSystem").getProduct(1);
 		assertEquals(newName, e.getName());
 		//assertEquals(newCost, e.getCost(), .0001);
 		assertEquals(newMarkup, e.getMarkup(), .0001);
@@ -154,11 +154,11 @@ public class DatabaseTest {
 		assertEquals(e.getSupplier().getName(), newSupplier.getName());
 		
 		//test Delete
-		assertTrue(Database.getInstance().deleteProduct(e));	
+		assertTrue(Database.getInstance("testSystem").deleteProduct(e));	
 		
 		//clean up
-		Database.getInstance().deleteSupplier(supplier);
-		Database.getInstance().deleteSupplier(newSupplier);		
+		Database.getInstance("testSystem").deleteSupplier(supplier);
+		Database.getInstance("testSystem").deleteSupplier(newSupplier);		
 	}
 
 	@Test
@@ -174,10 +174,10 @@ public class DatabaseTest {
 		
 		//test create
 		User u = new User(authLevel, username, passwordDigest, salt);
-		Database.getInstance().addUser(u);
+		Database.getInstance("testSystem").addUser(u);
 		
 		//test create & read
-		User n = Database.getInstance().getUser(1);
+		User n = Database.getInstance("testSystem").getUser(1);
 		assertEquals(authLevel, n.getAuthorizationLevel());
 		assertEquals(username, n.getUsername());
 		assertEquals(passwordDigest, n.getPasswordDigest());
@@ -185,19 +185,19 @@ public class DatabaseTest {
 		
 		//test upadte 
 		n = new User(1, newAuthLevel, newUsername, newPasswordDigest, newSalt);
-		Database.getInstance().updateUser(n);
+		Database.getInstance("testSystem").updateUser(n);
 		assertEquals(newAuthLevel, n.getAuthorizationLevel());
 		assertEquals(newUsername, n.getUsername());
 		assertEquals(newPasswordDigest, n.getPasswordDigest());
 		assertEquals(newSalt, n.getSalt());
 		
 		//test delete
-		assertTrue(Database.getInstance().deleteUser(n));		
+		assertTrue(Database.getInstance("testSystem").deleteUser(n));		
 	}
 
 	@Test
 	public void testCRUDInvoice() {
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		Date date = new Date();
 		double cost = 54.0;
 		int productID = 1;
@@ -226,7 +226,7 @@ public class DatabaseTest {
 		db.addCustomer(customer);	
 		
 		//acquire the id for customer c
-		customer = Database.getInstance().getCustomers().get(0);
+		customer = Database.getInstance("testSystem").getCustomers().get(0);
 		
 		String newCustomerName = "Average Carpets";
 		String newCustomerTel = "123445678";
@@ -282,7 +282,7 @@ public class DatabaseTest {
 		assertEquals(invoice.getID(), invoiceListItems.get(1).getOrderID());
 		
 		//test Delete
-		assertTrue(Database.getInstance().deleteInvoice(invoice));
+		assertTrue(Database.getInstance("testSystem").deleteInvoice(invoice));
 		
 		//cleanup
 		db.deleteCustomer(customer);
@@ -311,7 +311,7 @@ public class DatabaseTest {
 		Order order = new Order(cost, supplier1, deliveryID, items);
 		Date deliveryDate = order.getOrderDate();
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addSupplier(supplier1);
 		db.addProduct(product1);
 		
@@ -370,22 +370,22 @@ public class DatabaseTest {
 		String email = "amazing.carpets@gmail.com";
 		String address = "54 Random Street\nDublin 4\nIreland";
 		Supplier supplier1 = new Supplier(name, address, email, telephoneNo);	
-		Database.getInstance().addSupplier(supplier1);
+		Database.getInstance("testSystem").addSupplier(supplier1);
 		
 		String newName = "Average Carpets";	
 		String newTelephoneNo = "123445678";
 		String newEmail = "average.carpets@outlook.com";
 		String newAddress = "81 Less Random street";		
 		Supplier supplier2 = new Supplier(newName, newAddress, newEmail, newTelephoneNo);	
-		Database.getInstance().addSupplier(supplier2);	
+		Database.getInstance("testSystem").addSupplier(supplier2);	
 
 		//test Create
 		Delivery delivery = new Delivery(supplier1, orderID);
 		Date date = delivery.getDate();
-		Database.getInstance().addDelivery(delivery);
+		Database.getInstance("testSystem").addDelivery(delivery);
 		
 		//test Create & Read
-		delivery = Database.getInstance().getDelivery(1);
+		delivery = Database.getInstance("testSystem").getDelivery(1);
 		assertEquals(orderID, delivery.getOrderID());
 		assertEquals(date, delivery.getDate());
 		assertEquals(supplier1.getName(), delivery.getSupplier().getName());
@@ -397,17 +397,17 @@ public class DatabaseTest {
 		delivery.setDate(new Date());
 		date = delivery.getDate();
 
-		Database.getInstance().updateDelivery(delivery);		
+		Database.getInstance("testSystem").updateDelivery(delivery);		
 		assertEquals(orderID, delivery.getOrderID());
 		assertEquals(date, delivery.getDate());
 		assertEquals(supplier2.getName(), delivery.getSupplier().getName());
 		
 		//test Delete
-		assertTrue(Database.getInstance().deleteDelivery(delivery));
+		assertTrue(Database.getInstance("testSystem").deleteDelivery(delivery));
 		
 		//cleanup
-		Database.getInstance().deleteSupplier(supplier1);
-		Database.getInstance().deleteSupplier(supplier2);
+		Database.getInstance("testSystem").deleteSupplier(supplier1);
+		Database.getInstance("testSystem").deleteSupplier(supplier2);
 	}
 
 	@Test
@@ -436,23 +436,23 @@ public class DatabaseTest {
 		String notInSysPassword = "wrong_basis";
 		User notInSys;
 		
-		Database.getInstance().addUser(admin);
-		Database.getInstance().addUser(nonAdmin);
+		Database.getInstance("testSystem").addUser(admin);
+		Database.getInstance("testSystem").addUser(nonAdmin);
 		
-		admin = Database.getInstance().authorizeUser(adminUsername, adminPassword);
-		nonAdmin = Database.getInstance().authorizeUser(nonAdminUsername, nonAdminPassword);
-		notInSys = Database.getInstance().authorizeUser(notInSysUsername, notInSysPassword);
+		admin = Database.getInstance("testSystem").authorizeUser(adminUsername, adminPassword);
+		nonAdmin = Database.getInstance("testSystem").authorizeUser(nonAdminUsername, nonAdminPassword);
+		notInSys = Database.getInstance("testSystem").authorizeUser(notInSysUsername, notInSysPassword);
 		
 		assertEquals(User.ADMINISTRATOR, admin.getAuthorizationLevel());
 		assertEquals(User.NORMAL_USER, nonAdmin.getAuthorizationLevel());
 		assertEquals(User.NO_AUTHORIZATION, notInSys.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminWrongUsername, adminPassword).getAuthorizationLevel());			
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminUsername, adminWrongPassword).getAuthorizationLevel());			
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance().authorizeUser(adminWrongUsername, adminWrongPassword).getAuthorizationLevel());	
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem").authorizeUser(adminWrongUsername, adminPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem").authorizeUser(adminUsername, adminWrongPassword).getAuthorizationLevel());			
+		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem").authorizeUser(adminWrongUsername, adminWrongPassword).getAuthorizationLevel());	
 		
 		//clean up
-		Database.getInstance().deleteUser(admin);
-		Database.getInstance().deleteUser(nonAdmin);
+		Database.getInstance("testSystem").deleteUser(admin);
+		Database.getInstance("testSystem").deleteUser(nonAdmin);
 	}
 	
 	@Test
@@ -474,7 +474,7 @@ public class DatabaseTest {
 		Customer two = new Customer(name2, telNo2, email2, addr2);
 		Customer three = new Customer(name3, telNo3, email3, addr3);
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addCustomer(one);
 		db.addCustomer(two);
 		db.addCustomer(three);
@@ -510,7 +510,7 @@ public class DatabaseTest {
 		Supplier two = new Supplier(name2, addr2, email2, telNo2);
 		Supplier three = new Supplier(name3, addr3, email3, telNo3);
 
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addSupplier(one);
 		db.addSupplier(two);
 		db.addSupplier(three);
@@ -542,7 +542,7 @@ public class DatabaseTest {
 		Product two = new Product(name2, 1, 1, 1, supplier);
 		Product three = new Product(name3, 1, 1, 1, supplier);
 
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addProduct(one);
 		db.addProduct(two);
 		db.addProduct(three);
@@ -570,7 +570,7 @@ public class DatabaseTest {
 		User two = new User(1, name2, email1, email1);
 		User three = new User(1, name3, email1, email1);
 
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addUser(one);
 		db.addUser(two);
 		db.addUser(three);
@@ -598,7 +598,7 @@ public class DatabaseTest {
 		Product product2 = new Product(name2, 2, 2, 2, supplier1);
 		Product product3 = new Product(name3, 3, 3, 3, supplier1);
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
@@ -657,7 +657,7 @@ public class DatabaseTest {
 		Product product2 = new Product(name2, 2, 2, 2, supplier1);
 		Product product3 = new Product(name3, 3, 3, 3, supplier1);
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
@@ -713,7 +713,7 @@ public class DatabaseTest {
 		Delivery two = new Delivery(supplier1, 2);
 		Delivery three = new Delivery(supplier1, 3);
 
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addDelivery(one);
 		db.addDelivery(two);
 		db.addDelivery(three);
@@ -731,32 +731,32 @@ public class DatabaseTest {
 	
 	@After
 	public void cleanup(){
-		for(Customer c : Database.getInstance().getCustomers()){
-			Database.getInstance().deleteCustomer(c);
+		for(Customer c : Database.getInstance("testSystem").getCustomers()){
+			Database.getInstance("testSystem").deleteCustomer(c);
 		}
-		for(Product p : Database.getInstance().getProducts()){
-			Database.getInstance().deleteProduct(p);
+		for(Product p : Database.getInstance("testSystem").getProducts()){
+			Database.getInstance("testSystem").deleteProduct(p);
 		}
-		for(Supplier s : Database.getInstance().getSuppliers()){
-			Database.getInstance().deleteSupplier(s);
+		for(Supplier s : Database.getInstance("testSystem").getSuppliers()){
+			Database.getInstance("testSystem").deleteSupplier(s);
 		}
-		for(User u : Database.getInstance().getUsers()){
-			Database.getInstance().deleteUser(u);
+		for(User u : Database.getInstance("testSystem").getUsers()){
+			Database.getInstance("testSystem").deleteUser(u);
 		}
-		for(Invoice i : Database.getInstance().getInvoices()){
-			Database.getInstance().deleteInvoice(i);
+		for(Invoice i : Database.getInstance("testSystem").getInvoices()){
+			Database.getInstance("testSystem").deleteInvoice(i);
 		}
-		for(Delivery d : Database.getInstance().getDeliveries()){
-			Database.getInstance().deleteDelivery(d);
+		for(Delivery d : Database.getInstance("testSystem").getDeliveries()){
+			Database.getInstance("testSystem").deleteDelivery(d);
 		}
-		for(Order o : Database.getInstance().getOrders()){
-			Database.getInstance().deleteOrder(o);
+		for(Order o : Database.getInstance("testSystem").getOrders()){
+			Database.getInstance("testSystem").deleteOrder(o);
 		}
-		for(LineItem li : Database.getInstance().getOrderItems()){
-			Database.getInstance().deleteOrderItem(li);
+		for(LineItem li : Database.getInstance("testSystem").getOrderItems()){
+			Database.getInstance("testSystem").deleteOrderItem(li);
 		}
-		for(LineItem li : Database.getInstance().getInvoiceItems()){
-			Database.getInstance().deleteInvoiceItem(li);
+		for(LineItem li : Database.getInstance("testSystem").getInvoiceItems()){
+			Database.getInstance("testSystem").deleteInvoiceItem(li);
 		}
 	}
 	@Test
@@ -775,7 +775,7 @@ public class DatabaseTest {
 		Order justNewEnough = new Order(1, supplier, 1, lineItems, 1, now500);
 		Order tooNew = new Order(1, supplier, 1, lineItems, 1, now500Plus1);	
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addOrder(justRight);
 		db.addOrder(justOldEnough);
 		db.addOrder(tooOld);
@@ -809,7 +809,7 @@ public class DatabaseTest {
 		Invoice justNewEnough = new Invoice(lineItems, customer, 1, now500);
 		Invoice tooNew = new Invoice(lineItems, customer, 1, now500Plus1);
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addInvoice(justRight);
 		db.addInvoice(justOldEnough);
 		db.addInvoice(tooOld);
@@ -842,7 +842,7 @@ public class DatabaseTest {
 		Delivery justNewEnough = new Delivery(supplier, 4, now500, 1);
 		Delivery tooNew = new Delivery(supplier, 5, now500Plus1, 1);
 		
-		Database db = Database.getInstance();
+		Database db = Database.getInstance("testSystem");
 		db.addDelivery(justRight);
 		db.addDelivery(justOldEnough);
 		db.addDelivery(tooOld);

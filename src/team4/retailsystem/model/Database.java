@@ -94,7 +94,14 @@ public class Database {
 	
 	public static Database getInstance() {
 		if (db == null) {
-			db = new Database("testSystem");
+			db = new Database("RetailStorageSystem");
+		}
+		return db;
+	}
+	
+	public static Database getInstance(String dbName) {
+		if (db == null) {
+			db = new Database(dbName);
 		}
 		return db;
 	}
