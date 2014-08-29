@@ -118,7 +118,9 @@ public class InvoicePanel extends JPanel {
 			}
 			@Override
 			public void setValueAt(Object val, int row, int column) {
-				if (val instanceof Number && ((Number) val).doubleValue() > 0) {
+				Product p = database.getProduct((int)invoiceTable.getValueAt(row, column-2));
+				if (val instanceof Number && ((Number) val).doubleValue() > 0 
+						&& ((Number) val).intValue() <= p.getStockLevel() ) {
 					super.setValueAt(val, row, column);
 				}
 			}
