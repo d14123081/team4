@@ -179,36 +179,41 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDUser() {
-		int authLevel = 1;
+		// test data
+		int authLvl = User.ADMINISTRATOR;
 		String username = "ames";
-		String passwordDigest = "tesla core";
+		String pswdDigest = "tesla core";
 		String salt = "salt";
-		int newAuthLevel = 0;
+		
+		int newAuthLvl = User.NORMAL_USER;
 		String newUsername = "bob";
-		String newPasswordDigest = "hellobob";
+		String newPswdDigest = "hellobob";
 		String newSalt = "newsalt";
 
-		// test create
-		User u = new User(authLevel, username, passwordDigest, salt);
-		Database.getInstance("testSystem").addUser(u);
+		Database db = Database.getInstance("testSystem");
+		User user = new User(authLvl, username, pswdDigest, salt);
+		
+		// test Create & Read
+		assertTrue(CREATE_ERR, db.addUser(user));
+		
+		user = db.getUsers().get(0);
+		assertNotNull(READ_ERR, user);		
+		
+		assertEquals(READ_ERR, authLvl, user.getAuthorizationLevel());
+		assertEquals(READ_ERR, username, user.getUsername());
+		assertEquals(READ_ERR, pswdDigest, user.getPasswordDigest());
+		assertEquals(READ_ERR, salt, user.getSalt());
 
-		// test create & read
-		User n = Database.getInstance("testSystem").getUser(1);
-		assertEquals(authLevel, n.getAuthorizationLevel());
-		assertEquals(username, n.getUsername());
-		assertEquals(passwordDigest, n.getPasswordDigest());
-		assertEquals(salt, n.getSalt());
+		// test Update
+		user = new User(user.getID(), newAuthLvl, newUsername, newPswdDigest, newSalt);
+		assertTrue(UPDATE_ERR, db.updateUser(user));
+		assertEquals(UPDATE_ERR, newAuthLvl, user.getAuthorizationLevel());
+		assertEquals(UPDATE_ERR, newUsername, user.getUsername());
+		assertEquals(UPDATE_ERR, newPswdDigest, user.getPasswordDigest());
+		assertEquals(UPDATE_ERR, newSalt, user.getSalt());
 
-		// test upadte
-		n = new User(1, newAuthLevel, newUsername, newPasswordDigest, newSalt);
-		Database.getInstance("testSystem").updateUser(n);
-		assertEquals(newAuthLevel, n.getAuthorizationLevel());
-		assertEquals(newUsername, n.getUsername());
-		assertEquals(newPasswordDigest, n.getPasswordDigest());
-		assertEquals(newSalt, n.getSalt());
-
-		// test delete
-		assertTrue(Database.getInstance("testSystem").deleteUser(n));
+		// test Delete
+		assertTrue(DELETE_ERR, db.deleteUser(user));
 	}
 
 	@Test
