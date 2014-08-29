@@ -29,26 +29,13 @@ public class UserPanel extends JPanel {
 	final JComboBox authComboBox;
 
 	public UserPanel() {
-		setBounds(10, 88, 642, 296);
+		setBounds(10, 88, 820, 600);
 		setLayout(null);
 		database = Database.getInstance();
-		JPanel userListPanel = new JPanel();
-		userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-				null));
-		userListPanel.setBounds(10, 11, 159, 274);
-		add(userListPanel);
-		userListPanel.setLayout(null);
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 138, 252);
-		userListPanel.add(scrollPane);
-
-		userList = new JList();
-		scrollPane.setViewportView(userList);
-		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(166, 11, 465, 274);
+		panel.setBounds(10, 11, 644, 578);
 		add(panel);
 		panel.setLayout(null);
 
@@ -152,27 +139,40 @@ public class UserPanel extends JPanel {
 		});
 		
 		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(375, 240, 80, 23);
+		btnCancel.setBounds(534, 544, 100, 23);
 		panel.add(btnCancel);
+				JPanel userListPanel = new JPanel();
+				userListPanel.setBounds(651, 11, 159, 578);
+				add(userListPanel);
+				userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+						null));
+				userListPanel.setLayout(null);
+				JScrollPane scrollPane = new JScrollPane();
+				scrollPane.setBounds(10, 11, 138, 556);
+				userListPanel.add(scrollPane);
+				
+						userList = new JList();
+						scrollPane.setViewportView(userList);
+						userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+						
+								userList.addMouseListener(new MouseAdapter() {
+									public void mouseClicked(MouseEvent e) {
+										idField.setText(Integer.toString(((User)userList.getSelectedValue()).getID()));
+										usernameField.setText(((User)userList.getSelectedValue()).getUsername());
+										if(((User)userList.getSelectedValue()).getAuthorizationLevel() == 1)
+										{
+											authComboBox.setSelectedIndex(0);
+										}
+										else
+										{
+											authComboBox.setSelectedIndex(1);
+										}
+										//passwordField.setText(((User)userList.getSelectedValue()).getPassword()); obviously not how its meant to be.. unsure about passwords
+									}
+								});
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout();
-			}
-		});
-
-		userList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				idField.setText(Integer.toString(((User)userList.getSelectedValue()).getID()));
-				usernameField.setText(((User)userList.getSelectedValue()).getUsername());
-				if(((User)userList.getSelectedValue()).getAuthorizationLevel() == 1)
-				{
-					authComboBox.setSelectedIndex(0);
-				}
-				else
-				{
-					authComboBox.setSelectedIndex(1);
-				}
-				//passwordField.setText(((User)userList.getSelectedValue()).getPassword()); obviously not how its meant to be.. unsure about passwords
 			}
 		});
 	}

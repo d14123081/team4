@@ -35,6 +35,12 @@ public class Invoice {
 		setId(++idCounter);
 		setDate(new Date());
 	}
+	public Invoice(ArrayList<LineItem> lineItems, Customer customer, Date date) {
+		setLineItems(lineItems);
+		setCustomer(customer);
+		setId(++idCounter);
+		setDate(date);
+	}
 
 	/**
 	 * Creates an invoice object based on existing data - used to turn database
@@ -115,6 +121,6 @@ public class Invoice {
 	
 	public String toString()
 	{
-		return new String("Invoice No. " + id);
+		return new String("Invoice #" + id);
 	}
 }

@@ -40,8 +40,8 @@ public interface RetailViewListener {
 	public void clickDeleteOrder(int orderId);
 	
 	//invoice panel events
-	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer);
-	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems, Customer customer); 
+	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer, Date d);
+	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems, Customer customer, Date d); 
 	public void clickDeleteInvoice(int invoiceId);
 	public void databaseCreateInvoice(double cost, ArrayList<LineItem> lineItems, Customer customer, Date date);
 	
