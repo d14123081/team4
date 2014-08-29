@@ -2,6 +2,8 @@ package team4.retailsystem.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
@@ -53,7 +55,7 @@ public class InvoicePanel extends JPanel {
 	private JCheckBox checkboxNew;
 	private DefaultTableModel tableModel;
 	private JButton btnCancel, btnInvoices, btnAdd, btnDelRow;
-	private JLabel lblTotalCost, lblInvoiceId;
+	private JLabel lblTotalCost, lblInvoiceId, lblCustomer;
 	private JPanel invoiceListPanel, invoicePanel;
 	private JScrollPane invoiceScrollPane, productScrollPane;
 	private DecimalFormat df = new DecimalFormat("0.00");
@@ -69,6 +71,7 @@ public class InvoicePanel extends JPanel {
 	}
 
 	public void initialiseComponents() {
+		//Initialise all components
 		btnInvoices = new JButton("Invoices");
 		btnAdd = new JButton("Submit");
 		btnCancel = new JButton("Cancel");
@@ -78,6 +81,7 @@ public class InvoicePanel extends JPanel {
 		lblInvoiceId = new JLabel("Invoice ID:");
 		invoiceScrollPane = new JScrollPane();
 		customerComboBox = new JComboBox();
+		customerComboBox.setEnabled(false);
 		database = Database.getInstance();
 		totalCostField = new JTextField();
 		invoiceListPanel = new JPanel();
@@ -89,15 +93,93 @@ public class InvoicePanel extends JPanel {
 		productList = new JList();
 		productScrollPane.setViewportView(productList);
 		dateModel = new UtilDateModel();
-		dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+		dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH),
+				today.get(Calendar.DATE));
 		dateModel.setSelected(true);
 		datePanel = new JDatePanelImpl(dateModel);
 		datePicker = new JDatePickerImpl(datePanel);
+		datePicker.getJFormattedTextField().setEnabled(false);
+		lblCustomer = new JLabel("Customer:");
+	}
+
+	public void constructView() {
+		//Creates the layout of GUI
+		setLayout(null);
+		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Product ID", "Product Name", "Quantity" }) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class,
+					Integer.class };
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] { false, false, true };
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+			@Override
+			public void setValueAt(Object val, int row, int column) {
+				if (val instanceof Number && ((Number) val).doubleValue() > 0) {
+					super.setValueAt(val, row, column);
+				}
+			}
+		});
+		invoiceTable.getTableHeader().setReorderingAllowed(false);
+		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invoiceListPanel.setLayout(null);
+		invoiceListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		invoiceListPanel.setBounds(626, 11, 184, 578);
+		add(invoiceListPanel);
+		productScrollPane.setBounds(10, 11, 164, 556);
+		invoiceListPanel.add(productScrollPane);
+		invoicePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		invoicePanel.setBounds(10, 11, 617, 578);
+		add(invoicePanel);
+		invoicePanel.setLayout(null);
+		customerComboBox.setBounds(245, 7, 156, 23);
+		invoicePanel.add(customerComboBox);
+		invoiceScrollPane.setBounds(10, 37, 597, 427);
+		invoicePanel.add(invoiceScrollPane);
+		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
+		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
+		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
+		invoiceScrollPane.setViewportView(invoiceTable);
+		totalCostField.setEditable(false);
+		totalCostField.setBounds(484, 475, 123, 20);
+		invoicePanel.add(totalCostField);
+		totalCostField.setColumns(10);
+		lblTotalCost.setBounds(422, 478, 63, 14);
+		invoicePanel.add(lblTotalCost);
+		lblInvoiceId.setBounds(422, 11, 63, 14);
+		invoicePanel.add(lblInvoiceId);
+		idField.setEditable(false);
+		idField.setBounds(492, 8, 115, 20);
+		invoicePanel.add(idField);
+		idField.setColumns(10);
+		checkboxNew.setBounds(10, 7, 52, 23);
+		invoicePanel.add(checkboxNew);
+		btnInvoices.setBounds(68, 7, 100, 23);
+		invoicePanel.add(btnInvoices);
+		btnAdd.setBounds(402, 546, 100, 23);
+		invoicePanel.add(btnAdd);
+		btnCancel.setBounds(507, 546, 100, 23);
+		invoicePanel.add(btnCancel);
+		btnDelRow.setBounds(20, 474, 115, 23);
+		invoicePanel.add(btnDelRow);
+		datePicker.setBounds(204, 475, 164, 33);
+		invoicePanel.add(datePicker);
+		lblCustomer.setBounds(178, 9, 98, 19);
+		invoicePanel.add(lblCustomer);
 	}
 
 	public void addListeners() {
+		//Adds listeners to components
+		
+		//Handles the submit button
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//If new invoice + items added to invoice
 				if (checkboxNew.isSelected() && tableModel.getRowCount() > 0) {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					Date d = (Date) datePicker.getModel().getValue();
@@ -111,13 +193,12 @@ public class InvoicePanel extends JPanel {
 						r.clickCreateInvoice(lineitems, c, d);
 					}
 					logout();
-				} 
+				} //If updating invoice 
 				else if (!checkboxNew.isSelected()
-						&& tableModel.getRowCount() > 0) 
-				{
+						&& tableModel.getRowCount() > 0) {
 					int id = Integer.parseInt(idField.getText());
 					Customer c = (Customer) customerComboBox.getSelectedItem();
-					Date d = (Date)datePicker.getModel().getValue();
+					Date d = (Date) datePicker.getModel().getValue();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
 					for (int i = 0; i < tableModel.getRowCount(); i++) {
 						int productId = (int) invoiceTable.getValueAt(i, 0);
@@ -128,8 +209,7 @@ public class InvoicePanel extends JPanel {
 						r.clickUpdateInvoice(id, lineitems, c, d);
 					}
 					logout();
-				}
-
+				} //If neither updating nor creating - throw error
 				else {
 					showError("Incomplete invoice");
 				}
@@ -143,11 +223,11 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
+		//Handles the remove row button
 		btnDelRow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean delRow = false;
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) 
-				{
+				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
 					if (invoiceTable.isRowSelected(i)) {
 						tableModel.removeRow(i);
 						invoiceTable.clearSelection();
@@ -155,26 +235,28 @@ public class InvoicePanel extends JPanel {
 						break;
 					}
 				}
-				if(!delRow)
-				{
+				if (!delRow) {
 					showError("Select a row to delete");
 				}
 			}
 		});
 
+		//Handles the cancel button
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout();
 			}
 		});
 
+		//Handles a click event on product list
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-
+				//If user isn't updating nor creating a new invoice, throw error
 				if (!checkboxNew.isSelected() && tableModel.getRowCount() < 1) {
 					showError("You must either create a new invoice or append to an existing invoice");
-				} else {
-
+				} 
+				else 
+				{	//If table is empty
 					if (tableModel.getRowCount() == 0) {
 						// add row, [ product id, product name, 1 ]
 						tableModel.addRow(new Object[] {
@@ -182,7 +264,9 @@ public class InvoicePanel extends JPanel {
 										.getID(),
 								((Product) productList.getSelectedValue())
 										.getName(), 1 });
-					} else {
+					} 
+					else {
+						//Check if item already on list, if so increase, if not then add to list
 						for (int i = 0; i < tableModel.getRowCount(); i++) {
 							if ((int) tableModel.getValueAt(i, 0) == ((Product) productList
 									.getSelectedValue()).getID()) {
@@ -206,6 +290,7 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
+		//Handles table update
 		invoiceTable.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
@@ -219,94 +304,40 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
-		checkboxNew.addActionListener(new ActionListener() {
+		//Handles the "new" checkbox
+		checkboxNew.addItemListener(new ItemListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				clearInvoice();
-			}
-		});
-	}
-
-	public void constructView() {
-		setLayout(null);
-		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Product ID", "Product Name", "Quantity" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
-					Integer.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			boolean[] columnEditables = new boolean[] { false, false, true };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-
-			@Override
-			public void setValueAt(Object val, int row, int column) {
-				if (val instanceof Number && ((Number) val).doubleValue() > 0) {
-					super.setValueAt(val, row, column);
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					clearInvoice();
+					customerComboBox.setEnabled(true);
+					datePicker.setEnabled(true);
+					datePicker.getJFormattedTextField().setEnabled(true);
+					datePanel.setEnabled(true);
+					
+				} else {
+					logout();
+					customerComboBox.setEnabled(false);
+					datePicker.setEnabled(false);
+					datePicker.getJFormattedTextField().setEnabled(false);
+					datePanel.setEnabled(false);
 				}
+
 			}
 		});
-		invoiceTable.getTableHeader().setReorderingAllowed(false);
-		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		invoiceListPanel.setLayout(null);
-		invoiceListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-				null));
-		invoiceListPanel.setBounds(626, 11, 184, 578);
-		add(invoiceListPanel);
-		productScrollPane.setBounds(10, 11, 164, 556);
-		invoiceListPanel.add(productScrollPane);
-		invoicePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-				null));
-		invoicePanel.setBounds(10, 11, 617, 578);
-		add(invoicePanel);
-		invoicePanel.setLayout(null);
-		customerComboBox.setBounds(275, 7, 158, 23);
-		invoicePanel.add(customerComboBox);
-		invoiceScrollPane.setBounds(10, 37, 597, 427);
-		invoicePanel.add(invoiceScrollPane);
-		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
-		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
-		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
-		invoiceScrollPane.setViewportView(invoiceTable);
-		totalCostField.setEditable(false);
-		totalCostField.setBounds(484, 475, 123, 20);
-		invoicePanel.add(totalCostField);
-		totalCostField.setColumns(10);
-		lblTotalCost.setBounds(422, 478, 63, 14);
-		invoicePanel.add(lblTotalCost);
-		lblInvoiceId.setBounds(233, 478, 63, 14);
-		invoicePanel.add(lblInvoiceId);
-		idField.setEditable(false);
-		idField.setBounds(294, 475, 123, 20);
-		invoicePanel.add(idField);
-		idField.setColumns(10);
-		checkboxNew.setBounds(10, 7, 52, 23);
-		invoicePanel.add(checkboxNew);
-		btnInvoices.setBounds(68, 7, 100, 23);
-		invoicePanel.add(btnInvoices);
-		btnAdd.setBounds(402, 546, 100, 23);
-		invoicePanel.add(btnAdd);
-		btnCancel.setBounds(507, 546, 100, 23);
-		invoicePanel.add(btnCancel);
-		btnDelRow.setBounds(20, 474, 115, 23);
-		invoicePanel.add(btnDelRow);
-		datePicker.setBounds(443, 7, 164, 33);
-		invoicePanel.add(datePicker);
 	}
 
+	//Updates invoices on panel
 	public void updateInvoiceList(ArrayList<Invoice> invoices) {
 		// invoiceList.setListData(invoices.toArray());
 	}
-
+	
+	//Updates products on panel
 	public void updateProductList(ArrayList<Product> products) {
 		productList.setListData(products.toArray());
 	}
-
+	
+	//Updates customers on panel
 	public void updateCustomerList(ArrayList<Customer> customers) {
 		customerComboBox
 				.setModel(new DefaultComboBoxModel(customers.toArray()));
@@ -316,6 +347,7 @@ public class InvoicePanel extends JPanel {
 		listeners.add(r);
 	}
 
+	//Clears the invioce
 	public void clearInvoice() {
 		tableModel = (DefaultTableModel) invoiceTable.getModel();
 		int rowCount = tableModel.getRowCount();
@@ -325,16 +357,19 @@ public class InvoicePanel extends JPanel {
 		idField.setText(null);
 	}
 
+	//Resets panel
 	public void logout() {
 		clearInvoice();
 		checkboxNew.setSelected(false); // set the checkbox to the default login
 										// position
 	}
 
+	//Shows message
 	public void showError(String errorMessage) {
 		JOptionPane.showMessageDialog(null, errorMessage);
 	}
 
+	//Handles what is displayed depending on the user logged in
 	public void updateUser(User u) {
 		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
 			btnAdd.setVisible(false);
