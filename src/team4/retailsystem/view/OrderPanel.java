@@ -3,6 +3,7 @@ package team4.retailsystem.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -44,6 +45,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
     private JTable itemTable;
     private DefaultTableModel model;
+    private DecimalFormat df = new DecimalFormat("0.00");
     private ArrayList<Supplier> suppliers = new ArrayList<>();
     private ArrayList<Product> products = new ArrayList<>();
     private ArrayList<Order> orders = new ArrayList<>();
@@ -162,7 +164,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         totalLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         totalPricePanel.add(totalLabel, BorderLayout.CENTER);
 
-        totalField = new JTextField("0.0", 10);
+        totalField = new JTextField("0.00", 10);
         totalField.setHorizontalAlignment(JTextField.RIGHT);
         totalField.setBorder(null);
         totalField.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -178,7 +180,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         combinePanel.setLayout(new GridLayout(2, 0));
         supplierList = new JList<Object>(supplierArrayList.toArray());
-        //getSupplierArrayList();
+        getSupplierArrayList();
         supplierList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         supplierList.setFont(new Font("Tahoma", Font.PLAIN, 18));
         supplierList.setVisibleRowCount(getHeight());
@@ -248,7 +250,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                                     cost };
                     itemsArrayList.add(new LineItem(product.getID(), 1));
                     total = total + cost;
-                    totalField.setText(""+total);
+                    totalField.setText(df.format(total));
                     model.addRow(item);
                     model.fireTableDataChanged();
                     supplierList.setEnabled(false);
@@ -292,7 +294,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         else if (arg0.getSource().equals(removeItemButton)) {
             if (isSelected == true) {
                 total = total - Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 1).toString())* Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 2).toString());
-                totalField.setText(""+total);
+                totalField.setText(df.format(total));
                 itemsArrayList.remove(itemTable.getSelectedRow());
                 model.removeRow(itemTable.getSelectedRow());
                 model.fireTableDataChanged();
@@ -306,9 +308,19 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             if (isNewOrder == true) {
                 if(model.getRowCount()>0){
                     for (RetailViewListener r : listeners) {
-                        //r.clickCreateOrder(total, itemsArrayList, supplier, deliveryId);
+                        r.clickCreateOrder(total, itemsArrayList, supplier, 1);    
+                    }
+                    for(LineItem item : itemsArrayList){
+                        for(Product p : products){
+                            if(item.getProductID() == p.getID()){
+                                for(RetailViewListener r : listeners){
+                                    r.clickUpdateProduct(p.getID(), p.getName(), p.getCost(), p.getMarkup(), p.getStockLevel()+item.getQuantity(), supplier);
+                                }
+                            }
+                        }
                     }
                     initialCondition();
+                    totalField.setText("0.00");
                     supplierList.setEnabled(false);
                     productList.setEnabled(false);
                     clearItemList();
@@ -372,7 +384,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                         * (quantity - 1);
         itemsArrayList.get(itemTable.getSelectedRow()).setQuantity(quantity);
         model.setValueAt(quantity, itemTable.getSelectedRow(), 1);
-        totalField.setText(""+total);
+        totalField.setText(df.format(total));
     }
     
     public void updateProductList(ArrayList<Product> products){
@@ -426,13 +438,13 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                                 }
                             }
                         }
-                        totalField.setText(""+total);         
+                        totalField.setText(df.format(total));         
                     }
                 };
                 break;
             case 2:
                 clearItemList();
-                for(RetailViewListener r : listeners ){
+                for(RetailViewListener r : listeners ){          
                     //need a adding delivery day to Order
                    // r.
                 }
@@ -449,6 +461,12 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         initialCondition();
         clearItemList();
         supplierList.setEnabled(false);
+    }
+
+    public void updateOrderList(ArrayList<Order> orders) {
+        // TODO Auto-generated method stub
+        
+        
     }
     
     

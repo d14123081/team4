@@ -8,6 +8,7 @@ import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
+import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.RetailModelListener;
 import team4.retailsystem.model.RetailSystemModel;
@@ -251,7 +252,7 @@ implements RetailModelListener, RetailViewListener
 	public void clickCreateOrder(double cost, ArrayList<LineItem> lineItems,
 			Supplier supplier, int deliveryId) {
 		// TODO Auto-generated method stub
-		
+		model.addOrder(new Order(cost, supplier, deliveryId, lineItems));
 	}
 
 	@Override
@@ -289,8 +290,6 @@ implements RetailModelListener, RetailViewListener
 		// TODO Auto-generated method stub
 		
 	}
-
-	
 
 	@Override
 	public void databaseCreateInvoice(double cost,

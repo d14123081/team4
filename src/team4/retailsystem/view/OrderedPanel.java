@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
 
@@ -32,6 +33,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     private DefaultTableCellRenderer centreRenderer;
     private JScrollPane orderScrollPanel;
     private ArrayList<Object> orderedArrayList = new ArrayList<>();
+    private ArrayList<Delivery> deliveries = Database.getInstance().getDeliveries();
     private Object[][] orderList = null;
     private String[] columnNames = {"Order ID", "Ordered Date","Delivery Date"};
     private static int orderID;
@@ -95,12 +97,18 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     }
     
     public void getOrderedArrayList(){
-        orderedArrayList.clear();
+        //orderedArrayList.clear();
+        
         for(Order order : ordered){
-            //if(!order.getOrderDate().equals(null)){
-                Object[] item = {""+order.getID(),sdf.format(order.getOrderDate()),""};
-                model.addRow(item);
-            //} 
+            String deliveryDate = "";
+            for(Delivery delivery : deliveries){
+                if(order.getID() == delivery.getOrderID()){
+                    deliveryDate = sdf.format(delivery.getDate());
+                    break;
+                }
+            }
+            Object[] item = {""+order.getID(),sdf.format(order.getOrderDate()),deliveryDate};
+            model.addRow(item); 
         }
     }
     
@@ -118,6 +126,11 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     
     public void addListener(RetailViewListener r) {
         listeners.add(r);
+    }
+
+    public void updateOrderList(ArrayList<Order> orders) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

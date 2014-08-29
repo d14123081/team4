@@ -79,8 +79,8 @@ public class SampleDataGenerator {
 		ArrayList<LineItem> order2 = new ArrayList<>();
 		order2.add(new LineItem(3, 20));
 
-		Database.getInstance().addOrder(new Order(7500.0, suppliers.get(0), 1, order1));
-		Database.getInstance().addOrder(new Order(9600.0, suppliers.get(1), 2, order2));
+		Database.getInstance().addOrder(new Order(7500.0, suppliers.get(0), 1, order1, "15/08/2014"));
+		Database.getInstance().addOrder(new Order(9600.0, suppliers.get(1), 2, order2, "16/08/2014"));
 	}
 
 	private static void generateDeliveries() {
