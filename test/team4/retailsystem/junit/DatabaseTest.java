@@ -2,7 +2,6 @@ package team4.retailsystem.junit;
 
 import static org.junit.Assert.*;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,7 +17,6 @@ import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
-import team4.retailsystem.utils.EncryptionModule;
 
 public class DatabaseTest {
 	private static final String CREATE_ERR = "Failed to create";
@@ -145,8 +143,12 @@ public class DatabaseTest {
 				newSupplData, newSupplData);
 		db.addSupplier(supplier);
 		db.addSupplier(newSupplier);
-		Product product = new Product(name, cost, markup, stockLvl, supplier);
 
+		// get ID-assigned objects from the DB
+		supplier = db.getSuppliers().get(0);
+		newSupplier = db.getSuppliers().get(1);
+		Product product = new Product(name, cost, markup, stockLvl, supplier);
+		
 		// test Create & Read
 		assertTrue(CREATE_ERR, db.addProduct(product));
 
@@ -252,6 +254,9 @@ public class DatabaseTest {
 				custData2, custData2);
 		db.addCustomer(customer2);
 
+		// get ID-assigned objects from the DB
+		customer1 = db.getCustomers().get(0);
+		customer2 = db.getCustomers().get(1);
 		Invoice invoice = new Invoice(invoiceItems, customer1);
 		date = invoice.getDate();
 		
@@ -318,12 +323,16 @@ public class DatabaseTest {
 		
 		Supplier supplier1 = new Supplier(suppData1, suppData1, suppData1, suppData1);
 		Product product1 = new Product("name", cost, 1, 1, supplier1);
-		Order order = new Order(cost, supplier1, deliveryID, orderItems);
-		Date date = order.getOrderDate();
 
 		Database db = Database.getInstance("testSystem");
 		db.addSupplier(supplier1);
 		db.addProduct(product1);
+
+		// get ID-assigned objects from the DB
+		supplier1 = db.getSuppliers().get(0);
+		product1 = db.getProducts().get(0);
+		Order order = new Order(cost, supplier1, deliveryID, orderItems);
+		Date date = order.getOrderDate();
 
 		// Test Create && Read
 		assertTrue(CREATE_ERR, db.addOrder(order));
@@ -459,22 +468,15 @@ public class DatabaseTest {
 
 	@Test
 	public void testGetCustomers() {
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
-		String telNo1 = "telNo 1";
-		String telNo2 = "telNo 2";
-		String telNo3 = "telNo 3";
-		String email1 = "email 1";
-		String email2 = "email 2";
-		String email3 = "email 3";
-		String addr1 = "addr 1";
-		String addr2 = "addr 2";
-		String addr3 = "addr 3";
+		String error = "Failed to retrieve one of the items";
+		
+		String custData1 = "name 1";
+		String custData2 = "name 2";
+		String custData3 = "name 3";
 
-		Customer one = new Customer(name1, telNo1, email1, addr1);
-		Customer two = new Customer(name2, telNo2, email2, addr2);
-		Customer three = new Customer(name3, telNo3, email3, addr3);
+		Customer one = new Customer(custData1, custData1, custData1, custData1);
+		Customer two = new Customer(custData2, custData2, custData2, custData2);
+		Customer three = new Customer(custData3, custData3, custData3, custData3);
 
 		Database db = Database.getInstance("testSystem");
 		db.addCustomer(one);
@@ -482,35 +484,22 @@ public class DatabaseTest {
 		db.addCustomer(three);
 
 		ArrayList<Customer> customers = db.getCustomers();
-		assertEquals(name1, customers.get(0).getName());
-		assertEquals(name2, customers.get(1).getName());
-		assertEquals(name3, customers.get(2).getName());
-
-		// cleanup
-		db.deleteCustomer(one);
-		db.deleteCustomer(two);
-		db.deleteCustomer(three);
+		assertEquals(error, custData1, customers.get(0).getName());
+		assertEquals(error, custData2, customers.get(1).getName());
+		assertEquals(error, custData3, customers.get(2).getName());
 	}
 
 	@Test
 	public void testGetSuppliers() {
+		String error = "Failed to retrieve one of the items";
 
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
-		String telNo1 = "telNo 1";
-		String telNo2 = "telNo 2";
-		String telNo3 = "telNo 3";
-		String email1 = "email 1";
-		String email2 = "email 2";
-		String email3 = "email 3";
-		String addr1 = "addr 1";
-		String addr2 = "addr 2";
-		String addr3 = "addr 3";
+		String supData1 = "name 1";
+		String supData2 = "name 2";
+		String supData3 = "name 3";
 
-		Supplier one = new Supplier(name1, addr1, email1, telNo1);
-		Supplier two = new Supplier(name2, addr2, email2, telNo2);
-		Supplier three = new Supplier(name3, addr3, email3, telNo3);
+		Supplier one = new Supplier(supData1, supData1, supData1, supData1);
+		Supplier two = new Supplier(supData2, supData2, supData2, supData2);
+		Supplier three = new Supplier(supData3, supData3, supData3, supData3);
 
 		Database db = Database.getInstance("testSystem");
 		db.addSupplier(one);
@@ -518,31 +507,25 @@ public class DatabaseTest {
 		db.addSupplier(three);
 
 		ArrayList<Supplier> suppliers = db.getSuppliers();
-		assertEquals(name1, suppliers.get(0).getName());
-		assertEquals(name2, suppliers.get(1).getName());
-		assertEquals(name3, suppliers.get(2).getName());
-
-		// cleanup
-		db.deleteSupplier(one);
-		db.deleteSupplier(two);
-		db.deleteSupplier(three);
+		assertEquals(error, supData1, suppliers.get(0).getName());
+		assertEquals(error, supData2, suppliers.get(1).getName());
+		assertEquals(error, supData3, suppliers.get(2).getName());
 	}
 
 	@Test
 	public void testGetProducts() {
+		String error = "Failed to retrieve one of the items";
 
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
-		String telNo1 = "telNo 1";
-		String email1 = "email 1";
-		String addr1 = "addr 1";
+		String prodData1 = "name 1";
+		String prodData2 = "name 2";
+		String prodData3 = "name 3";
+		String suppData = "supplier";
 
-		Supplier supplier = new Supplier(name1, addr1, email1, telNo1);
+		Supplier supplier = new Supplier(suppData, suppData, suppData, suppData);
 
-		Product one = new Product(name1, 1, 1, 1, supplier);
-		Product two = new Product(name2, 1, 1, 1, supplier);
-		Product three = new Product(name3, 1, 1, 1, supplier);
+		Product one = new Product(prodData1, 1, 1, 1, supplier);
+		Product two = new Product(prodData2, 1, 1, 1, supplier);
+		Product three = new Product(prodData3, 1, 1, 1, supplier);
 
 		Database db = Database.getInstance("testSystem");
 		db.addProduct(one);
@@ -550,27 +533,22 @@ public class DatabaseTest {
 		db.addProduct(three);
 
 		ArrayList<Product> products = db.getProducts();
-		assertEquals(name1, products.get(0).getName());
-		assertEquals(name2, products.get(1).getName());
-		assertEquals(name3, products.get(2).getName());
-
-		// cleanup
-		db.deleteProduct(one);
-		db.deleteProduct(two);
-		db.deleteProduct(three);
+		assertEquals(error, prodData1, products.get(0).getName());
+		assertEquals(error, prodData2, products.get(1).getName());
+		assertEquals(error, prodData3, products.get(2).getName());
 	}
 
 	@Test
 	public void testGetUsers() {
+		String error = "Failed to retrieve one of the items";
 
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
-		String email1 = "email 1";
+		String userData1 = "name 1";
+		String userData2 = "name 2";
+		String userData3 = "name 3";
 
-		User one = new User(1, name1, email1, email1);
-		User two = new User(1, name2, email1, email1);
-		User three = new User(1, name3, email1, email1);
+		User one = new User(User.NORMAL_USER, userData1, userData1, userData1);
+		User two = new User(User.NORMAL_USER, userData2, userData2, userData2);
+		User three = new User(User.NORMAL_USER, userData3, userData3, userData3);
 
 		Database db = Database.getInstance("testSystem");
 		db.addUser(one);
@@ -578,37 +556,34 @@ public class DatabaseTest {
 		db.addUser(three);
 
 		ArrayList<User> users = db.getUsers();
-		assertEquals(name1, users.get(0).getUsername());
-		assertEquals(name2, users.get(1).getUsername());
-		assertEquals(name3, users.get(2).getUsername());
-
-		// cleanup
-		db.deleteUser(one);
-		db.deleteUser(two);
-		db.deleteUser(three);
+		assertEquals(error, userData1, users.get(0).getUsername());
+		assertEquals(error, userData2, users.get(1).getUsername());
+		assertEquals(error, userData3, users.get(2).getUsername());
 	}
 
 	@Test
 	public void testGetInvoices() {
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
-		String email1 = "email 1";
+		String error = "Failed to retrieve one of the items";
+		
+		int id1 = 1;
+		int id2 = 2;
+		int id3 = 3;
+		String tempData = "unimportant";
 
-		Supplier supplier1 = new Supplier(name1, name1, name1, name1);
-		Product product1 = new Product(name1, 1, 1, 1, supplier1);
-		Product product2 = new Product(name2, 2, 2, 2, supplier1);
-		Product product3 = new Product(name3, 3, 3, 3, supplier1);
+		Supplier supplier1 = new Supplier(tempData, tempData, tempData, tempData);
+		Product product1 = new Product(tempData, 1, 1, 1, supplier1);
+		Product product2 = new Product(tempData, 2, 2, 2, supplier1);
+		Product product3 = new Product(tempData, 3, 3, 3, supplier1);
 
 		Database db = Database.getInstance("testSystem");
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
 
-		Customer customer = new Customer(email1, email1, email1, email1);
-		LineItem lineItem1 = new LineItem(1, 1);
-		LineItem lineItem2 = new LineItem(2, 2);
-		LineItem lineItem3 = new LineItem(3, 3);
+		Customer customer = new Customer(tempData, tempData, tempData, tempData);
+		LineItem lineItem1 = new LineItem(id1, id1);
+		LineItem lineItem2 = new LineItem(id2, id2);
+		LineItem lineItem3 = new LineItem(id3, id3);
 
 		ArrayList<LineItem> items1 = new ArrayList<LineItem>();
 		items1.add(lineItem1);
@@ -629,44 +604,36 @@ public class DatabaseTest {
 		db.addInvoice(three);
 
 		ArrayList<Invoice> invoices = db.getInvoices();
-		assertEquals(1, invoices.get(0).getLineItems().get(0).getProductID());
-		assertEquals(2, invoices.get(0).getLineItems().get(1).getProductID());
-		assertEquals(2, invoices.get(1).getLineItems().get(0).getProductID());
-		assertEquals(3, invoices.get(1).getLineItems().get(1).getProductID());
-		assertEquals(3, invoices.get(2).getLineItems().get(0).getProductID());
-		assertEquals(1, invoices.get(2).getLineItems().get(1).getProductID());
-
-		// cleanup
-		db.deleteInvoice(invoices.get(0));
-		db.deleteInvoice(invoices.get(1));
-		db.deleteInvoice(invoices.get(2));
-
-		ArrayList<Product> products = db.getProducts();
-		db.deleteProduct(products.get(0));
-		db.deleteProduct(products.get(1));
-		db.deleteProduct(products.get(2));
+		assertEquals(error, id1, invoices.get(0).getLineItems().get(0).getProductID());
+		assertEquals(error, id2, invoices.get(0).getLineItems().get(1).getProductID());
+		assertEquals(error, id2, invoices.get(1).getLineItems().get(0).getProductID());
+		assertEquals(error, id3, invoices.get(1).getLineItems().get(1).getProductID());
+		assertEquals(error, id3, invoices.get(2).getLineItems().get(0).getProductID());
+		assertEquals(error, id1, invoices.get(2).getLineItems().get(1).getProductID());
 	}
 
-	@Deprecated
 	@Test
 	public void testGetOrders() {
-		String name1 = "name 1";
-		String name2 = "name 2";
-		String name3 = "name 3";
+		String error = "Failed to retrieve one of the items";
 
-		Supplier supplier1 = new Supplier(name1, name1, name1, name1);
-		Product product1 = new Product(name1, 1, 1, 1, supplier1);
-		Product product2 = new Product(name2, 2, 2, 2, supplier1);
-		Product product3 = new Product(name3, 3, 3, 3, supplier1);
+		int id1 = 1;
+		int id2 = 2;
+		int id3 = 3;
+		String tempData = "unimportant";
+
+		Supplier supplier1 = new Supplier(tempData, tempData, tempData, tempData);
+		Product product1 = new Product(tempData, 1, 1, 1, supplier1);
+		Product product2 = new Product(tempData, 2, 2, 2, supplier1);
+		Product product3 = new Product(tempData, 3, 3, 3, supplier1);
 
 		Database db = Database.getInstance("testSystem");
 		db.addProduct(product1);
 		db.addProduct(product2);
 		db.addProduct(product3);
 
-		LineItem lineItem1 = new LineItem(1, 1);
-		LineItem lineItem2 = new LineItem(2, 2);
-		LineItem lineItem3 = new LineItem(3, 3);
+		LineItem lineItem1 = new LineItem(id1, id1);
+		LineItem lineItem2 = new LineItem(id2, id2);
+		LineItem lineItem3 = new LineItem(id3, id3);
 
 		ArrayList<LineItem> items1 = new ArrayList<LineItem>();
 		items1.add(lineItem1);
@@ -687,33 +654,28 @@ public class DatabaseTest {
 		db.addOrder(three);
 
 		ArrayList<Order> orders = db.getOrders();
-		assertEquals(1, orders.get(0).getLineItems().get(0).getProductID());
-		assertEquals(2, orders.get(0).getLineItems().get(1).getProductID());
-		assertEquals(2, orders.get(1).getLineItems().get(0).getProductID());
-		assertEquals(3, orders.get(1).getLineItems().get(1).getProductID());
-		assertEquals(3, orders.get(2).getLineItems().get(0).getProductID());
-		assertEquals(1, orders.get(2).getLineItems().get(1).getProductID());
-
-		// cleanup
-		db.deleteOrder(orders.get(0));
-		db.deleteOrder(orders.get(1));
-		db.deleteOrder(orders.get(2));
-
-		ArrayList<Product> products = db.getProducts();
-		db.deleteProduct(products.get(0));
-		db.deleteProduct(products.get(1));
-		db.deleteProduct(products.get(2));
+		assertEquals(error, id1, orders.get(0).getLineItems().get(0).getProductID());
+		assertEquals(error, id2, orders.get(0).getLineItems().get(1).getProductID());
+		assertEquals(error, id2, orders.get(1).getLineItems().get(0).getProductID());
+		assertEquals(error, id3, orders.get(1).getLineItems().get(1).getProductID());
+		assertEquals(error, id3, orders.get(2).getLineItems().get(0).getProductID());
+		assertEquals(error, id1, orders.get(2).getLineItems().get(1).getProductID());
 	}
 
 	@Test
 	public void testGetDeliveries() {
-		String name1 = "name 1";
+		String error = "Failed to retrieve one of the items";
+		
+		int id1 = 1;
+		int id2 = 2;
+		int id3 = 3;
+		String tempData = "unimportant";
 
-		Supplier supplier1 = new Supplier(name1, name1, name1, name1);
+		Supplier supplier1 = new Supplier(tempData, tempData, tempData, tempData);
 
-		Delivery one = new Delivery(supplier1, 1);
-		Delivery two = new Delivery(supplier1, 2);
-		Delivery three = new Delivery(supplier1, 3);
+		Delivery one = new Delivery(supplier1, id1);
+		Delivery two = new Delivery(supplier1, id2);
+		Delivery three = new Delivery(supplier1, id3);
 
 		Database db = Database.getInstance("testSystem");
 		db.addDelivery(one);
@@ -721,146 +683,143 @@ public class DatabaseTest {
 		db.addDelivery(three);
 
 		ArrayList<Delivery> deliveries = db.getDeliveries();
-		assertEquals(1, deliveries.get(0).getOrderID());
-		assertEquals(2, deliveries.get(1).getOrderID());
-		assertEquals(3, deliveries.get(2).getOrderID());
-
-		// cleanup
-		db.deleteDelivery(deliveries.get(0));
-		db.deleteDelivery(deliveries.get(1));
-		db.deleteDelivery(deliveries.get(2));
+		assertEquals(error, id1, deliveries.get(0).getOrderID());
+		assertEquals(error, id2, deliveries.get(1).getOrderID());
+		assertEquals(error, id3, deliveries.get(2).getOrderID());
 	}
 
 	@After
 	public void cleanup() {
-		for (Customer c : Database.getInstance("testSystem").getCustomers()) {
-			Database.getInstance("testSystem").deleteCustomer(c);
+		Database db = Database.getInstance("testSystem");
+		
+		for (Customer c : db.getCustomers()) {
+			db.deleteCustomer(c);
 		}
-		for (Product p : Database.getInstance("testSystem").getProducts()) {
-			Database.getInstance("testSystem").deleteProduct(p);
+		for (Product p : db.getProducts()) {
+			db.deleteProduct(p);
 		}
-		for (Supplier s : Database.getInstance("testSystem").getSuppliers()) {
-			Database.getInstance("testSystem").deleteSupplier(s);
+		for (Supplier s : db.getSuppliers()) {
+			db.deleteSupplier(s);
 		}
-		for (User u : Database.getInstance("testSystem").getUsers()) {
-			Database.getInstance("testSystem").deleteUser(u);
+		for (User u : db.getUsers()) {
+			db.deleteUser(u);
 		}
-		for (Invoice i : Database.getInstance("testSystem").getInvoices()) {
-			Database.getInstance("testSystem").deleteInvoice(i);
+		for (Invoice i : db.getInvoices()) {
+			db.deleteInvoice(i);
 		}
-		for (Delivery d : Database.getInstance("testSystem").getDeliveries()) {
-			Database.getInstance("testSystem").deleteDelivery(d);
+		for (Delivery d : db.getDeliveries()) {
+			db.deleteDelivery(d);
 		}
-		for (Order o : Database.getInstance("testSystem").getOrders()) {
-			Database.getInstance("testSystem").deleteOrder(o);
+		for (Order o : db.getOrders()) {
+			db.deleteOrder(o);
 		}
-		for (LineItem li : Database.getInstance("testSystem").getOrderItems()) {
-			Database.getInstance("testSystem").deleteOrderItem(li);
+		for (LineItem li : db.getOrderItems()) {
+			db.deleteOrderItem(li);
 		}
-		for (LineItem li : Database.getInstance("testSystem").getInvoiceItems()) {
-			Database.getInstance("testSystem").deleteInvoiceItem(li);
+		for (LineItem li : db.getInvoiceItems()) {
+			db.deleteInvoiceItem(li);
 		}
 	}
 
 	@Test
 	public void testGetOrdersBetween() {
-		String temp = "temp";
-		Date now = new Date();
-		Date now500 = new Date(now.getTime() + 500);
-		Date inBetween = new Date(now.getTime() + 200);
-		Date nowMinus1 = new Date(now.getTime() - 1);
-		Date now500Plus1 = new Date(now500.getTime() + 1);
-		Supplier supplier = new Supplier(temp, temp, temp, temp);
+		String error = "Failed to fetch an item withing the date boundary";
+		
+		Database db = Database.getInstance("testSystem");		
+		String tempData = "unimportant";
+		
+		// boundary testing
+		Date min = new Date();
+		Date max = new Date(min.getTime() + 500);
+		Date typical = new Date(min.getTime() + 200);
+		Date justOutside1 = new Date(min.getTime() - 1);
+		Date justOutside2 = new Date(max.getTime() + 1);
+		
+		Supplier supplier = new Supplier(tempData, tempData, tempData, tempData);
 		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
-		Order tooOld = new Order(1, supplier, 1, lineItems, 1, nowMinus1);
-		Order justOldEnough = new Order(1, supplier, 1, lineItems, 1, now);
-		Order justRight = new Order(1, supplier, 1, lineItems, 1, inBetween);
-		Order justNewEnough = new Order(1, supplier, 1, lineItems, 1, now500);
-		Order tooNew = new Order(1, supplier, 1, lineItems, 1, now500Plus1);
+		Order invoiceJustOutside1 = new Order(1, supplier, 1, lineItems, 1, justOutside1);
+		Order invoiceMin = new Order(1, supplier, 1, lineItems, 1, min);
+		Order invoiceTypical = new Order(1, supplier, 1, lineItems, 1, typical);
+		Order invoiceMax = new Order(1, supplier, 1, lineItems, 1, max);
+		Order invoiceJustOutside2 = new Order(1, supplier, 1, lineItems, 1, justOutside2);
 
-		Database db = Database.getInstance("testSystem");
-		db.addOrder(justRight);
-		db.addOrder(justOldEnough);
-		db.addOrder(tooOld);
-		db.addOrder(tooNew);
-		db.addOrder(justNewEnough);
+		db.addOrder(invoiceTypical);
+		db.addOrder(invoiceMin);
+		db.addOrder(invoiceJustOutside1);
+		db.addOrder(invoiceJustOutside2);
+		db.addOrder(invoiceMax);
 
-		ArrayList<Order> validOrders = db.getOrdersBetween(now, now500);
-		assertEquals(1, validOrders.get(0).getID());
-		assertEquals(2, validOrders.get(1).getID());
-		assertEquals(5, validOrders.get(2).getID());
-
-		// cleanup
-		for (Order o : db.getOrders()) {
-			db.deleteOrder(o);
-		}
+		ArrayList<Order> validOrders = db.getOrdersBetween(min, max);
+		assertEquals(error, 1, validOrders.get(0).getID());
+		assertEquals(error, 2, validOrders.get(1).getID());
+		assertEquals(error, 5, validOrders.get(2).getID());
 	}
 
 	@Test
 	public void testGetInvoicesBetween() {
-		String temp = "temp";
-		Date now = new Date();
-		Date now500 = new Date(now.getTime() + 500);
-		Date inBetween = new Date(now.getTime() + 200);
-		Date nowMinus1 = new Date(now.getTime() - 1);
-		Date now500Plus1 = new Date(now500.getTime() + 1);
-		Customer customer = new Customer(temp, temp, temp, temp);
+		String error = "Failed to fetch an item withing the date boundary";
+		
+		Database db = Database.getInstance("testSystem");		
+		String tempData = "unimportant";
+		
+		// boundary testing
+		Date min = new Date();
+		Date max = new Date(min.getTime() + 500);
+		Date typical = new Date(min.getTime() + 200);
+		Date justOutside1 = new Date(min.getTime() - 1);
+		Date justOutside2 = new Date(max.getTime() + 1);
+		
+		Customer customer = new Customer(tempData, tempData, tempData, tempData);
 		ArrayList<LineItem> lineItems = new ArrayList<LineItem>();
-		Invoice tooOld = new Invoice(lineItems, customer, 1, nowMinus1);
-		Invoice justOldEnough = new Invoice(lineItems, customer, 1, now);
-		Invoice justRight = new Invoice(lineItems, customer, 1, inBetween);
-		Invoice justNewEnough = new Invoice(lineItems, customer, 1, now500);
-		Invoice tooNew = new Invoice(lineItems, customer, 1, now500Plus1);
+		Invoice orderJustOutside1 = new Invoice(lineItems, customer, 1, justOutside1);
+		Invoice orderMin = new Invoice(lineItems, customer, 1, min);
+		Invoice orderTypical = new Invoice(lineItems, customer, 1, typical);
+		Invoice orderMax = new Invoice(lineItems, customer, 1, max);
+		Invoice orderJustOutside2 = new Invoice(lineItems, customer, 1, justOutside2);
 
-		Database db = Database.getInstance("testSystem");
-		db.addInvoice(justRight);
-		db.addInvoice(justOldEnough);
-		db.addInvoice(tooOld);
-		db.addInvoice(tooNew);
-		db.addInvoice(justNewEnough);
+		db.addInvoice(orderTypical);
+		db.addInvoice(orderJustOutside1);
+		db.addInvoice(orderMin);
+		db.addInvoice(orderMax);
+		db.addInvoice(orderJustOutside2);
 
-		ArrayList<Invoice> validInvoices = db.getInvoicesBetween(now, now500);
-		assertEquals(1, validInvoices.get(0).getID());
-		assertEquals(2, validInvoices.get(1).getID());
-		assertEquals(5, validInvoices.get(2).getID());
-
-		// cleanup
-		for (Invoice i : db.getInvoices()) {
-			db.deleteInvoice(i);
-		}
+		ArrayList<Invoice> validInvoices = db.getInvoicesBetween(min, max);
+		assertEquals(error, 1, validInvoices.get(0).getID());
+		assertEquals(error, 3, validInvoices.get(1).getID());
+		assertEquals(error, 4, validInvoices.get(2).getID());
 	}
 
 	@Test
 	public void testGetDeliveriesBetween() {
-		String temp = "temp";
-		Date now = new Date();
-		Date now500 = new Date(now.getTime() + 500);
-		Date inBetween = new Date(now.getTime() + 200);
-		Date nowMinus1 = new Date(now.getTime() - 1);
-		Date now500Plus1 = new Date(now500.getTime() + 1);
-		Supplier supplier = new Supplier(temp, temp, temp, temp);
-		Delivery tooOld = new Delivery(supplier, 1, nowMinus1, 1);
-		Delivery justOldEnough = new Delivery(supplier, 2, now, 1);
-		Delivery justRight = new Delivery(supplier, 3, inBetween, 1);
-		Delivery justNewEnough = new Delivery(supplier, 4, now500, 1);
-		Delivery tooNew = new Delivery(supplier, 5, now500Plus1, 1);
+		String error = "Failed to fetch an item withing the date boundary";
+		
+		Database db = Database.getInstance("testSystem");		
+		String tempData = "unimportant";
 
-		Database db = Database.getInstance("testSystem");
-		db.addDelivery(justRight);
-		db.addDelivery(justOldEnough);
-		db.addDelivery(tooOld);
-		db.addDelivery(tooNew);
-		db.addDelivery(justNewEnough);
+		// boundary testing
+		Date min = new Date();
+		Date max = new Date(min.getTime() + 500);
+		Date typical = new Date(min.getTime() + 200);
+		Date justOutside1 = new Date(min.getTime() - 1);
+		Date justOutside2 = new Date(max.getTime() + 1);
+		
+		Supplier supplier = new Supplier(tempData, tempData, tempData, tempData);
+		Delivery delJustOutside1 = new Delivery(supplier, 1, justOutside1, 1);
+		Delivery delMin = new Delivery(supplier, 2, min, 1);
+		Delivery delTypical = new Delivery(supplier, 3, typical, 1);
+		Delivery delMax = new Delivery(supplier, 4, max, 1);
+		Delivery delJustOutside2 = new Delivery(supplier, 5, justOutside2, 1);
 
-		ArrayList<Delivery> validDeliveries = db.getDeliveriesBetween(now,
-				now500);
-		assertEquals(3, validDeliveries.get(0).getOrderID());
-		assertEquals(2, validDeliveries.get(1).getOrderID());
-		assertEquals(4, validDeliveries.get(2).getOrderID());
+		db.addDelivery(delTypical);
+		db.addDelivery(delMin);
+		db.addDelivery(delJustOutside1);
+		db.addDelivery(delJustOutside2);
+		db.addDelivery(delMax);
 
-		// cleanup
-		for (Delivery d : db.getDeliveries()) {
-			db.deleteDelivery(d);
-		}
+		ArrayList<Delivery> validDeliveries = db.getDeliveriesBetween(min,
+				max);
+		assertEquals(error, delTypical.getOrderID(), validDeliveries.get(0).getOrderID());
+		assertEquals(error, delMin.getOrderID(), validDeliveries.get(1).getOrderID());
+		assertEquals(error, delMax.getOrderID(), validDeliveries.get(2).getOrderID());
 	}
 }
