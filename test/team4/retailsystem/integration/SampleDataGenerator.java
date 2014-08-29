@@ -13,9 +13,10 @@ import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
 /**
- * Used in integration & manual testing to populate database with sample data.
+ * Used in integration & manual testing to populate the database with sample
+ * data.
+ * 
  * @author szymon
- *
  */
 public class SampleDataGenerator {
 	private static void generateDatabase() {

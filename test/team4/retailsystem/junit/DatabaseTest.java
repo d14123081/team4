@@ -18,6 +18,11 @@ import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
+/**
+ * jUnit tests for Database.java
+ * 
+ * @author szymon
+ */
 public class DatabaseTest {
 	private static final String CREATE_ERR = "Failed to create";
 	private static final String READ_ERR = "Failed to read";

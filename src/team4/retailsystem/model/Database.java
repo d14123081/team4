@@ -10,6 +10,7 @@ import team4.retailsystem.utils.EncryptionModule;
 
 /**
  * A permanent SQLite database module with interfaces for CRUD.
+ * 
  * @author Szymon
  * @author Alan
  */
