@@ -82,7 +82,7 @@ public class Database {
 
 	private static final String CREATE_USERS_TABLE = "CREATE TABLE USERS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
-			+ "USERNAME TEXT, " 
+			+ "USERNAME TEXT NOT NULL UNIQUE, " 
 			+ "AUTHLEVEL INTEGER, " 
 			+ "PASSWDIGEST TEXT, " 
 			+ "SALT TEXT)";
