@@ -417,58 +417,44 @@ public class DatabaseTest {
 
 	@Test
 	public void testAuthorizeUser() {
-		EncryptionModule md = null;
-		try {
-			md = new EncryptionModule();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			fail("Could not initiate the encryption module.");
-		}
-
+		String errCorrectLogin = "Authorization with valid data failed";
+		String errInvalidLogin = "Authorization with invalid data succeeded";
+		
+		Database db = Database.getInstance("testSystem");
 		String adminUsername = "tester";
-		String adminWrongUsername = "teste";
 		String adminPassword = "kitten";
+		
+		String adminWrongUsername = "teste";
 		String adminWrongPassword = "superposition";
-		String adminSalt = md.getRandomSalt();
-		User admin = new User(User.ADMINISTRATOR, adminUsername, md.encrypt(
-				adminPassword, adminSalt), adminSalt);
 
 		String nonAdminUsername = "bb84";
 		String nonAdminPassword = adminWrongPassword;
-		String nonAdminSalt = md.getRandomSalt();
-		User nonAdmin = new User(User.NORMAL_USER, nonAdminUsername,
-				md.encrypt(nonAdminPassword, nonAdminSalt), nonAdminSalt);
 
 		String notInSysUsername = "alice";
 		String notInSysPassword = "wrong_basis";
-		User notInSys;
 
-		Database.getInstance("testSystem").addUser(admin);
-		Database.getInstance("testSystem").addUser(nonAdmin);
+		db.addUser(User.ADMINISTRATOR, adminUsername, adminPassword);
+		db.addUser(User.NORMAL_USER, nonAdminUsername, nonAdminPassword);
 
-		admin = Database.getInstance("testSystem").authorizeUser(adminUsername,
-				adminPassword);
-		nonAdmin = Database.getInstance("testSystem").authorizeUser(
-				nonAdminUsername, nonAdminPassword);
-		notInSys = Database.getInstance("testSystem").authorizeUser(
-				notInSysUsername, notInSysPassword);
+		User admin = db.authorizeUser(adminUsername, adminPassword);
+		User nonAdmin = db.authorizeUser(nonAdminUsername, nonAdminPassword);
+		User notInSys = db.authorizeUser(notInSysUsername, notInSysPassword);
 
-		assertEquals(User.ADMINISTRATOR, admin.getAuthorizationLevel());
-		assertEquals(User.NORMAL_USER, nonAdmin.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, notInSys.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem")
-				.authorizeUser(adminWrongUsername, adminPassword)
-				.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem")
-				.authorizeUser(adminUsername, adminWrongPassword)
-				.getAuthorizationLevel());
-		assertEquals(User.NO_AUTHORIZATION, Database.getInstance("testSystem")
-				.authorizeUser(adminWrongUsername, adminWrongPassword)
-				.getAuthorizationLevel());
-
-		// clean up
-		Database.getInstance("testSystem").deleteUser(admin);
-		Database.getInstance("testSystem").deleteUser(nonAdmin);
+		assertEquals(errCorrectLogin, User.ADMINISTRATOR,
+				admin.getAuthorizationLevel());
+		assertEquals(errCorrectLogin, User.NORMAL_USER,
+				nonAdmin.getAuthorizationLevel());
+		assertEquals(errCorrectLogin, User.NO_AUTHORIZATION,
+				notInSys.getAuthorizationLevel());
+		assertEquals(errInvalidLogin, User.NO_AUTHORIZATION,
+				db.authorizeUser(adminWrongUsername, adminPassword)
+						.getAuthorizationLevel());
+		assertEquals(errInvalidLogin, User.NO_AUTHORIZATION,
+				db.authorizeUser(adminUsername, adminWrongPassword)
+						.getAuthorizationLevel());
+		assertEquals(errInvalidLogin, User.NO_AUTHORIZATION,
+				db.authorizeUser(adminWrongUsername, adminWrongPassword)
+						.getAuthorizationLevel());
 	}
 
 	@Test
