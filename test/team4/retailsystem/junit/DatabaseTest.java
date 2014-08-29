@@ -25,8 +25,7 @@ public class DatabaseTest {
 	private static final String READ_ERR = "Failed to read";
 	private static final String UPDATE_ERR = "Failed to update";
 	private static final String DELETE_ERR = "Failed to delete";
-	
-	
+
 	@Test
 	public void testGetInstance() {
 		assertNotNull("Could not open/create the database",
@@ -35,23 +34,23 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDCustomer() {
-		//test data
+		// test data
 		String name = "John Doe";
 		String tel = "0833903128";
 		String email = "john.doe@gmail.com";
 		String addr = "54 Random Street\nDublin 4\nIreland";
-		
+
 		String newName = "Allan Martins";
 		String newTel = "123445678";
 		String newEmail = "allan.martins@outlook.com";
 		String newAddr = "81 Less Random street";
-		
+
 		Database db = Database.getInstance("testSystem");
 		Customer customer = new Customer(name, tel, email, addr);
 
 		// test Create & Read
 		assertTrue(CREATE_ERR, db.addCustomer(customer));
-		
+
 		customer = db.getCustomers().get(0);
 		assertNotNull(READ_ERR, customer);
 		assertEquals(READ_ERR, name, customer.getName());
@@ -64,7 +63,7 @@ public class DatabaseTest {
 		customer.setTelephoneNumber(newTel);
 		customer.setEmail(newEmail);
 		customer.setAddress(newAddr);
-		
+
 		assertTrue(UPDATE_ERR, db.updateCustomer(customer));
 
 		customer = db.getCustomers().get(0);
@@ -80,23 +79,23 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDSupplier() {
-		//test data
+		// test data
 		String name = "Amazing Carpets";
 		String tel = "0833903128";
 		String email = "amazing.carpets@gmail.com";
 		String addr = "54 Random Street\nDublin 4\nIreland";
-		
+
 		String newName = "Average Carpets";
 		String newTel = "123445678";
 		String newEmail = "average.carpets@outlook.com";
 		String newAddress = "81 Less Random street";
-		
+
 		Database db = Database.getInstance("testSystem");
 		Supplier supplier = new Supplier(name, addr, email, tel);
-		
+
 		// test Create & Read
 		assertTrue(CREATE_ERR, db.addSupplier(supplier));
-		
+
 		supplier = db.getSuppliers().get(0);
 		assertNotNull(READ_ERR, supplier);
 		assertEquals(READ_ERR, name, supplier.getName());
@@ -125,59 +124,57 @@ public class DatabaseTest {
 
 	@Test
 	public void testCRUDProduct() {
+		// test data
 		String name = "A book";
-		String newName = "New book";
 		double cost = 11.50;
-		double newCost = 10.10;
 		double markup = 0.1;
-		double newMarkup = 0.5;
-		int stockLevel = 50;
-		int newStockLevel = 10;
+		int stockLvl = 50;
 
-		String sname = "Amazing Carpets";
-		String saddress = "54 Random Street\nDublin 4\nIreland";
-		String semail = "amazing.carpets@gmail.com";
-		String stelephoneNo = "0833903128";
+		String newName = "New book";
+		double newCost = 20.99;
+		double newMarkup = 50;
+		int newStockLvl = 1000;
 
-		Supplier supplier = new Supplier(sname, saddress, semail, stelephoneNo);
-		Supplier newSupplier = new Supplier(semail, saddress, semail,
-				stelephoneNo);
-		Database.getInstance("testSystem").addSupplier(supplier);
-		Database.getInstance("testSystem").addSupplier(newSupplier);
+		String supplData = "Amazing Carpets";
+		String newSupplData = "Average Carpets";
 
-		// test Create
-		Product s = new Product(name, cost, markup, stockLevel, supplier);
-		assertTrue(Database.getInstance("testSystem").addProduct(s));
+		Database db = Database.getInstance("testSystem");
+		Supplier supplier = new Supplier(supplData, supplData, supplData,
+				supplData);
+		Supplier newSupplier = new Supplier(newSupplData, newSupplData,
+				newSupplData, newSupplData);
+		db.addSupplier(supplier);
+		db.addSupplier(newSupplier);
+		Product product = new Product(name, cost, markup, stockLvl, supplier);
 
 		// test Create & Read
-		Product d = Database.getInstance("testSystem").getProduct(1);
-		assertEquals(name, d.getName());
-		// assertEquals(cost, d.getCost(), .0001);
-		assertEquals(markup, d.getMarkup(), .0001);
-		assertEquals(stockLevel, d.getStockLevel());
-		assertEquals(supplier.getName(), d.getSupplier().getName());
+		assertTrue(CREATE_ERR, db.addProduct(product));
+
+		product = db.getProducts().get(0);
+		assertNotNull(READ_ERR, product);		
+		assertEquals(READ_ERR, name, product.getName());
+		assertEquals(READ_ERR, markup, product.getMarkup(), .0001);
+		assertEquals(READ_ERR, stockLvl, product.getStockLevel());
+		assertEquals(READ_ERR, supplier.getName(), product.getSupplier().getName());
 
 		// test Update
-		d.setName(newName);
-		d.setCost(newCost);
-		d.setMarkup(newMarkup);
-		d.setSupplier(newSupplier);
-		d.setStockLevel(newStockLevel);
-		Database.getInstance("testSystem").updateProduct(d);
+		product.setName(newName);
+		product.setCost(newCost);
+		product.setMarkup(newMarkup);
+		product.setSupplier(newSupplier);
+		product.setStockLevel(newStockLvl);
+		
+		assertTrue(UPDATE_ERR, db.updateProduct(product));
 
-		Product e = Database.getInstance("testSystem").getProduct(1);
-		assertEquals(newName, e.getName());
-		// assertEquals(newCost, e.getCost(), .0001);
-		assertEquals(newMarkup, e.getMarkup(), .0001);
-		assertEquals(newStockLevel, e.getStockLevel());
-		assertEquals(e.getSupplier().getName(), newSupplier.getName());
+		product = db.getProducts().get(0);
+		assertNotNull(READ_ERR, product);
+		assertEquals(UPDATE_ERR, newName, product.getName());
+		assertEquals(UPDATE_ERR, newMarkup, product.getMarkup(), .0001);
+		assertEquals(UPDATE_ERR, newStockLvl, product.getStockLevel());
+		assertEquals(UPDATE_ERR, newSupplier.getName(), product.getSupplier().getName());
 
 		// test Delete
-		assertTrue(Database.getInstance("testSystem").deleteProduct(e));
-
-		// clean up
-		Database.getInstance("testSystem").deleteSupplier(supplier);
-		Database.getInstance("testSystem").deleteSupplier(newSupplier);
+		assertTrue(db.deleteProduct(product));
 	}
 
 	@Test
