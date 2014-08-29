@@ -100,11 +100,6 @@ public class InvoicePanel extends JPanel {
 		datePicker = new JDatePickerImpl(datePanel);
 		datePicker.getJFormattedTextField().setEnabled(false);
 		lblCustomer = new JLabel("Customer:");
-	}
-
-	public void constructView() {
-		// Creates the layout of GUI
-		setLayout(null);
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Product ID", "Product Name", "Quantity" }) {
 			Class[] columnTypes = new Class[] { Integer.class, String.class,
@@ -130,6 +125,12 @@ public class InvoicePanel extends JPanel {
 				}
 			}
 		});
+	}
+
+	public void constructView() {
+		// Creates the layout of GUI
+		setLayout(null);
+		
 		invoiceTable.getTableHeader().setReorderingAllowed(false);
 		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invoiceListPanel.setLayout(null);
@@ -177,17 +178,16 @@ public class InvoicePanel extends JPanel {
 		invoicePanel.add(datePicker);
 		lblCustomer.setBounds(178, 9, 98, 19);
 		invoicePanel.add(lblCustomer);
+		
 	}
 
 	public void addListeners() {
 		// Adds listeners to components
-
-		tableModel.addTableModelListener(new TableModelListener()
+		invoiceTable.getModel().addTableModelListener(new TableModelListener()
 		{	
 			@Override
 			public void tableChanged(TableModelEvent e)
 			{
-				System.out.println("test");
 				double cost = 0.0;
 				
 				for(int i = 0; i < tableModel.getRowCount(); i++)
@@ -198,7 +198,6 @@ public class InvoicePanel extends JPanel {
 				totalCostField.setText(df.format(cost));
 			}
 		});
-		
 		
 		// Handles the submit button
 		btnAdd.addActionListener(new ActionListener() {
@@ -271,6 +270,8 @@ public class InvoicePanel extends JPanel {
 				logout();
 			}
 		});
+		
+		
 
 		// Handles a click event on product list
 		productList.addMouseListener(new MouseAdapter() {
