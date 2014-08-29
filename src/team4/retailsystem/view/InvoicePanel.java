@@ -221,7 +221,7 @@ public class InvoicePanel extends JPanel {
 
 		btnInvoices.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+					
 			}
 		});
 
@@ -364,6 +364,19 @@ public class InvoicePanel extends JPanel {
 		clearInvoice();
 		checkboxNew.setSelected(false); // set the checkbox to the default login
 										// position
+	}
+	
+	public void updateTable(Invoice i)
+	{
+		logout();
+		idField.setText(Integer.toString(i.getID()));
+		customerComboBox.setSelectedItem(i.getCustomer());
+		ArrayList<LineItem> lineitems = i.getLineItems();
+		for(LineItem li: lineitems)
+		{
+			Product p = database.getProduct(li.getProductID());
+			tableModel.addRow(new Object[] { li.getProductID(), p.getName() , li.getQuantity() });
+		}
 	}
 
 	//Shows message
