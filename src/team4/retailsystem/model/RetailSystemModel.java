@@ -1,6 +1,7 @@
 package team4.retailsystem.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A class to represent the retail system model. It informs listeners of any
@@ -124,7 +125,7 @@ public class RetailSystemModel {
 	
 	//User class methods
 	public void addUser(String username, String password, int authLevel){
-		database.addNewUser(username, password, authLevel);
+		database.addUser(authLevel, username, password);
 		notifyListeners(USERS_CHANGED);
 	}
 	
@@ -160,11 +161,12 @@ public class RetailSystemModel {
 		notifyListeners(INVOICES_CHANGED);
 	}
 	
-	public void updateInvoice(int id, ArrayList<LineItem> lineitems, Customer c){
+	public void updateInvoice(int id, ArrayList<LineItem> lineitems, Customer c, Date d){
 		Invoice i = getInvoiceById(id);
 		i.setLineItems(lineitems);
 		i.setCustomer(c);
-		database.updateInvoice(id, i);
+		i.setDate(d);
+		database.updateInvoice(i);
 		notifyListeners(INVOICES_CHANGED);
 	}
 	

@@ -18,125 +18,133 @@ public class UserPanel extends JPanel {
 
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 
-	private JTextField usernameTextField;
-	private JTextField idTextField;
 	private Database database;
 	private JList userList;
-	private JTextField idField;
-	private JTextField usernameField;
+	private JTextField idField, usernameField, idTextField;
 	private JPasswordField passwordField;
-	private JButton btnDelete, btnCancel, btnUpdate, btnAdd;
-	final JComboBox authComboBox;
+	private JButton btnDelete, btnCancel, btnAdd;
+	private JComboBox authComboBox;
+	private JPanel panel, userListPanel, panel2;
+	private JLabel lblPassword, lblAuthLevel, lblUsername, lblUserId;
+	private JCheckBox chckbxNew;
+	private JScrollPane scrollPane;
 
 	public UserPanel() {
-		setBounds(10, 88, 642, 296);
+		setBounds(10, 88, 820, 600);
 		setLayout(null);
+		initialiseComponents();
+		addListeners();
+		constructView();
+	}
+	
+	public void initialiseComponents() {
 		database = Database.getInstance();
-		JPanel userListPanel = new JPanel();
-		userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-				null));
-		userListPanel.setBounds(10, 11, 159, 274);
-		add(userListPanel);
-		userListPanel.setLayout(null);
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 138, 252);
-		userListPanel.add(scrollPane);
-
+		panel = new JPanel();
+		btnAdd = new JButton("Submit");
+		btnCancel = new JButton("Cancel");
+		btnAdd = new JButton("Submit");
+		chckbxNew = new JCheckBox("New");
+		lblUserId = new JLabel("User ID:");
+		idField = new JTextField();
+		scrollPane = new JScrollPane();
 		userList = new JList();
-		scrollPane.setViewportView(userList);
-		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		btnDelete = new JButton("Delete User");
+		authComboBox = new JComboBox();
+		lblUsername = new JLabel("Username:");
+		lblAuthLevel = new JLabel("Auth. Level:");
+		userListPanel = new JPanel();
+		panel2 = new JPanel();
+	}
 
-		JPanel panel = new JPanel();
+	public void constructView() {
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(166, 11, 465, 274);
+		panel.setBounds(10, 11, 600, 578);
 		add(panel);
 		panel.setLayout(null);
-
-		JLabel lblUserId = new JLabel("User ID:");
-		lblUserId.setBounds(10, 16, 116, 14);
+		btnCancel.setBounds(484, 544, 100, 23);
+		panel.add(btnCancel);
+		btnAdd.setBounds(374, 544, 100, 23);
+		panel.add(btnAdd);
+		chckbxNew.setBounds(12, 7, 59, 23);
+		panel.add(chckbxNew);
+		lblUserId.setBounds(415, 11, 59, 14);
 		panel.add(lblUserId);
-
-		idField = new JTextField();
-		idField.setEditable(false);
-		idField.setBounds(174, 8, 281, 30);
+		idField.setBounds(464, 8, 120, 20);
 		panel.add(idField);
-		idField.setColumns(10);
-
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(10, 75, 116, 14);
-		panel.add(lblUsername);
-
-		JLabel lblAuthLevel = new JLabel("Auth. Level:");
-		lblAuthLevel.setBounds(10, 133, 116, 14);
-		panel.add(lblAuthLevel);
-
+		idField.setEditable(false);
+		idField.setColumns(10);	
+		panel2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel2.setBounds(12, 37, 574, 157);
+		panel.add(panel2);
+		panel2.setLayout(null);
 		usernameField = new JTextField();
+		usernameField.setBounds(194, 11, 370, 30);
+		panel2.add(usernameField);
 		usernameField.setColumns(10);
-		usernameField.setBounds(174, 67, 281, 30);
-		panel.add(usernameField);
-
-		authComboBox = new JComboBox();
+		authComboBox.setBounds(194, 61, 370, 30);
+		panel2.add(authComboBox);
 		authComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Normal User", "Administrator" }));
-		authComboBox.setBounds(174, 125, 281, 30);
-		panel.add(authComboBox);
-
 		passwordField = new JPasswordField();
-		passwordField.setBounds(174, 184, 281, 30);
-		panel.add(passwordField);
+		passwordField.setBounds(194, 113, 370, 30);
+		panel2.add(passwordField);
+		lblUsername.setBounds(24, 19, 67, 14);
+		panel2.add(lblUsername);
+		lblAuthLevel.setBounds(24, 69, 72, 14);
+		panel2.add(lblAuthLevel);
+		lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(24, 121, 67, 14);
+		panel2.add(lblPassword);
+		userListPanel.setBounds(610, 11, 200, 578);
+		add(userListPanel);
+		userListPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
+				null));
+		userListPanel.setLayout(null);
+		scrollPane.setBounds(10, 11, 180, 526);
+		userListPanel.add(scrollPane);
+		scrollPane.setViewportView(userList);
+		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		btnDelete.setBounds(10, 544, 180, 23);
+		userListPanel.add(btnDelete);
+	}
 
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setBounds(10, 192, 116, 14);
-		panel.add(lblPassword);
-		
-		btnAdd = new JButton("Add");
-		btnAdd.setBounds(105, 240, 80, 23);
-		panel.add(btnAdd);
+	public void addListeners() {
+		//Handles submit button click
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (usernameField.getText().equals("")
-						|| passwordField.getPassword().length == 0) {
+				if (!validateFields()) {
 					showError("Please fill empty fields");
-				} else {
+				} 
+				else 
+				{
 					String username = usernameField.getText();
-					String password = passwordField.getPassword().toString();
+					String password = new String(passwordField.getPassword());
 					int authLevel = authComboBox.getSelectedIndex() + 1;
-
-					for (RetailViewListener r : listeners) {
-						r.clickCreateUser(username, password, authLevel);
+					
+					if(chckbxNew.isSelected())
+					{
+						for (RetailViewListener r : listeners) {
+							r.clickCreateUser(username, password, authLevel);
+						}
+						logout();
 					}
-					logout();
+					else if(!chckbxNew.isSelected() && !userList.isSelectionEmpty())
+					{
+						int id = Integer.parseInt(idField.getText());
+						for (RetailViewListener r : listeners) {
+							r.clickUpdateUser(id, username, password, authLevel);
+						}
+						logout();
+					}
+					else
+					{
+						showError("You must create a new user or select one from the list to edit");
+					}
 				}
 			}
 		});
 
-		
-		btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(195, 240, 80, 23);
-		panel.add(btnUpdate);
-		btnUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (userList.isSelectionEmpty()
-						|| usernameField.getText().equals("")
-						|| passwordField.getPassword().length == 0) {
-					showError("Select a user and enter password");
-				} else {
-					int id = Integer.parseInt(idField.getText());
-					String username = usernameField.getText();
-					String password = passwordField.getPassword().toString();
-					int authLevel = authComboBox.getSelectedIndex() + 1;
-
-					for (RetailViewListener r : listeners) {
-						r.clickUpdateUser(id, username, password, authLevel);
-					}
-					logout();
-				}
-			}
-		});
-
-		btnDelete = new JButton("Delete");
-		btnDelete.setBounds(285, 240, 80, 23);
-		panel.add(btnDelete);
+		//Handles delete button click
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (userList.isSelectionEmpty()) {
@@ -150,69 +158,86 @@ public class UserPanel extends JPanel {
 				}
 			}
 		});
+
+		//Handles a click on user list
+		userList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				idField.setText(Integer.toString(((User) userList
+						.getSelectedValue()).getID()));
+				usernameField.setText(((User) userList.getSelectedValue())
+						.getUsername());
+				if (((User) userList.getSelectedValue())
+						.getAuthorizationLevel() == 1) {
+					authComboBox.setSelectedIndex(0);
+				} else {
+					authComboBox.setSelectedIndex(1);
+				}
+			}
+		});
 		
-		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(375, 240, 80, 23);
-		panel.add(btnCancel);
+		
+		//Handles cancel button click
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout();
 			}
 		});
-
-		userList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				idField.setText(Integer.toString(((User)userList.getSelectedValue()).getID()));
-				usernameField.setText(((User)userList.getSelectedValue()).getUsername());
-				if(((User)userList.getSelectedValue()).getAuthorizationLevel() == 1)
-				{
-					authComboBox.setSelectedIndex(0);
-				}
-				else
-				{
-					authComboBox.setSelectedIndex(1);
-				}
-				//passwordField.setText(((User)userList.getSelectedValue()).getPassword()); obviously not how its meant to be.. unsure about passwords
-			}
-		});
 	}
 
-	public void updateUserList(ArrayList<User> users){
+	public void updateUserList(ArrayList<User> users) {
 		userList.setListData(users.toArray());
 	}
-	
+
 	public void addListener(RetailViewListener r) {
 		listeners.add(r);
 	}
-	
+
 	public void showError(String errorMessage) {
-		JOptionPane.showMessageDialog(null, errorMessage);	
+		JOptionPane.showMessageDialog(null, errorMessage);
 	}
-    
-    /*
-     * A method that clears temp fields on logout.
-     */
-	public void logout(){
+
+	//Clears the GUI
+	public void logout() {
 		String empty = "";
 		idField.setText(empty);
 		usernameField.setText(empty);
 		authComboBox.setSelectedIndex(0);
 		passwordField.setText(empty);
 	}
-	
-	public void updateUserFunctionality(User u)
-	{
-		if(u.getAuthorizationLevel() == User.NORMAL_USER)
-		{
+
+	//Handles what is displayed depending on what user is logged in
+	public void updateUserFunctionality(User u) {
+		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
 			usernameField.setEnabled(false);
 			authComboBox.setEnabled(false);
 			userList.setEnabled(false);
 			idField.setText(Integer.toString(u.getID()));
 			usernameField.setText(u.getUsername());
 			authComboBox.setSelectedIndex(0);
-			btnAdd.setVisible(false);
+			btnAdd.setVisible(true);
 			btnDelete.setVisible(false);
-			btnCancel.setVisible(false);	
+			btnCancel.setVisible(false);
 		}
+		else 
+		{
+			usernameField.setEnabled(true);
+			authComboBox.setEnabled(true);
+			userList.setEnabled(true);
+			btnAdd.setVisible(true);
+			btnDelete.setVisible(true);
+			btnCancel.setVisible(true);
+			idField.setText(null);
+			usernameField.setText(null);
+		}
+	}
+	
+	//Validates fields
+	public boolean validateFields()
+	{
+		if(usernameField.getText().equals(null) || passwordField.getPassword().length == 0)
+		{
+			return false;
+		}
+		return true;
 	}
 }

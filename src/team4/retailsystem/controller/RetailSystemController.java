@@ -142,7 +142,7 @@ implements RetailModelListener, RetailViewListener
 	@Override
 	public void clickUpdateCustomer(int id, String name, String address, String email,
 			String phone) {
-		Customer c = Database.getInstance().getCustomerById(id);
+		Customer c = Database.getInstance().getCustomer(id);
 		c.setName(name);
 		c.setAddress(address);
 		c.setEmail(email);
@@ -277,15 +277,15 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickCreateInvoice(ArrayList<LineItem> lineItems,
-			Customer customer) {
-		model.addInvoice(new Invoice(lineItems, customer));
+			Customer customer, Date d) {
+		model.addInvoice(new Invoice(lineItems, customer, d));
 		
 	}
 
 	@Override
 	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems,
-			Customer customer) {
-		model.updateInvoice(id, lineItems, customer);
+			Customer customer, Date d) {
+		model.updateInvoice(id, lineItems, customer, d);
 		// TODO Auto-generated method stub
 		
 	}

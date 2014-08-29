@@ -231,7 +231,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             supplier =
                     Database.getInstance().getSuppliers().get(index);
             for (Product p : products) {
-                if (p.getSupplier().equals(supplier)) {
+                if (p.getSupplier().getID() == supplier.getID()) {
                     productArrayList.add(p.getName() + "   ");
                 }
             }
