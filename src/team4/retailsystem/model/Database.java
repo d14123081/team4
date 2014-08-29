@@ -94,7 +94,7 @@ public class Database {
 	
 	public static Database getInstance() {
 		if (db == null) {
-			db = new Database("RetailStorageSystem");
+			db = new Database("Retail Storage System");
 		}
 		return db;
 	}
