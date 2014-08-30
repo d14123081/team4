@@ -27,6 +27,8 @@ import java.awt.GradientPaint;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.swing.JPanel;
@@ -98,10 +100,10 @@ public class DisplayChart {
                 date[i] = sdf.format(d.getTime());
                 
                 orderCost = getOrderCost(d, orders);
-                dataset.addValue(orderCost, sellSeries, date[i]);
+                dataset.addValue(orderCost, buySeries, date[i]);
                 
                 invoiceCost = getInvoiceCost(d, invoices);
-                dataset.addValue(invoiceCost, buySeries, date[i]);
+                dataset.addValue(invoiceCost, sellSeries, date[i]);
                 
                 profits += (invoiceCost - orderCost);
                 dataset.addValue(profits, profitSeries, date[i]);
@@ -155,27 +157,10 @@ public class DisplayChart {
         
         else if(type == 2){
             lineRenderer = (LineAndShapeRenderer) plot.getRenderer();
-            /*lineRenderer.setSeriesLinesVisible(0, true);
+            lineRenderer.setSeriesLinesVisible(0, true);
             lineRenderer.setSeriesLinesVisible(1, true);
-            lineRenderer.setSeriesLinesVisible(2, true);*/
-            lineRenderer.setSeriesStroke(
-                    0, new BasicStroke(
-                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                        1.0f, new float[] {10.0f, 6.0f}, 0.0f
-                    )
-                );
-                lineRenderer.setSeriesStroke(
-                    1, new BasicStroke(
-                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                        1.0f, new float[] {6.0f, 6.0f}, 0.0f
-                    )
-                );
-                lineRenderer.setSeriesStroke(
-                    2, new BasicStroke(
-                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-                        1.0f, new float[] {2.0f, 6.0f}, 0.0f
-                    )
-                );
+            lineRenderer.setSeriesLinesVisible(2, true);
+
         }
         
         return chart;
@@ -273,7 +258,7 @@ public class DisplayChart {
             }
             
         }
-        
+        Collections.sort(dates);
         return dates;
     }
 }
