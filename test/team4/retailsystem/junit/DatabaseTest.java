@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Test;
@@ -400,6 +401,8 @@ public class DatabaseTest {
 				suppData2);		
 		db.addSupplier(supplier1);
 		db.addSupplier(supplier2);
+		supplier1 = db.getSuppliers().get(0);
+		supplier2 = db.getSuppliers().get(1);
 
 		// test Create & Read
 		Delivery delivery = new Delivery(supplier1, orderID);
@@ -826,5 +829,177 @@ public class DatabaseTest {
 		assertEquals(error, delTypical.getOrderID(), validDeliveries.get(0).getOrderID());
 		assertEquals(error, delMin.getOrderID(), validDeliveries.get(1).getOrderID());
 		assertEquals(error, delMax.getOrderID(), validDeliveries.get(2).getOrderID());
+	}
+	
+	@Test
+	public void testInvoiceUpdating(){
+		String error = "Failed to update the invoice";
+		
+		Database db = Database.getInstance("testSystem");
+		String tempData = "unimportant";
+		
+		Customer customer = new Customer(tempData, tempData, tempData, tempData);
+		Supplier supplier = new Supplier(tempData,tempData,tempData,tempData);
+		
+		db.addCustomer(customer);
+		db.addSupplier(supplier);
+		
+		ArrayList<LineItem> invoiceItems = new ArrayList<LineItem>();
+		Product[] products = new Product[7];
+		LineItem[] lineItems = new LineItem[products.length];
+		for(int i=0; i<products.length; i++){
+			products[i] = new Product(""+i, 0, 1, 1, supplier);		
+			lineItems[i] = new LineItem(i+1, i);
+			db.addProduct(products[i]);
+		}
+		
+		invoiceItems.add(lineItems[0]);
+		invoiceItems.add(lineItems[1]);
+		invoiceItems.add(lineItems[2]);
+		invoiceItems.add(lineItems[3]);
+		invoiceItems.add(lineItems[4]);
+		Invoice invoice = new Invoice(invoiceItems, customer);
+		db.addInvoice(invoice);
+		invoice = db.getInvoices().get(0);
+		invoiceItems = invoice.getLineItems();
+		
+		// test deleting 2 items
+		invoiceItems.remove(1);
+		invoiceItems.remove(3);
+		invoice.setLineItems(invoiceItems);
+		db.updateInvoice(invoice);
+		invoice = db.getInvoices().get(0);
+		
+		assertEquals(error,3, invoice.getLineItems().size());
+		
+		assertEquals(error,1, invoice.getLineItems().get(0).getProductID());
+		assertEquals(error,3, invoice.getLineItems().get(1).getProductID());
+		assertEquals(error,4, invoice.getLineItems().get(2).getProductID());
+		
+		// test adding 3 items
+		invoice = db.getInvoices().get(0);
+		invoiceItems = invoice.getLineItems();
+		invoiceItems.add(lineItems[5]);
+		invoiceItems.add(lineItems[6]);
+		invoiceItems.add(lineItems[1]);
+		invoice.setLineItems(invoiceItems);
+		db.updateInvoice(invoice);
+		invoice = db.getInvoices().get(0);
+		
+		assertEquals(error,6, invoice.getLineItems().size());
+		
+		assertEquals(error,1, invoice.getLineItems().get(0).getProductID());
+		assertEquals(error,3, invoice.getLineItems().get(1).getProductID());
+		assertEquals(error,4, invoice.getLineItems().get(2).getProductID());
+		assertEquals(error,6, invoice.getLineItems().get(3).getProductID());
+		assertEquals(error,7, invoice.getLineItems().get(4).getProductID());
+		assertEquals(error,2, invoice.getLineItems().get(5).getProductID());
+		
+		//delete 4, add 1, update 1
+		invoice = db.getInvoices().get(0);
+		invoiceItems = invoice.getLineItems();
+		invoiceItems.remove(5);
+		invoiceItems.remove(4);
+		invoiceItems.remove(0);
+		invoiceItems.remove(0);
+		invoiceItems.add(lineItems[6]);
+		invoiceItems.get(0).setProductID(8);
+		invoice.setLineItems(invoiceItems);
+		db.updateInvoice(invoice);
+		invoice = db.getInvoices().get(0);
+		
+		assertEquals(error,3, invoice.getLineItems().size());
+		
+		assertEquals(error,8, invoice.getLineItems().get(0).getProductID());
+		assertEquals(error,6, invoice.getLineItems().get(1).getProductID());
+		assertEquals(error,7, invoice.getLineItems().get(2).getProductID());
+	}
+	
+	@Test
+	public void testOrderUpdating(){
+		String error = "Failed to update the order";
+		
+		Database db = Database.getInstance("testSystem");
+		String tempData = "unimportant";
+		
+		Customer customer = new Customer(tempData, tempData, tempData, tempData);
+		Supplier supplier = new Supplier(tempData,tempData,tempData,tempData);
+		Delivery delivery = new Delivery(supplier,1);
+		
+		db.addCustomer(customer);
+		db.addSupplier(supplier);
+		db.addDelivery(delivery);
+		
+		supplier = db.getSuppliers().get(0);
+		
+		ArrayList<LineItem> orderItems = new ArrayList<LineItem>();
+		Product[] products = new Product[7];
+		LineItem[] lineItems = new LineItem[products.length];
+		for(int i=0; i<products.length; i++){
+			products[i] = new Product(""+i, 0, 1, 1, supplier);		
+			lineItems[i] = new LineItem(i+1, i);
+			db.addProduct(products[i]);
+		}
+		
+		orderItems.add(lineItems[0]);
+		orderItems.add(lineItems[1]);
+		orderItems.add(lineItems[2]);
+		orderItems.add(lineItems[3]);
+		orderItems.add(lineItems[4]);
+		Order order = new Order(1, supplier, 1, orderItems);
+		db.addOrder(order);
+		order = db.getOrders().get(0);
+		orderItems = order.getLineItems();
+		
+		// test deleting 2 items
+		orderItems.remove(1);
+		orderItems.remove(3);
+		order.setLineItems(orderItems);
+		db.updateOrder(order);
+		order = db.getOrders().get(0);
+		
+		assertEquals(error,3, order.getLineItems().size());
+		
+		assertEquals(error,1, order.getLineItems().get(0).getProductID());
+		assertEquals(error,3, order.getLineItems().get(1).getProductID());
+		assertEquals(error,4, order.getLineItems().get(2).getProductID());
+		
+		// test adding 3 items
+		order = db.getOrders().get(0);
+		orderItems = order.getLineItems();
+		orderItems.add(lineItems[5]);
+		orderItems.add(lineItems[6]);
+		orderItems.add(lineItems[1]);
+		order.setLineItems(orderItems);
+		db.updateOrder(order);
+		order = db.getOrders().get(0);
+		
+		assertEquals(error,6, order.getLineItems().size());
+		
+		assertEquals(error,1, order.getLineItems().get(0).getProductID());
+		assertEquals(error,3, order.getLineItems().get(1).getProductID());
+		assertEquals(error,4, order.getLineItems().get(2).getProductID());
+		assertEquals(error,6, order.getLineItems().get(3).getProductID());
+		assertEquals(error,7, order.getLineItems().get(4).getProductID());
+		assertEquals(error,2, order.getLineItems().get(5).getProductID());
+		
+		//delete 4, add 1, update 1
+		order = db.getOrders().get(0);
+		orderItems = order.getLineItems();
+		orderItems.remove(5);
+		orderItems.remove(4);
+		orderItems.remove(0);
+		orderItems.remove(0);
+		orderItems.add(lineItems[6]);
+		orderItems.get(0).setProductID(8);
+		order.setLineItems(orderItems);
+		db.updateOrder(order);
+		order = db.getOrders().get(0);
+		
+		assertEquals(error,3, order.getLineItems().size());
+		
+		assertEquals(error,8, order.getLineItems().get(0).getProductID());
+		assertEquals(error,6, order.getLineItems().get(1).getProductID());
+		assertEquals(error,7, order.getLineItems().get(2).getProductID());
 	}
 }
