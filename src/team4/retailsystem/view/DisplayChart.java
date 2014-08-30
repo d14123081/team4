@@ -194,7 +194,6 @@ public class DisplayChart {
         double cost = 0;
         for(Order order : orders){
             if(order.getOrderDate().equals(date)){
-                System.out.println("here");
                 cost = order.getCost();
             }
         }
