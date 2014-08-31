@@ -27,17 +27,13 @@ public class SampleDataGenerator {
 	private static Random random = new Random(System.currentTimeMillis());
 
 	private static void generateDatabase() {
-		try {
-			generateUsers();
-			generateCustomers();
-			generateSuppliers();
-			generateProducts();
-			generateOrders();
-			generateDeliveries();
-			generateInvoices();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		generateUsers();
+		generateCustomers();
+		generateSuppliers();
+		generateProducts();
+		generateOrders();
+		generateDeliveries();
+		generateInvoices();
 	}
 
 	private static void addNewUser(String username, String password,
@@ -264,14 +260,18 @@ public class SampleDataGenerator {
 		items.add(new LineItem(1, 1));
 		Database.getInstance().addInvoice(new Invoice(items, customers.get(0)));
 	}
+	
+	private static void generateRandomDatabase(){
+		generateUsers();
+		generateSuppliers(30);
+		generateCustomers(60);
+		generateProducts(150);
+		generateOrders(150);
+		generateInvoices(150);		
+	}
 
 	public static void main(String[] args) {
-		// generateDatabase();
-		//generateUsers();
-		//generateSuppliers(30);
-		//generateCustomers(60);
-		//generateProducts(150);
-		generateOrders(150);
-		generateInvoices(150);
+		generateDatabase();
+		//generateRandomDatabase();
 	}
 }
