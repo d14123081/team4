@@ -6,6 +6,7 @@ import java.util.Date;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
+import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
@@ -297,5 +298,17 @@ implements RetailModelListener, RetailViewListener
 		// TODO Auto-generated method stub
 		
 	}
+
+    @Override
+    public void clickAddDelivery(Supplier supplier, int orderID, Date date) {
+        // TODO Auto-generated method stub
+        model.addDelivery(new Delivery(supplier, orderID, date));
+    }
+
+    @Override
+    public void clickUpdateDelivery(Delivery delivery) {
+        // TODO Auto-generated method stub
+        model.updateDelivery(delivery);
+    }
 	
 }

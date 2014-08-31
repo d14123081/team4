@@ -1,7 +1,10 @@
 package team4.retailsystem.model;
 
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import team4.retailsystem.utils.EncryptionModule;
 /**
@@ -406,8 +409,13 @@ public class OldDatabase {
 	}
 
 	private void generateDeliveries() {
-		addDelivery(new Delivery(suppliers.get(0), orders.get(0).getID()));
-		addDelivery(new Delivery(suppliers.get(1), orders.get(1).getID()));
+		try {
+            addDelivery(new Delivery(suppliers.get(0), orders.get(0).getID(), new SimpleDateFormat("dd/MM/yyyy").parse("20/08/2014")));
+            //addDelivery(new Delivery(suppliers.get(1), orders.get(1).getID(), new Date()));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	private void generateInvoices() {

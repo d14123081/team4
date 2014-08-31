@@ -21,17 +21,14 @@ import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
 import team4.retailsystem.model.Product;
 
-import java.awt.BasicStroke;
+
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-
-import javax.swing.JPanel;
 
 public class DisplayChart {
     

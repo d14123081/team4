@@ -46,9 +46,9 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private JTable itemTable;
     private DefaultTableModel model;
     private DecimalFormat df = new DecimalFormat("0.00");
-    private ArrayList<Supplier> suppliers = new ArrayList<>();
-    private ArrayList<Product> products = new ArrayList<>();
-    private ArrayList<Order> orders = new ArrayList<>();
+    private ArrayList<Supplier> suppliers = Database.getInstance().getSuppliers();
+    private ArrayList<Product> products = Database.getInstance().getProducts();
+    private ArrayList<Order> orders = Database.getInstance().getOrders();
     private ArrayList<String> supplierArrayList = new ArrayList<>();
     private ArrayList<String> productArrayList = new ArrayList<>();
     private ArrayList<LineItem> itemsArrayList = new ArrayList<>();
@@ -335,7 +335,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void getSupplierArrayList() {
-        suppliers = Database.getInstance().getSuppliers();
         supplierArrayList.clear();
         for (Supplier s : suppliers) {
             supplierArrayList.add(s.getName() + "   ");
@@ -344,7 +343,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void getProductArrayList() {
-        products = Database.getInstance().getProducts();
         productArrayList.clear();
         for (Product p : products) {
             productArrayList.add(p.getName() + "   ");
@@ -417,7 +415,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         JDialog d = o.createDialog(null,"Orders List");   
         d.setSize(480, 550);
         d.setVisible(true);
-        //orderedPanel = new OrderedPanel();
         if(o.getValue().equals(0)){
             switch(v){
             case 1:
@@ -444,10 +441,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                 break;
             case 2:
                 clearItemList();
-                for(RetailViewListener r : listeners ){          
-                    //need a adding delivery day to Order
-                   // r.
-                }
                 break;
             }
         }   
@@ -464,9 +457,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void updateOrderList(ArrayList<Order> orders) {
-        // TODO Auto-generated method stub
-        
-        
+
     }
     
     
