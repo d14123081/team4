@@ -405,7 +405,7 @@ public class DatabaseTest {
 		supplier2 = db.getSuppliers().get(1);
 
 		// test Create & Read
-		Delivery delivery = new Delivery(supplier1, orderID);
+		Delivery delivery = new Delivery(supplier1, orderID, new Date());
 		Date date = delivery.getDate();
 		
 		assertTrue(CREATE_ERR, db.addDelivery(delivery));
@@ -681,9 +681,9 @@ public class DatabaseTest {
 
 		Supplier supplier1 = new Supplier(tempData, tempData, tempData, tempData);
 
-		Delivery one = new Delivery(supplier1, id1);
-		Delivery two = new Delivery(supplier1, id2);
-		Delivery three = new Delivery(supplier1, id3);
+		Delivery one = new Delivery(supplier1, id1, new Date());
+		Delivery two = new Delivery(supplier1, id2, new Date());
+		Delivery three = new Delivery(supplier1, id3, new Date());
 
 		Database db = Database.getInstance("testSystem");
 		db.addDelivery(one);
@@ -924,7 +924,7 @@ public class DatabaseTest {
 		
 		Customer customer = new Customer(tempData, tempData, tempData, tempData);
 		Supplier supplier = new Supplier(tempData,tempData,tempData,tempData);
-		Delivery delivery = new Delivery(supplier,1);
+		Delivery delivery = new Delivery(supplier,1, new Date());
 		
 		db.addCustomer(customer);
 		db.addSupplier(supplier);

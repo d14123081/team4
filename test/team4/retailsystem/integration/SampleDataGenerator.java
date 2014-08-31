@@ -1,6 +1,9 @@
 package team4.retailsystem.integration;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
@@ -86,8 +89,14 @@ public class SampleDataGenerator {
 	private static void generateDeliveries() {
 		ArrayList<Supplier> suppliers = Database.getInstance().getSuppliers();
 		ArrayList<Order> orders = Database.getInstance().getOrders();
-		Database.getInstance().addDelivery(new Delivery(suppliers.get(0), orders.get(0).getID()));
-		Database.getInstance().addDelivery(new Delivery(suppliers.get(1), orders.get(1).getID()));
+		try {
+            Database.getInstance().addDelivery(new Delivery(suppliers.get(0), orders.get(0).getID(), new SimpleDateFormat("dd/MM/yyyy").parse("20/08/2014")));
+            //Database.getInstance().addDelivery(new Delivery(suppliers.get(1), orders.get(1).getID(), new Date()));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		
 	}
 
 	private static void generateInvoices() {
