@@ -14,6 +14,7 @@ import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
@@ -63,6 +64,7 @@ public class InvoicePanel extends JPanel {
 	private JDatePanelImpl datePanel;
 	private JDatePickerImpl datePicker;
 	private Calendar today = Calendar.getInstance();
+	private InvoiceListPanel invoiceListFrame;
 
 	public InvoicePanel() {
 		initialiseComponents();
@@ -71,7 +73,6 @@ public class InvoicePanel extends JPanel {
 	}
 
 	public void initialiseComponents() {
-		// Initialise all components
 		btnInvoices = new JButton("Invoices");
 		btnAdd = new JButton("Submit");
 		btnCancel = new JButton("Cancel");
@@ -100,31 +101,8 @@ public class InvoicePanel extends JPanel {
 		datePicker = new JDatePickerImpl(datePanel);
 		datePicker.getJFormattedTextField().setEnabled(false);
 		lblCustomer = new JLabel("Customer:");
-		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Product ID", "Product Name", "Quantity" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
-					Integer.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-
-			boolean[] columnEditables = new boolean[] { false, false, true };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-
-			@Override
-			public void setValueAt(Object val, int row, int column) {
-				Product p = database.getProduct((int) invoiceTable.getValueAt(
-						row, column - 2));
-				if (val instanceof Number && ((Number) val).doubleValue() > 0
-						&& ((Number) val).intValue() <= p.getStockLevel()) {
-					super.setValueAt(val, row, column);
-				}
-			}
-		});
+		initialiseTable();
+		invoiceListFrame = new InvoiceListPanel(this);
 	}
 
 	public void constructView() {
@@ -182,12 +160,9 @@ public class InvoicePanel extends JPanel {
 	}
 
 	public void addListeners() {
-		// Adds listeners to components
-
-		// Handles the submit button
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// If new invoice + items added to invoice
+				// If new invoice + items added to invoice, create new
 				if (checkboxNew.isSelected() && tableModel.getRowCount() > 0) {
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					Date d = (Date) datePicker.getModel().getValue();
@@ -201,7 +176,7 @@ public class InvoicePanel extends JPanel {
 						r.clickCreateInvoice(lineitems, c, d);
 					}
 					logout();
-				} // If updating invoice
+				} // else ff updating invoice
 				else if (!checkboxNew.isSelected()
 						&& tableModel.getRowCount() > 0) {
 					int id = Integer.parseInt(idField.getText());
@@ -227,11 +202,11 @@ public class InvoicePanel extends JPanel {
 
 		btnInvoices.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				invoiceListFrame.setVisible(true);
 			}
 		});
 
-		// Handles the remove row button
+		//Check all rows to see if selected, if selected, then remove else throw error
 		btnDelRow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean delRow = false;
@@ -249,7 +224,7 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
-		// Handles the cancel button
+		
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout();
@@ -336,7 +311,7 @@ public class InvoicePanel extends JPanel {
 
 	// Updates invoices on panel
 	public void updateInvoiceList(ArrayList<Invoice> invoices) {
-		// invoiceList.setListData(invoices.toArray());
+		invoiceListFrame.setTableData(invoices);
 	}
 
 	// Updates products on panel
@@ -386,6 +361,34 @@ public class InvoicePanel extends JPanel {
 	// Shows message
 	public void showError(String errorMessage) {
 		JOptionPane.showMessageDialog(null, errorMessage);
+	}
+
+	public void initialiseTable() {
+		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Product ID", "Product Name", "Quantity" }) {
+			Class[] columnTypes = new Class[] { Integer.class, String.class,
+					Integer.class };
+
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			boolean[] columnEditables = new boolean[] { false, false, true };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+
+			@Override
+			public void setValueAt(Object val, int row, int column) {
+				Product p = database.getProduct((int) invoiceTable.getValueAt(
+						row, column - 2));
+				if (val instanceof Number && ((Number) val).doubleValue() > 0
+						&& ((Number) val).intValue() <= p.getStockLevel()) {
+					super.setValueAt(val, row, column);
+				}
+			}
+		});
 	}
 
 	// Handles what is displayed depending on the user logged in
