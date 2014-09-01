@@ -72,7 +72,7 @@ public class CustomerPanel extends JPanel {
 				newCustomerMode();
 			}
 		});
-		 newCustomerButton.setBounds(10, 11, 119, 34);
+		 newCustomerButton.setBounds(10, 11, 125, 34);
 		panel.add(newCustomerButton);
 		
 		// edit customer button
@@ -88,7 +88,7 @@ public class CustomerPanel extends JPanel {
 			}
 		});
 		editItemButton.setFont(new Font("Arial", Font.BOLD, 12));
-		editItemButton.setBounds(140, 11, 119, 34);
+		editItemButton.setBounds(146, 11, 125, 34);
 		panel.add(editItemButton);
 		
 		
@@ -102,17 +102,20 @@ public class CustomerPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "Please select a customer to remove");
 						}
 				else if (JOptionPane.showConfirmDialog(null,"Are you sure you want to delete this customer") == 0 ) {
+					infoTextArea.setText(getNameTF() + " has been removed from the database.");
+
 						for (RetailViewListener r : listeners) {
 							r.clickDeleteCustomer(Integer.parseInt(getIDTF()));
 							
 						}
 						setToViewMode();
+
 				}
 			}
 			
 		});
 		removeItemButton.setFont(new Font("Arial", Font.BOLD, 12));
-		removeItemButton.setBounds(269, 11, 125, 34);
+		removeItemButton.setBounds(281, 11, 133, 34);
 		panel.add(removeItemButton);
 		
 		
@@ -124,21 +127,21 @@ public class CustomerPanel extends JPanel {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		panel_1.setBorder(new TitledBorder(null, "Customer details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer details", TitledBorder.RIGHT, TitledBorder.TOP, null, null));
 		panel_1.setBounds(10, 84, 570, 372);
 		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Customer name:");
 		lblNewLabel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblNewLabel.setBounds(115, 41, 112, 14);
+		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel.setBounds(33, 41, 148, 14);
 		panel_1.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Customer address:");
 		lblNewLabel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblNewLabel_1.setBounds(115, 99, 112, 14);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel_1.setBounds(33, 99, 148, 14);
 		panel_1.add(lblNewLabel_1);
 		
 		nameTF = new JTextField();
@@ -172,20 +175,20 @@ public class CustomerPanel extends JPanel {
 		
 		JLabel label = new JLabel("Customer email:");
 		label.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label.setBounds(115, 186, 112, 14);
+		label.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label.setBounds(33, 186, 148, 14);
 		panel_1.add(label);
 		
-		JLabel label_1 = new JLabel("Customer ID:");
+		JLabel label_1 = new JLabel("Customer id:");
 		label_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label_1.setBounds(115, 242, 112, 14);
+		label_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label_1.setBounds(33, 242, 148, 14);
 		panel_1.add(label_1);
 		
 		JLabel label_2 = new JLabel("Customer contact:");
 		label_2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label_2.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label_2.setBounds(115, 301, 112, 14);
+		label_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label_2.setBounds(33, 301, 148, 14);
 		panel_1.add(label_2);
 		
 		addressTF = new JTextArea();
@@ -205,7 +208,7 @@ public class CustomerPanel extends JPanel {
 		
 		infoTextArea.setEditable(false);
 		infoTextArea.setBackground(SystemColor.inactiveCaptionBorder);
-		infoTextArea.setBorder(new TitledBorder(null, "Event information", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		infoTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Event window", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		infoTextArea.setBounds(10, 11, 550, 46);
 		panel_3.add(infoTextArea);
 		infoTextArea.setColumns(10);
@@ -224,31 +227,41 @@ public class CustomerPanel extends JPanel {
 				// checks for invalid Email construction
 				else if (getEmailTF().contains("@")
 						&& getEmailTF().contains(".")) {
+					if(getIDTF().isEmpty()){
 
-					
-					// inform RetailViewListeners of the event, pass the
-					// information.
-					for (RetailViewListener r : listeners) {
-						r.clickSaveNewCustomer(getNameTF(), getAddressTF(),
-								getEmailTF(), getTelTF());
+						
+						// inform RetailViewListeners of the event, pass the
+						// information.
+						for (RetailViewListener r : listeners) {
+							r.clickSaveNewCustomer(getNameTF(), getAddressTF(),
+									getEmailTF(), getTelTF());
 
-					}
+						}
 
-					// add to customer array/database when functionality
-					// available
-					infoTextArea.setText("New customer added to database");
-					//getcustomerNameArrayList();
-					clearTextFields();
-					setToViewMode();
+						// add to customer array/database when functionality
+						// available
+						infoTextArea.setText(getNameTF() +"  is added to the database.");
+						//getcustomerNameArrayList();
+						clearTextFields();
+						setToViewMode();
 
-				} else {
-					JOptionPane.showMessageDialog(null,
-							"Please provide a valid email address");
+					} 
+								else{
+									for (RetailViewListener r : listeners) {
+										r.clickUpdateCustomer(Integer.parseInt(getIDTF()), getNameTF(), getAddressTF(),
+												getEmailTF(), getTelTF());
 
-				}
+									}
 
-			
-			}
+									// add to customer array/database when functionality
+									// available
+									infoTextArea.setText(getNameTF() + "'s details have been updated.");
+									//getcustomerNameArrayList();
+									clearTextFields();
+									setToViewMode();
+
+								}}
+								}
 		});
 		saveItemButton.setBounds(354, 68, 98, 34);
 		panel_3.add(saveItemButton);
@@ -275,7 +288,7 @@ public class CustomerPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				Customer c = (Customer)customerList.getSelectedValue();
-
+				infoTextArea.setText("");
 				nameTF.setText(c.getName());
 				addressTF.setText(c.getAddress());
 				eMailTF.setText(c.getEmail());
@@ -359,10 +372,8 @@ public class CustomerPanel extends JPanel {
 	public void setToViewMode() {
 
 		clearTextFields();
-		infoTextArea.setText("Choose a customer to view details");
 
 		addressTF.setBackground(SystemColor.control);
-
 		customerList.setEnabled(true);
 
 		nameTF.setEditable(false);
@@ -375,7 +386,6 @@ public class CustomerPanel extends JPanel {
 		editItemButton.setEnabled(true);
 		saveItemButton.setVisible(false);
 		cancelBtn.setVisible(false);
-		
 		
 		//getcustomerNameArrayList();
 	}
@@ -426,7 +436,7 @@ public class CustomerPanel extends JPanel {
 
 		editItemButton.setEnabled(false);
 		removeItemButton.setEnabled(false);
-		saveItemButton.setVisible(false);
+		saveItemButton.setVisible(true);
 		cancelBtn.setVisible(true);
 
 		clearTextFields();
