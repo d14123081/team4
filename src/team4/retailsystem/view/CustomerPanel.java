@@ -130,29 +130,29 @@ public class CustomerPanel extends JPanel {
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Customer name:");
-		lblNewLabel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblNewLabel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblNewLabel.setBounds(195, 41, 112, 14);
+		lblNewLabel.setBounds(115, 41, 112, 14);
 		panel_1.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Customer address:");
-		lblNewLabel_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblNewLabel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblNewLabel_1.setBounds(195, 99, 112, 14);
+		lblNewLabel_1.setBounds(115, 99, 112, 14);
 		panel_1.add(lblNewLabel_1);
 		
 		nameTF = new JTextField();
 		nameTF.setBorder(BorderFactory.createTitledBorder(""));
 		nameTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		nameTF.setColumns(10);
-		nameTF.setBounds(317, 35, 243, 27);
+		nameTF.setBounds(237, 35, 323, 27);
 		panel_1.add(nameTF);
 		
 		eMailTF = new JTextField();
 		eMailTF.setBorder(BorderFactory.createTitledBorder(""));
 		eMailTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		eMailTF.setColumns(10);
-		eMailTF.setBounds(317, 180, 243, 27);
+		eMailTF.setBounds(237, 180, 323, 27);
 		panel_1.add(eMailTF);
 		
 		idTF = new JTextField();
@@ -160,45 +160,40 @@ public class CustomerPanel extends JPanel {
 		idTF.setBorder(BorderFactory.createTitledBorder(""));
 		idTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		idTF.setColumns(10);
-		idTF.setBounds(317, 236, 243, 27);
+		idTF.setBounds(237, 236, 323, 27);
 		panel_1.add(idTF);
 		
 		telTF = new JTextField();
 		telTF.setBorder(BorderFactory.createTitledBorder(""));
-		telTF.setFont(new Font("Arial", Font.BOLD, 12));
+		telTF.setFont(new Font("Arial", Font.PLAIN, 12));
 		telTF.setColumns(10);
-		telTF.setBounds(317, 295, 243, 27);
+		telTF.setBounds(237, 295, 323, 27);
 		panel_1.add(telTF);
 		
 		JLabel label = new JLabel("Customer email:");
-		label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label.setBounds(195, 186, 112, 14);
+		label.setBounds(115, 186, 112, 14);
 		panel_1.add(label);
 		
 		JLabel label_1 = new JLabel("Customer ID:");
-		label_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		label_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label_1.setBounds(195, 242, 112, 14);
+		label_1.setBounds(115, 242, 112, 14);
 		panel_1.add(label_1);
 		
 		JLabel label_2 = new JLabel("Customer contact:");
-		label_2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label_2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		label_2.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label_2.setBounds(195, 301, 112, 14);
+		label_2.setBounds(115, 301, 112, 14);
 		panel_1.add(label_2);
 		
 		addressTF = new JTextArea();
 		addressTF.setBackground(SystemColor.control);
 		addressTF.setDisabledTextColor(SystemColor.control);
 		addressTF.setBorder(BorderFactory.createTitledBorder(""));
-		addressTF.setBounds(317, 95, 243, 58);
+		addressTF.setBounds(237, 95, 323, 58);
 		panel_1.add(addressTF);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(590, 363, 220, 226);
-		add(panel_2);
-		panel_2.setLayout(null);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -210,7 +205,7 @@ public class CustomerPanel extends JPanel {
 		
 		infoTextArea.setEditable(false);
 		infoTextArea.setBackground(SystemColor.inactiveCaptionBorder);
-		infoTextArea.setBorder(BorderFactory.createTitledBorder("System information"));
+		infoTextArea.setBorder(new TitledBorder(null, "Event information", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		infoTextArea.setBounds(10, 11, 550, 46);
 		panel_3.add(infoTextArea);
 		infoTextArea.setColumns(10);
@@ -236,11 +231,12 @@ public class CustomerPanel extends JPanel {
 					for (RetailViewListener r : listeners) {
 						r.clickSaveNewCustomer(getNameTF(), getAddressTF(),
 								getEmailTF(), getTelTF());
+
 					}
 
 					// add to customer array/database when functionality
 					// available
-					System.out.println("Customer added to database");
+					infoTextArea.setText("New customer added to database");
 					//getcustomerNameArrayList();
 					clearTextFields();
 					setToViewMode();
@@ -270,7 +266,7 @@ public class CustomerPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(null);
 		scrollPane.setViewportBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer list", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		scrollPane.setBounds(590, 85, 220, 267);
+		scrollPane.setBounds(590, 85, 220, 504);
 		add(scrollPane);
 		
 		customerList = new JList();
@@ -350,7 +346,7 @@ public class CustomerPanel extends JPanel {
 	}
 
 	public void updateCustomerList(ArrayList<Customer> customers) {
-		System.out.println("Customers size: "+customers.size());
+		//System.out.println("Customers size: "+customers.size());
 		customerList.setListData(customers.toArray());
 		
 	}
@@ -363,6 +359,8 @@ public class CustomerPanel extends JPanel {
 	public void setToViewMode() {
 
 		clearTextFields();
+		infoTextArea.setText("Choose a customer to view details");
+
 		addressTF.setBackground(SystemColor.control);
 
 		customerList.setEnabled(true);
@@ -375,6 +373,8 @@ public class CustomerPanel extends JPanel {
 		newCustomerButton.setEnabled(true);
 		removeItemButton.setEnabled(true);
 		editItemButton.setEnabled(true);
+		saveItemButton.setVisible(false);
+		cancelBtn.setVisible(false);
 		
 		
 		//getcustomerNameArrayList();
@@ -406,8 +406,8 @@ public class CustomerPanel extends JPanel {
 		// disable/enable appropriate buttons
 		removeItemButton.setEnabled(false);
 		newCustomerButton.setEnabled(false);
-		//saveItemButton.setVisible(true);
-		//cancelBtn.setVisible(true);
+		saveItemButton.setVisible(true);
+		cancelBtn.setVisible(true);
 
 	}
 
