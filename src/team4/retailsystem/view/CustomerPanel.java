@@ -1,259 +1,103 @@
 package team4.retailsystem.view;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.UIManager;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+
+import java.awt.Font;
 import java.util.ArrayList;
 
+import javax.swing.JTextArea;
 
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-
-import team4.retailsystem.model.Database;
-import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.User;
-import team4.retailsystem.view.CustomerPanel.CRUDListener;
+
+import java.awt.ComponentOrientation;
+
 
 public class CustomerPanel extends JPanel {
-
-	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-
-	private JPanel buttonPanel1, CustomerDisplayPanel;
-	private JScrollPane orderListPanel;
-	private JPanel combinePanel;
-	private JPanel orderPanel;
-	private JPanel functionalityPanel;
-	private JScrollPane customerPanel;
-	private JScrollPane productPanel;
-	private JButton newCustomerButton, testBtn, spaceBtn;
-	private JButton saveBtn, cancelBtn;
-	private JButton editItemButton;
-	private JButton removeItemButton;
-	private JLabel infoLabel;
-
-	// *****************************
-
-	private JLabel nameLabel;
-	private JLabel addressLabel;
-	private JLabel eMailLabel;
-	private JLabel idLabel;
-	private JLabel telLabel;
 	private JTextField nameTF;
-	private JTextField addressTF;
 	private JTextField eMailTF;
 	private JTextField idTF;
 	private JTextField telTF;
+	private JTextArea infoTextArea;
+	private JTextArea addressTF;
+	private JButton editItemButton;
+	private JButton removeItemButton;
+	private JButton newCustomerButton;
+	private JButton saveItemButton;
+	private JButton cancelBtn;
 	private JList<Object> customerList;
-	private ArrayList<Customer> customers = new ArrayList<>();
-	private ArrayList<String> customerNameArrayList = new ArrayList<>();
-	private Customer customer;
-	private int index;
+
+
+
+	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
+
+	
 
 	public CustomerPanel() {
-
-		GridBagLayout gbl = new GridBagLayout();
-		this.setLayout(gbl);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-
-		// **********************************************
-
-		nameLabel = new JLabel("Name:");
-		nameLabel.setHorizontalAlignment(PROPERTIES);
-		addressLabel = new JLabel("Address:");
-		addressLabel.setHorizontalAlignment(PROPERTIES);
-
-		eMailLabel = new JLabel("Email:");
-		eMailLabel.setHorizontalAlignment(PROPERTIES);
-
-		idLabel = new JLabel("ID:");
-		idLabel.setHorizontalAlignment(PROPERTIES);
-
-		telLabel = new JLabel("Telephone Number:");
-		telLabel.setHorizontalAlignment(PROPERTIES);
-
-		nameTF = new JTextField(8);
-		addressTF = new JTextField(8);
-		eMailTF = new JTextField(8);
-		idTF = new JTextField(8);
-		telTF = new JTextField(8);
-
-		// ********************************
-
-		buttonPanel1 = new JPanel();
-		gbc.ipady = 30;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridheight = 1;
-		gbc.gridwidth = 2;
-		addPanel(buttonPanel1, gbl, gbc);
-
-		CustomerDisplayPanel = new JPanel();
-		CustomerDisplayPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		CustomerDisplayPanel.setBorder(BorderFactory.createTitledBorder("Customer info"));
-		CustomerDisplayPanel.setLayout(new GridLayout(0, 2, 10, 34));
-		CustomerDisplayPanel.add(nameLabel);
-		CustomerDisplayPanel.add(nameTF);
-		CustomerDisplayPanel.add(addressLabel);
-		CustomerDisplayPanel.add(addressTF);
-		CustomerDisplayPanel.add(eMailLabel);
-		CustomerDisplayPanel.add(eMailTF);
-		CustomerDisplayPanel.add(idLabel);
-		CustomerDisplayPanel.add(idTF);
-		CustomerDisplayPanel.add(telLabel);
-
-		CustomerDisplayPanel.add(telTF);
-
-		buttonPanel1.setLayout(new BoxLayout(buttonPanel1, BoxLayout.X_AXIS));
-
-		spaceBtn = new JButton("     ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		buttonPanel1.add(spaceBtn);
-
-		newCustomerButton = new JButton("New Customer");
-		buttonPanel1.add(newCustomerButton, gbc);
-		newCustomerButton.addActionListener(new CRUDListener());
-
-		spaceBtn = new JButton("    ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		buttonPanel1.add(spaceBtn);
-
-		editItemButton = new JButton("Edit Customer");
-		buttonPanel1.add(editItemButton);
-		editItemButton.addActionListener(new CRUDListener());
-
-		spaceBtn = new JButton("    ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		buttonPanel1.add(spaceBtn);
-
-		removeItemButton = new JButton("Remove Customer");
-		buttonPanel1.add(removeItemButton);
-		removeItemButton.addActionListener(new CRUDListener());
-
-		spaceBtn = new JButton("    ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		buttonPanel1.add(spaceBtn);
-
-		orderPanel = new JPanel();
-		gbc.weightx = 20.9;
-		gbc.weighty = 2.0;
-		gbc.gridy = 1;
-		gbc.gridheight = GridBagConstraints.REMAINDER;
-		gbc.gridwidth = 1;
-		addPanel(orderPanel, gbl, gbc);
-
-		GridBagLayout gbl1 = new GridBagLayout();
-		orderPanel.setLayout(gbl1);
-		GridBagConstraints gbc1 = new GridBagConstraints();
-		gbc1.fill = GridBagConstraints.BOTH;
-
-		gbc1.gridx = 0;
-		gbc1.gridy = 0;
-		gbc1.weighty = 6.0;
-		gbc1.weightx = 1;
-		gbc1.gridwidth = 1;
-		addPanel(CustomerDisplayPanel, gbl1, gbc1);
-		// addScrollPane(orderListPanel, gbl1, gbc1);*/
-		orderPanel.add(CustomerDisplayPanel);
-
-		functionalityPanel = new JPanel();
-		gbc1.gridy = 1;
-		gbc1.weighty = 1.0;
-		addPanel(functionalityPanel, gbl1, gbc1);
-		orderPanel.add(functionalityPanel);
-		functionalityPanel.setLayout(new BoxLayout(functionalityPanel,
-				BoxLayout.X_AXIS));
-
-		infoLabel = new JLabel("Info");
-		infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		saveBtn = new JButton("Save");
-		cancelBtn = new JButton("Cancel");
-		saveBtn.addActionListener(new FunctionalityListener());
-		cancelBtn.addActionListener(new FunctionalityListener());
-
-		spaceBtn = new JButton("    ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		functionalityPanel.add(spaceBtn);
-
-		functionalityPanel.add(saveBtn);
-
-		spaceBtn = new JButton("    ");
-		spaceBtn.setEnabled(false);
-		spaceBtn.setBorder(null);
-		functionalityPanel.add(spaceBtn);
-
-		functionalityPanel.add(cancelBtn);
-
-		combinePanel = new JPanel();
-		gbc.weightx = 1.8;
-		gbc.weighty = 2.0;
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		addPanel(combinePanel, gbl, gbc);
-
-		combinePanel.setLayout(new GridLayout(2, 0));
-
-		customerList = new JList<Object>();
+		setLayout(null);
 		
-		customerList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-					Customer c = (Customer)customerList.getSelectedValue();
-	
-					nameTF.setText(c.getName());
-					addressTF.setText(c.getAddress());
-					eMailTF.setText(c.getEmail());
-					idTF.setText("" + c.getID());
-					telTF.setText(c.getTelephoneNumber());
-				}
-			});
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(10, 11, 800, 62);
+		add(panel);
+		panel.setLayout(null);
 		
-		//getcustomerNameArrayList();
-		customerList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		customerList.setFont(new Font("Areal", Font.PLAIN, 16));
-		customerList.setVisibleRowCount(getHeight());
-		customerList.setOpaque(true);
-		customerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		customerPanel = new JScrollPane(customerList);
-		addPanelName("Customers", customerPanel);
-		combinePanel.add(customerPanel);
-		
-		this.setVisible(true);
-		setToViewMode();
-	}
-
-	// ***********************
-
-	class CRUDListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-
-			if (e.getActionCommand().equals("New Customer")) {
+		// new customer button
+		 newCustomerButton = new JButton("New Customer");
+		 newCustomerButton.setFont(new Font("Arial", Font.BOLD, 12));
+		 newCustomerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				newCustomerMode();
 			}
-
-			// when edit button pressed
-			if (e.getActionCommand().equals("Edit Customer")) {
+		});
+		 newCustomerButton.setBounds(10, 11, 119, 34);
+		panel.add(newCustomerButton);
+		
+		// edit customer button
+		editItemButton = new JButton("Edit Customer");
+		editItemButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if(getNameTF().isEmpty()){
 					JOptionPane.showMessageDialog(null, "Please select a customer to edit");
 						}
 				else{
 					editCustomerMode();
 				}
-
 			}
-
-			// when remove button pressed
-			if (e.getActionCommand().equals("Remove Customer")) {
+		});
+		editItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		editItemButton.setBounds(140, 11, 119, 34);
+		panel.add(editItemButton);
+		
+		
+		
+		
+		//remove button
+		 removeItemButton = new JButton("Delete Customer");
+		 removeItemButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if(getNameTF().isEmpty()){
 					JOptionPane.showMessageDialog(null, "Please select a customer to remove");
 						}
@@ -265,34 +109,116 @@ public class CustomerPanel extends JPanel {
 						setToViewMode();
 				}
 			}
-			//getcustomerNameArrayList();
-
-			//updatecustomerList(customers);
-		}
+			
+		});
+		removeItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		removeItemButton.setBounds(269, 11, 125, 34);
+		panel.add(removeItemButton);
 		
-	}
-
-	class CustomerSelectionListener implements ListSelectionListener {
-
-		public void valueChanged(ListSelectionEvent l) {
-			//
-			//index = customerList.getSelectedIndex();
-			Customer c = (Customer)customerList.getSelectedValue();
-
-			nameTF.setText(c.getName());
-			addressTF.setText(c.getAddress());
-			eMailTF.setText(c.getEmail());
-			idTF.setText("" + c.getID());
-			telTF.setText(c.getTelephoneNumber());
-
-		}
-	}
-
-	class FunctionalityListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand().equals("Save")) {
+		
+		
+		JLabel lblNewLabel_2 = new JLabel("Customer Panel");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_2.setBounds(620, 13, 170, 29);
+		panel.add(lblNewLabel_2);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		panel_1.setBorder(new TitledBorder(null, "Customer details", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(10, 84, 570, 372);
+		add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Customer name:");
+		lblNewLabel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblNewLabel.setBounds(195, 41, 112, 14);
+		panel_1.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Customer address:");
+		lblNewLabel_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblNewLabel_1.setBounds(195, 99, 112, 14);
+		panel_1.add(lblNewLabel_1);
+		
+		nameTF = new JTextField();
+		nameTF.setBorder(BorderFactory.createTitledBorder(""));
+		nameTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		nameTF.setColumns(10);
+		nameTF.setBounds(317, 35, 243, 27);
+		panel_1.add(nameTF);
+		
+		eMailTF = new JTextField();
+		eMailTF.setBorder(BorderFactory.createTitledBorder(""));
+		eMailTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		eMailTF.setColumns(10);
+		eMailTF.setBounds(317, 180, 243, 27);
+		panel_1.add(eMailTF);
+		
+		idTF = new JTextField();
+		idTF.setEditable(false);
+		idTF.setBorder(BorderFactory.createTitledBorder(""));
+		idTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		idTF.setColumns(10);
+		idTF.setBounds(317, 236, 243, 27);
+		panel_1.add(idTF);
+		
+		telTF = new JTextField();
+		telTF.setBorder(BorderFactory.createTitledBorder(""));
+		telTF.setFont(new Font("Arial", Font.BOLD, 12));
+		telTF.setColumns(10);
+		telTF.setBounds(317, 295, 243, 27);
+		panel_1.add(telTF);
+		
+		JLabel label = new JLabel("Customer email:");
+		label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label.setBounds(195, 186, 112, 14);
+		panel_1.add(label);
+		
+		JLabel label_1 = new JLabel("Customer ID:");
+		label_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label_1.setBounds(195, 242, 112, 14);
+		panel_1.add(label_1);
+		
+		JLabel label_2 = new JLabel("Customer contact:");
+		label_2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		label_2.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label_2.setBounds(195, 301, 112, 14);
+		panel_1.add(label_2);
+		
+		addressTF = new JTextArea();
+		addressTF.setBackground(SystemColor.control);
+		addressTF.setDisabledTextColor(SystemColor.control);
+		addressTF.setBorder(BorderFactory.createTitledBorder(""));
+		addressTF.setBounds(317, 95, 243, 58);
+		panel_1.add(addressTF);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(590, 363, 220, 226);
+		add(panel_2);
+		panel_2.setLayout(null);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(10, 465, 570, 124);
+		add(panel_3);
+		panel_3.setLayout(null);
+		
+		infoTextArea = new JTextArea();
+		
+		infoTextArea.setEditable(false);
+		infoTextArea.setBackground(SystemColor.inactiveCaptionBorder);
+		infoTextArea.setBorder(BorderFactory.createTitledBorder("System information"));
+		infoTextArea.setBounds(10, 11, 550, 46);
+		panel_3.add(infoTextArea);
+		infoTextArea.setColumns(10);
+		
+		saveItemButton = new JButton("Save");
+		saveItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		saveItemButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				if (getNameTF().isEmpty() || getAddressTF().isEmpty()
 						|| getEmailTF().isEmpty() || getTelTF().isEmpty()) {
 
@@ -325,44 +251,47 @@ public class CustomerPanel extends JPanel {
 
 				}
 
+			
 			}
-			if (e.getActionCommand().equals("Update")) {
-				if (getAddressTF().isEmpty() || getEmailTF().isEmpty()
-						|| getTelTF().isEmpty()) {
-					JOptionPane.showMessageDialog(null,
-							"Please make sure all fields are filled in");
-				}
-
-				else if (getEmailTF().contains("@")
-						&& getEmailTF().contains(".")) {
-
-					// inform RetailViewListeners of the event, pass the
-					// information.
-					for (RetailViewListener r : listeners) {
-						r.clickUpdateCustomer(Integer.parseInt(getIDTF()),
-								getNameTF(), getAddressTF(), getEmailTF(),
-								getTelTF());
-					}
-
-					// add to customer array/database when functionality
-					// available
-					System.out.println("Customer updated");
-					setToViewMode();
-
-				} else {
-					JOptionPane.showMessageDialog(null,
-							"Please provide a valid email address");
-				}
-
-			}
-			// when cancel button pressed
-			if (e.getActionCommand().equals("Cancel")) {
+		});
+		saveItemButton.setBounds(354, 68, 98, 34);
+		panel_3.add(saveItemButton);
+		
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.setFont(new Font("Arial", Font.BOLD, 12));
+		cancelBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				setToViewMode();
-
 			}
-		}
-	}
+		});
+		cancelBtn.setBounds(462, 68, 98, 34);
+		panel_3.add(cancelBtn);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(null);
+		scrollPane.setViewportBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer list", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		scrollPane.setBounds(590, 85, 220, 267);
+		add(scrollPane);
+		
+		customerList = new JList();
+		customerList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		customerList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Customer c = (Customer)customerList.getSelectedValue();
 
+				nameTF.setText(c.getName());
+				addressTF.setText(c.getAddress());
+				eMailTF.setText(c.getEmail());
+				idTF.setText("" + c.getID());
+				telTF.setText(c.getTelephoneNumber());
+			}
+		});
+		customerList.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setViewportView(customerList);
+
+		setToViewMode();
+	}
 	// **********getters and setters***************
 
 	public String getNameTF() {
@@ -393,7 +322,7 @@ public class CustomerPanel extends JPanel {
 		addressTF.setText(newAddress);
 	}
 
-	public void setEmailTF(String newEmail) {
+	public void seteMailTF(String newEmail) {
 		eMailTF.setText(newEmail);
 	}
 
@@ -434,20 +363,18 @@ public class CustomerPanel extends JPanel {
 	public void setToViewMode() {
 
 		clearTextFields();
+		addressTF.setBackground(SystemColor.control);
+
 		customerList.setEnabled(true);
 
 		nameTF.setEditable(false);
 		idTF.setEditable(false);
 		eMailTF.setEditable(false);
-		addressTF.setEditable(false);
 		telTF.setEditable(false);
 
 		newCustomerButton.setEnabled(true);
 		removeItemButton.setEnabled(true);
 		editItemButton.setEnabled(true);
-		saveBtn.setVisible(false);
-		saveBtn.setText("Save");
-		cancelBtn.setVisible(false);
 		
 		
 		//getcustomerNameArrayList();
@@ -467,6 +394,7 @@ public class CustomerPanel extends JPanel {
 
 		// disable selection list
 		customerList.setEnabled(false);
+		addressTF.setBackground(Color.white);
 
 		// set customer details in corresponding textfields
 		nameTF.setEditable(false);
@@ -478,9 +406,8 @@ public class CustomerPanel extends JPanel {
 		// disable/enable appropriate buttons
 		removeItemButton.setEnabled(false);
 		newCustomerButton.setEnabled(false);
-		saveBtn.setText("Update");
-		saveBtn.setVisible(true);
-		cancelBtn.setVisible(true);
+		//saveItemButton.setVisible(true);
+		//cancelBtn.setVisible(true);
 
 	}
 
@@ -488,6 +415,7 @@ public class CustomerPanel extends JPanel {
 	public void newCustomerMode() {
 		//customerNameArrayList.clear();
 		customerList.setEnabled(false);
+		addressTF.setBackground(SystemColor.white);
 
 		nameTF.setEditable(true);
 		idTF.setEditable(false);
@@ -498,7 +426,7 @@ public class CustomerPanel extends JPanel {
 
 		editItemButton.setEnabled(false);
 		removeItemButton.setEnabled(false);
-		saveBtn.setVisible(true);
+		saveItemButton.setVisible(false);
 		cancelBtn.setVisible(true);
 
 		clearTextFields();
@@ -526,9 +454,10 @@ public class CustomerPanel extends JPanel {
 		String empty = "";
 		setNameTF(empty);
 		setAddressTF(empty);
-		setEmailTF(empty);
+		seteMailTF(empty);
 		setIDTF(empty);
 		telTF.setText(empty);
 	}
+
 
 }
