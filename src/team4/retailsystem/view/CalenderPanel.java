@@ -119,7 +119,7 @@ public class CalenderPanel extends JPanel implements ActionListener {
 
         else {
             date.set(year, month, Integer.parseInt(arg0.getActionCommand()));
-            displayDate.setText("Delivery on: "+new SimpleDateFormat("dd/MM/yyyy").format(date.getTime()));
+            displayDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(date.getTime()));
         }
     }
 

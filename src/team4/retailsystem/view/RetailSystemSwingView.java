@@ -77,6 +77,7 @@ implements RetailSystemView
 	private ProductPanel productPanel;
 	private SupplierPanel supplierPanel;
 	private UserPanel userPanel;
+	private OrderedPanel orderedPanel;
 	
 	public RetailSystemSwingView() {
 		
@@ -323,8 +324,7 @@ implements RetailSystemView
 
 	@Override
 	public void updateOrders(ArrayList<Order> orders) {
-		//orderPanel.updateOrderList(orders);
-		
+		orderPanel.updateOrderList(orders);
 	}
 
 }

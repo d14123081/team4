@@ -1,7 +1,7 @@
 package team4.retailsystem.model;
 
 /**
- * A User class used for login, authentication and access right control.
+ * A User class used for login, authentication and access rights control.
  * <p>
  * Communicates with the database to authenticate the user.
  * 
@@ -21,13 +21,9 @@ public class User {
 
 	/**
 	 * Creates a new user given the provided access rights level.
-	 * <p>
-	 * Assumption - User objects will be accessed/created through the Database
-	 * method authorizeUser(String, String). Hence, for security, "protected"
-	 * access to the constructor should suffice.
 	 * 
 	 * @param authorizationLevel
-	 *            the access level of the user as an integer.
+	 *            the access level of the user as an integer
 	 */
 	public User(int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);
@@ -36,23 +32,14 @@ public class User {
 		setPasswordDigest(passwordDigest);
 		setSalt(salt);
 	}
-	
-	public User()
-	{
-		setAuthorizationLevel(1);
-		setId(++idCounter);
-		setUsername("operator"+idCounter);
-		setPasswordDigest(null);
-		setSalt(null);
-	}
 
 	/**
 	 * Used by the database to re-create a user object form existing user data.
 	 * 
 	 * @param id
-	 *            the unique int id of the user.
+	 *            unique int ID of the user
 	 * @param authorizationLevel
-	 *            the access level of the user as an integer.
+	 *            the access level of the user as an integer
 	 */
 	public User(int id, int authorizationLevel, String username, String passwordDigest, String salt) {
 		setAuthorizationLevel(authorizationLevel);

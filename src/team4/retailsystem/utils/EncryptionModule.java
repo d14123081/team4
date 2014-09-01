@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /**
- * Inner class that uses MD5 to generate password digests.
+ * A class that uses MD5 to generate password digests.
  * 
  * @author Szymon
  */
@@ -19,7 +19,7 @@ public class EncryptionModule {
 	/**
 	 * Returns a random 8-byte salt as a String.
 	 * 
-	 * @return Random 8-byte string.
+	 * @return random 8-byte string
 	 */
 	public String getRandomSalt() {
 		SecureRandom random = new SecureRandom();
@@ -32,10 +32,10 @@ public class EncryptionModule {
 	 * Returns the password digest, created using the given salt.
 	 * 
 	 * @param password
-	 *            The password to encrypt.
+	 *            the password to digest
 	 * @param salt
-	 *            The salt used to protect against dictionary attacks.
-	 * @return Password digest as a String.
+	 *            the salt used to protect against dictionary attacks
+	 * @return password digest as a String
 	 */
 	public String encrypt(String password, String salt) {
 		md.reset();

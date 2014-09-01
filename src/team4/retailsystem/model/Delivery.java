@@ -10,11 +10,11 @@ public class Delivery {
 	private int orderID;
 	private Supplier supplier;
 
-	public Delivery(Supplier supplier, int orderID) {
+	public Delivery(Supplier supplier, int orderID, Date date) {
 		this.deliveryID = ++numberOfDeliveries;
 		this.supplier = supplier;
 		this.orderID = orderID;
-		deliveryDate = new Date();
+		deliveryDate = date;
 	}
 
 	public Delivery(Supplier supplier, int orderID, Date date, int id) {
