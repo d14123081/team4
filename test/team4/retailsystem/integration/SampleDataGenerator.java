@@ -291,7 +291,7 @@ public class SampleDataGenerator {
 	}
 
 	public static void main(String[] args) {
-		//generateDatabase();
-		generateRandomDatabase();
+		generateDatabase();
+		//generateRandomDatabase();
 	}
 }
