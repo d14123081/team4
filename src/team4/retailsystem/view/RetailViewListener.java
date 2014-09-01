@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import team4.retailsystem.model.Customer;
+import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Product;
@@ -39,6 +40,9 @@ public interface RetailViewListener {
 	public void clickUpdateOrder(double cost, ArrayList<LineItem> lineItems, Supplier supplier, int deliveryId, Date date);
 	public void clickDeleteOrder(int orderId);
 	
+	//ordered panel events
+	public void clickAddDelivery(Supplier supplier, int orderID, Date date);
+	public void clickUpdateDelivery(Delivery delivery);
 	//invoice panel events
 	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer, Date d);
 	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems, Customer customer, Date d); 

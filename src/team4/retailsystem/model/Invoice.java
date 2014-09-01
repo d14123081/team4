@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * This class represents an invoice for a customer.
+ * This class represents an invoice object.
  * 
  * <p>
  * The invoice is dated and contains a list of line items that the customer
- * ordered. The cost is calculated based on the items and their amount. The
- * invoice is dated upon creation.
+ * ordered. The invoice is dated upon creation.
  * 
  * @author Szymon Zielinski
  */
@@ -22,7 +21,7 @@ public class Invoice {
 	private Customer customer;
 
 	/**
-	 * Creates a brand new invoice with current date.
+	 * Creates a new invoice using current date/time.
 	 * 
 	 * @param lineItems
 	 *            the items that make up the invoice.
@@ -35,6 +34,7 @@ public class Invoice {
 		setId(++idCounter);
 		setDate(new Date());
 	}
+	
 	public Invoice(ArrayList<LineItem> lineItems, Customer customer, Date date) {
 		setLineItems(lineItems);
 		setCustomer(customer);
@@ -85,10 +85,6 @@ public class Invoice {
 		this.customer = customer;
 	}
 
-	private int getId() {
-		return id;
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -102,8 +98,8 @@ public class Invoice {
 	}
 
 	/**
-	 * Calculates the cost of the lineItems. sum of (product * amount) for every
-	 * item.
+	 * Calculates the cost of the lineItems - Sum of (product * amount) for
+	 * every lineItem.
 	 * 
 	 * @param lineItems
 	 *            the items that make up the invoice

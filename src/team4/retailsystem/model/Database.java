@@ -10,6 +10,7 @@ import team4.retailsystem.utils.EncryptionModule;
 
 /**
  * A permanent SQLite database module with interfaces for CRUD.
+ * 
  * @author Szymon
  * @author Alan
  */
@@ -81,7 +82,7 @@ public class Database {
 
 	private static final String CREATE_USERS_TABLE = "CREATE TABLE USERS "
 			+ "(ID INTEGER PRIMARY KEY NOT NULL, "
-			+ "USERNAME TEXT, " 
+			+ "USERNAME TEXT NOT NULL UNIQUE, " 
 			+ "AUTHLEVEL INTEGER, " 
 			+ "PASSWDIGEST TEXT, " 
 			+ "SALT TEXT)";
@@ -1312,12 +1313,15 @@ public class Database {
 			
 			Iterator<LineItem> oldItemItr = getInvoiceItems(invoice.getID()).iterator();
 			LineItem oldItem = null;
-			if(oldItemItr.hasNext()){
-				oldItem = oldItemItr.next();				
-			}
 			for(LineItem newItem : invoice.getLineItems()){
 				boolean updated = false;
-				while(!updated){
+				while(!updated){					
+					if(oldItemItr.hasNext()){
+						oldItem = oldItemItr.next();				
+					} else {
+						oldItem = null;
+					}
+					
 					if(oldItem == null){
 						addInvoiceItem(newItem, invoice.getID());
 						updated = true;
@@ -1327,14 +1331,13 @@ public class Database {
 					}else{
 						deleteInvoiceItem(oldItem);
 					}
-					
-					if(oldItemItr.hasNext()){
-						oldItem = oldItemItr.next();				
-					} else {
-						oldItem = null;
-					}
 				}
 			}
+			while(oldItemItr.hasNext()){
+				oldItem = oldItemItr.next();
+				deleteInvoiceItem(oldItem);
+			}
+			
 			return true;
 		} catch (SQLException e) {
 			System.err.println("Database access error: " + e.getMessage());
@@ -1368,12 +1371,15 @@ public class Database {
 			
 			Iterator<LineItem> oldItemItr = getOrderItems(order.getID()).iterator();
 			LineItem oldItem = null;
-			if(oldItemItr.hasNext()){
-				oldItem = oldItemItr.next();				
-			}
 			for(LineItem newItem : order.getLineItems()){
 				boolean updated = false;
 				while(!updated){
+					if(oldItemItr.hasNext()){
+						oldItem = oldItemItr.next();				
+					} else {
+						oldItem = null;
+					}
+					
 					if(oldItem == null){
 						addOrderItem(newItem, order.getID());
 						updated = true;
@@ -1383,13 +1389,11 @@ public class Database {
 					}else{
 						deleteOrderItem(oldItem);
 					}
-					
-					if(oldItemItr.hasNext()){
-						oldItem = oldItemItr.next();				
-					} else {
-						oldItem = null;
-					}
 				}
+			}
+			while(oldItemItr.hasNext()){
+				oldItem = oldItemItr.next();
+				deleteOrderItem(oldItem);
 			}
 			return true;
 		} catch (SQLException e) {

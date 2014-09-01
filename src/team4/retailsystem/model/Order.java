@@ -1,5 +1,6 @@
 package team4.retailsystem.model;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,7 @@ public class Order {
     private int deliveryID;
     private int ID;
     private ArrayList<LineItem> items;
-    private SimpleDateFormat dateformat = new SimpleDateFormat("dd/M/yyyy");
+    private SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
 
     public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items) 
     {
@@ -30,6 +31,26 @@ public class Order {
         this.items = items;
     }
 
+    public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items, String date) 
+    {
+        // TODO: cost is a derived value, shouldn't be passed in with constructor
+        //this.cost = cost;
+        
+        //TODO: Supplier makes no sense...An order can have products from multiple suppliers?
+        //come back to it later.
+        this.supplier = supplier;
+        
+        ID = ++orderNumber;
+        try {
+            this.date = dateformat.parse(date);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        this.deliveryID = deliveryID;
+        this.items = items;
+    }
+    
     public Order(double cost, Supplier supplier, int deliveryID, ArrayList<LineItem> items, int id, Date date) 
     {
     	//this.cost = cost;
