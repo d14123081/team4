@@ -21,7 +21,7 @@ public class EncryptionModuleTest {
 			fail("EncryptionModule failed to initialize." + e.getMessage());
 		}
 		assertNotNull(em.getRandomSalt());
-		assertNotEquals(em.getRandomSalt(), em.getRandomSalt());
+		assertNotSame(em.getRandomSalt(), em.getRandomSalt());
 	}
 
 	@Test
@@ -40,12 +40,12 @@ public class EncryptionModuleTest {
 		String digest1 = em.encrypt(password1, salt1);
 		String digest2 = em.encrypt(password2, salt2);
 
-		assertNotEquals(digest1, digest2);
-		assertNotEquals(em.encrypt(password1, salt2), digest1);
-		assertNotEquals(em.encrypt(password1, salt2), digest2);
-		assertNotEquals(em.encrypt(password2, salt1), digest1);
-		assertNotEquals(em.encrypt(password2, salt1), digest2);
-		assertNotEquals(password1, digest1);
-		assertNotEquals(password2, digest2);
+		assertNotSame(digest1, digest2);
+		assertNotSame(em.encrypt(password1, salt2), digest1);
+		assertNotSame(em.encrypt(password1, salt2), digest2);
+		assertNotSame(em.encrypt(password2, salt1), digest1);
+		assertNotSame(em.encrypt(password2, salt1), digest2);
+		assertNotSame(password1, digest1);
+		assertNotSame(password2, digest2);
 	}
 }
