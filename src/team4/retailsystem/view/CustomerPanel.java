@@ -34,7 +34,6 @@ import team4.retailsystem.model.User;
 
 import java.awt.ComponentOrientation;
 
-
 public class CustomerPanel extends JPanel {
 	private JTextField nameTF;
 	private JTextField eMailTF;
@@ -42,179 +41,116 @@ public class CustomerPanel extends JPanel {
 	private JTextField telTF;
 	private JTextArea infoTextArea;
 	private JTextArea addressTF;
+	private JLabel customerPanelLabel;
+	private JPanel customerDetails;
+	private JLabel customerNameLabel;
+	private JLabel customerEmailLabel;
+	private JLabel customerContactLabel;
+	private JLabel customerIdLabel;
+	private JLabel customerAddressLabel;
 	private JButton editItemButton;
 	private JButton removeItemButton;
 	private JButton newCustomerButton;
 	private JButton saveItemButton;
 	private JButton cancelBtn;
 	private JList<Object> customerList;
-
-
-
+	private JPanel panel;
+	private JScrollPane scrollPane;
+	private JPanel panel_3;
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-
+	private Customer c;
 	
-
 	public CustomerPanel() {
-		setLayout(null);
+
+		initialiseComponents();
+		addListeners();
+		constructView();
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 11, 800, 62);
-		add(panel);
-		panel.setLayout(null);
 		
-		// new customer button
-		 newCustomerButton = new JButton("New Customer");
-		 newCustomerButton.setFont(new Font("Arial", Font.BOLD, 12));
-		 newCustomerButton.addActionListener(new ActionListener() {
+		//give problems when placed in addListeners().
+		customerList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				c = (Customer) customerList.getSelectedValue();
+				infoTextArea.setText("");
+				nameTF.setText(c.getName());
+				addressTF.setText(c.getAddress());
+				eMailTF.setText(c.getEmail());
+				idTF.setText("" + c.getID());
+				telTF.setText(c.getTelephoneNumber());
+			}
+		});
+		
+	}
+
+	public void initialiseComponents() {
+
+		panel = new JPanel();
+		customerPanelLabel = new JLabel("Customer Panel");
+		customerDetails = new JPanel();
+		customerNameLabel = new JLabel("Customer name:");
+		customerEmailLabel = new JLabel("Customer email:");
+		customerContactLabel = new JLabel("Customer contact:");
+		customerIdLabel = new JLabel("Customer id:");
+		customerAddressLabel = new JLabel("Customer address:");
+
+		nameTF = new JTextField();
+		eMailTF = new JTextField();
+		idTF = new JTextField();
+		telTF = new JTextField();
+		addressTF = new JTextArea();
+		saveItemButton = new JButton("Save");
+		newCustomerButton = new JButton("New Customer");
+		editItemButton = new JButton("Edit Customer");
+		removeItemButton = new JButton("Delete Customer");
+		infoTextArea = new JTextArea();
+		cancelBtn = new JButton("Cancel");
+		scrollPane = new JScrollPane();
+		panel_3 = new JPanel();
+		
+	}
+
+	public void addListeners() {
+
+		newCustomerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				newCustomerMode();
 			}
 		});
-		 newCustomerButton.setBounds(10, 11, 125, 34);
-		panel.add(newCustomerButton);
-		
-		// edit customer button
-		editItemButton = new JButton("Edit Customer");
+
 		editItemButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(getNameTF().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Please select a customer to edit");
-						}
-				else{
+				if (getNameTF().isEmpty()) {
+					JOptionPane.showMessageDialog(null,
+							"Please select a customer to edit");
+				} 
+				else {
 					editCustomerMode();
 				}
 			}
 		});
-		editItemButton.setFont(new Font("Arial", Font.BOLD, 12));
-		editItemButton.setBounds(146, 11, 125, 34);
-		panel.add(editItemButton);
-		
-		
-		
-		
-		//remove button
-		 removeItemButton = new JButton("Delete Customer");
-		 removeItemButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(getNameTF().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Please select a customer to remove");
-						}
-				else if (JOptionPane.showConfirmDialog(null,"Are you sure you want to delete this customer") == 0 ) {
-					infoTextArea.setText(getNameTF() + " has been removed from the database.");
 
-						for (RetailViewListener r : listeners) {
-							r.clickDeleteCustomer(Integer.parseInt(getIDTF()));
-							
-						}
-						setToViewMode();
+		removeItemButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (getNameTF().isEmpty()) {
+					JOptionPane.showMessageDialog(null,
+							"Please select a customer to remove");
+				} else if (JOptionPane.showConfirmDialog(null,
+						"Are you sure you want to delete this customer") == 0) {
+					infoTextArea.setText(getNameTF()
+							+ " has been removed from the database.");
+
+					for (RetailViewListener r : listeners) {
+						r.clickDeleteCustomer(Integer.parseInt(getIDTF()));
+
+					}
+					setToViewMode();
 
 				}
 			}
-			
+
 		});
-		removeItemButton.setFont(new Font("Arial", Font.BOLD, 12));
-		removeItemButton.setBounds(281, 11, 133, 34);
-		panel.add(removeItemButton);
-		
-		
-		
-		JLabel lblNewLabel_2 = new JLabel("Customer Panel");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel_2.setBounds(620, 13, 170, 29);
-		panel.add(lblNewLabel_2);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer details", TitledBorder.RIGHT, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 84, 570, 372);
-		add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Customer name:");
-		lblNewLabel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel.setBounds(33, 41, 148, 14);
-		panel_1.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Customer address:");
-		lblNewLabel_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(33, 99, 148, 14);
-		panel_1.add(lblNewLabel_1);
-		
-		nameTF = new JTextField();
-		nameTF.setBorder(BorderFactory.createTitledBorder(""));
-		nameTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		nameTF.setColumns(10);
-		nameTF.setBounds(237, 35, 323, 27);
-		panel_1.add(nameTF);
-		
-		eMailTF = new JTextField();
-		eMailTF.setBorder(BorderFactory.createTitledBorder(""));
-		eMailTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		eMailTF.setColumns(10);
-		eMailTF.setBounds(237, 180, 323, 27);
-		panel_1.add(eMailTF);
-		
-		idTF = new JTextField();
-		idTF.setEditable(false);
-		idTF.setBorder(BorderFactory.createTitledBorder(""));
-		idTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		idTF.setColumns(10);
-		idTF.setBounds(237, 236, 323, 27);
-		panel_1.add(idTF);
-		
-		telTF = new JTextField();
-		telTF.setBorder(BorderFactory.createTitledBorder(""));
-		telTF.setFont(new Font("Arial", Font.PLAIN, 12));
-		telTF.setColumns(10);
-		telTF.setBounds(237, 295, 323, 27);
-		panel_1.add(telTF);
-		
-		JLabel label = new JLabel("Customer email:");
-		label.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		label.setBounds(33, 186, 148, 14);
-		panel_1.add(label);
-		
-		JLabel label_1 = new JLabel("Customer id:");
-		label_1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		label_1.setBounds(33, 242, 148, 14);
-		panel_1.add(label_1);
-		
-		JLabel label_2 = new JLabel("Customer contact:");
-		label_2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		label_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		label_2.setBounds(33, 301, 148, 14);
-		panel_1.add(label_2);
-		
-		addressTF = new JTextArea();
-		addressTF.setBackground(SystemColor.control);
-		addressTF.setDisabledTextColor(SystemColor.control);
-		addressTF.setBorder(BorderFactory.createTitledBorder(""));
-		addressTF.setBounds(237, 95, 323, 58);
-		panel_1.add(addressTF);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_3.setBounds(10, 465, 570, 124);
-		add(panel_3);
-		panel_3.setLayout(null);
-		
-		infoTextArea = new JTextArea();
-		
-		infoTextArea.setEditable(false);
-		infoTextArea.setBackground(SystemColor.inactiveCaptionBorder);
-		infoTextArea.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Event window", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		infoTextArea.setBounds(10, 11, 550, 46);
-		panel_3.add(infoTextArea);
-		infoTextArea.setColumns(10);
-		
-		saveItemButton = new JButton("Save");
-		saveItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+
 		saveItemButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (getNameTF().isEmpty() || getAddressTF().isEmpty()
@@ -227,9 +163,8 @@ public class CustomerPanel extends JPanel {
 				// checks for invalid Email construction
 				else if (getEmailTF().contains("@")
 						&& getEmailTF().contains(".")) {
-					if(getIDTF().isEmpty()){
+					if (getIDTF().isEmpty()) {
 
-						
 						// inform RetailViewListeners of the event, pass the
 						// information.
 						for (RetailViewListener r : listeners) {
@@ -240,67 +175,290 @@ public class CustomerPanel extends JPanel {
 
 						// add to customer array/database when functionality
 						// available
-						infoTextArea.setText(getNameTF() +"  is added to the database.");
-						//getcustomerNameArrayList();
+						infoTextArea.setText(getNameTF()
+								+ "  is added to the database.");
+						// getcustomerNameArrayList();
 						clearTextFields();
 						setToViewMode();
 
-					} 
-								else{
-									for (RetailViewListener r : listeners) {
-										r.clickUpdateCustomer(Integer.parseInt(getIDTF()), getNameTF(), getAddressTF(),
-												getEmailTF(), getTelTF());
+					} else {
+						for (RetailViewListener r : listeners) {
+							r.clickUpdateCustomer(Integer.parseInt(getIDTF()),
+									getNameTF(), getAddressTF(), getEmailTF(),
+									getTelTF());
 
-									}
+						}
 
-									// add to customer array/database when functionality
-									// available
-									infoTextArea.setText(getNameTF() + "'s details have been updated.");
-									//getcustomerNameArrayList();
-									clearTextFields();
-									setToViewMode();
+						// add to customer array/database when functionality
+						// available
+						infoTextArea.setText(getNameTF()
+								+ "'s details have been updated.");
+						// getcustomerNameArrayList();
+						clearTextFields();
+						setToViewMode();
 
-								}}
-								}
+					}
+				}
+			}
 		});
-		saveItemButton.setBounds(354, 68, 98, 34);
-		panel_3.add(saveItemButton);
-		
-		cancelBtn = new JButton("Cancel");
-		cancelBtn.setFont(new Font("Arial", Font.BOLD, 12));
+
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setToViewMode();
 			}
 		});
+	}
+
+	public void constructView() {
+
+		setLayout(null);
+		panel.setBounds(10, 11, 800, 62);
+		add(panel);
+		panel.setLayout(null);
+		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+
+		newCustomerButton.setFont(new Font("Arial", Font.BOLD, 12));
+		newCustomerButton.setBounds(10, 11, 125, 34);
+		panel.add(newCustomerButton);
+
+		editItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		editItemButton.setBounds(146, 11, 125, 34);
+		panel.add(editItemButton);
+
+		removeItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		removeItemButton.setBounds(281, 11, 133, 34);
+		panel.add(removeItemButton);
+
+		customerPanelLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		customerPanelLabel.setBounds(620, 13, 170, 29);
+		panel.add(customerPanelLabel);
+
+		customerDetails
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerDetails.setBorder(new TitledBorder(UIManager
+				.getBorder("TitledBorder.border"), "Customer details",
+				TitledBorder.RIGHT, TitledBorder.TOP, null, null));
+		customerDetails.setBounds(10, 84, 570, 372);
+		add(customerDetails);
+		customerDetails.setLayout(null);
+
+		customerNameLabel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerNameLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		customerNameLabel.setBounds(33, 41, 148, 14);
+		customerDetails.add(customerNameLabel);
+
+		customerAddressLabel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerAddressLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		customerAddressLabel.setBounds(33, 99, 148, 14);
+		customerDetails.add(customerAddressLabel);
+
+		nameTF.setBorder(BorderFactory.createTitledBorder(""));
+		nameTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		nameTF.setColumns(10);
+		nameTF.setBounds(237, 35, 323, 27);
+		customerDetails.add(nameTF);
+
+		eMailTF.setBorder(BorderFactory.createTitledBorder(""));
+		eMailTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		eMailTF.setColumns(10);
+		eMailTF.setBounds(237, 180, 323, 27);
+		customerDetails.add(eMailTF);
+
+		idTF.setEditable(false);
+		idTF.setBorder(BorderFactory.createTitledBorder(""));
+		idTF.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		idTF.setColumns(10);
+		idTF.setBounds(237, 236, 323, 27);
+		customerDetails.add(idTF);
+
+		telTF.setBorder(BorderFactory.createTitledBorder(""));
+		telTF.setFont(new Font("Arial", Font.PLAIN, 12));
+		telTF.setColumns(10);
+		telTF.setBounds(237, 295, 323, 27);
+		customerDetails.add(telTF);
+
+		customerEmailLabel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerEmailLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		customerEmailLabel.setBounds(33, 186, 148, 14);
+		customerDetails.add(customerEmailLabel);
+
+		customerIdLabel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerIdLabel.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		customerIdLabel.setBounds(33, 242, 148, 14);
+		customerDetails.add(customerIdLabel);
+
+		customerContactLabel
+				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		customerContactLabel
+				.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		customerContactLabel.setBounds(33, 301, 148, 14);
+		customerDetails.add(customerContactLabel);
+
+		addressTF.setBackground(SystemColor.control);
+		addressTF.setDisabledTextColor(SystemColor.control);
+		addressTF.setBorder(BorderFactory.createTitledBorder(""));
+		addressTF.setBounds(237, 95, 323, 58);
+		customerDetails.add(addressTF);
+
+		panel_3.setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+		panel_3.setBounds(10, 465, 570, 124);
+		add(panel_3);
+		panel_3.setLayout(null);
+
+		infoTextArea.setEditable(false);
+		infoTextArea.setBackground(SystemColor.inactiveCaptionBorder);
+		infoTextArea.setBorder(new TitledBorder(UIManager
+				.getBorder("TitledBorder.border"), "Event window",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		infoTextArea.setBounds(10, 11, 550, 46);
+		panel_3.add(infoTextArea);
+		infoTextArea.setColumns(10);
+
+		saveItemButton.setFont(new Font("Arial", Font.BOLD, 12));
+		saveItemButton.setBounds(354, 68, 98, 34);
+		panel_3.add(saveItemButton);
+		cancelBtn.setFont(new Font("Arial", Font.BOLD, 12));
 		cancelBtn.setBounds(462, 68, 98, 34);
 		panel_3.add(cancelBtn);
-		
-		JScrollPane scrollPane = new JScrollPane();
+
 		scrollPane.setBorder(null);
-		scrollPane.setViewportBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Customer list", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		scrollPane.setViewportBorder(new TitledBorder(UIManager
+				.getBorder("TitledBorder.border"), "Customer list",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		scrollPane.setBounds(590, 85, 220, 504);
 		add(scrollPane);
-		
-		customerList = new JList();
-		customerList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		customerList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				Customer c = (Customer)customerList.getSelectedValue();
-				infoTextArea.setText("");
-				nameTF.setText(c.getName());
-				addressTF.setText(c.getAddress());
-				eMailTF.setText(c.getEmail());
-				idTF.setText("" + c.getID());
-				telTF.setText(c.getTelephoneNumber());
-			}
-		});
+
+		customerList = new JList<Object>();
 		customerList.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrollPane.setViewportView(customerList);
 
 		setToViewMode();
 	}
+
+	public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
+		gbl.setConstraints(panel, gbc);
+		add(panel);
+	}
+
+	public void addScrollPane(JScrollPane panel, GridBagLayout gbl,
+			GridBagConstraints gbc) {
+		gbl.setConstraints(panel, gbc);
+		add(panel);
+	}
+
+	public void addPanelName(String panelName, JScrollPane panel) {
+		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		panel.setBorder(BorderFactory.createTitledBorder(panelName));
+	}
+
+	public void updateCustomerList(ArrayList<Customer> customers) {
+		customerList.setListData(customers.toArray());
+	}
+
+	public void addListener(RetailViewListener r) {
+		listeners.add(r);
+	}
+
+	// default panel view
+	public void setToViewMode() {
+
+		clearTextFields();
+
+		addressTF.setBackground(SystemColor.control);
+		customerList.setEnabled(true);
+
+		nameTF.setEditable(false);
+		addressTF.setEditable(false);
+		idTF.setEditable(false);
+		eMailTF.setEditable(false);
+		telTF.setEditable(false);
+
+		newCustomerButton.setEnabled(true);
+		removeItemButton.setEnabled(true);
+		editItemButton.setEnabled(true);
+		saveItemButton.setVisible(false);
+		cancelBtn.setVisible(false);
+	}
+
+	public void clearTextFields() {
+		idTF.setText("");
+		eMailTF.setText("");
+		nameTF.setText("");
+		addressTF.setText("");
+		telTF.setText("");
+
+	}
+
+	// panel view edit customer
+	public void editCustomerMode() {
+
+		// disable selection list
+		customerList.setEnabled(false);
+		addressTF.setBackground(Color.white);
+
+		nameTF.setEditable(false);
+		idTF.setEditable(false);
+		eMailTF.setEditable(true);
+		addressTF.setEditable(true);
+		telTF.setEditable(true);
+
+		// disable/enable appropriate buttons
+		removeItemButton.setEnabled(false);
+		newCustomerButton.setEnabled(false);
+		saveItemButton.setVisible(true);
+		cancelBtn.setVisible(true);
+	}
+
+	// panel view new customer
+	public void newCustomerMode() {
+
+		customerList.setEnabled(false);
+		addressTF.setBackground(SystemColor.white);
+
+		nameTF.setEditable(true);
+		idTF.setEditable(false);
+		eMailTF.setEditable(true);
+		nameTF.setEditable(true);
+		addressTF.setEditable(true);
+		telTF.setEditable(true);
+
+		editItemButton.setEnabled(false);
+		removeItemButton.setEnabled(false);
+		saveItemButton.setVisible(true);
+		cancelBtn.setVisible(true);
+
+		clearTextFields();
+	}
+
+	public void updateUser(User user) {
+		//
+		if (user.getAuthorizationLevel() == 1) {
+			newCustomerButton.setVisible(false);
+			removeItemButton.setVisible(false);
+			editItemButton.setVisible(false);
+		} else {
+			newCustomerButton.setVisible(true);
+			removeItemButton.setVisible(true);
+			editItemButton.setVisible(true);
+		}
+	}
+
+	// A method that clears temp fields on logout.
+	public void logout() {
+		String empty = "";
+		setNameTF(empty);
+		setAddressTF(empty);
+		seteMailTF(empty);
+		setIDTF(empty);
+		telTF.setText(empty);
+	}
+
 	// **********getters and setters***************
 
 	public String getNameTF() {
@@ -339,135 +497,5 @@ public class CustomerPanel extends JPanel {
 	public void setIDTF(String newID) {
 		idTF.setText(newID);
 	}
-
-	// *************************************
-
-	public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
-		gbl.setConstraints(panel, gbc);
-		add(panel);
-	}
-
-	public void addScrollPane(JScrollPane panel, GridBagLayout gbl,
-			GridBagConstraints gbc) {
-		gbl.setConstraints(panel, gbc);
-		add(panel);
-	}
-
-	public void addPanelName(String panelName, JScrollPane panel) {
-		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		panel.setBorder(BorderFactory.createTitledBorder(panelName));
-	}
-
-	public void updateCustomerList(ArrayList<Customer> customers) {
-		//System.out.println("Customers size: "+customers.size());
-		customerList.setListData(customers.toArray());
-		
-	}
-
-	public void addListener(RetailViewListener r) {
-		listeners.add(r);
-	}
-
-	// default panel view
-	public void setToViewMode() {
-
-		clearTextFields();
-
-		addressTF.setBackground(SystemColor.control);
-		customerList.setEnabled(true);
-
-		nameTF.setEditable(false);
-		idTF.setEditable(false);
-		eMailTF.setEditable(false);
-		telTF.setEditable(false);
-
-		newCustomerButton.setEnabled(true);
-		removeItemButton.setEnabled(true);
-		editItemButton.setEnabled(true);
-		saveItemButton.setVisible(false);
-		cancelBtn.setVisible(false);
-		
-		//getcustomerNameArrayList();
-	}
-
-	public void clearTextFields() {
-		idTF.setText("");
-		eMailTF.setText("");
-		nameTF.setText("");
-		addressTF.setText("");
-		telTF.setText("");
-
-	}
-
-	// panel view edit customer
-	public void editCustomerMode() {
-
-		// disable selection list
-		customerList.setEnabled(false);
-		addressTF.setBackground(Color.white);
-
-		// set customer details in corresponding textfields
-		nameTF.setEditable(false);
-		idTF.setEditable(false);
-		eMailTF.setEditable(true);
-		addressTF.setEditable(true);
-		telTF.setEditable(true);
-
-		// disable/enable appropriate buttons
-		removeItemButton.setEnabled(false);
-		newCustomerButton.setEnabled(false);
-		saveItemButton.setVisible(true);
-		cancelBtn.setVisible(true);
-
-	}
-
-	// panel view new customer
-	public void newCustomerMode() {
-		//customerNameArrayList.clear();
-		customerList.setEnabled(false);
-		addressTF.setBackground(SystemColor.white);
-
-		nameTF.setEditable(true);
-		idTF.setEditable(false);
-		eMailTF.setEditable(true);
-		nameTF.setEditable(true);
-		addressTF.setEditable(true);
-		telTF.setEditable(true);
-
-		editItemButton.setEnabled(false);
-		removeItemButton.setEnabled(false);
-		saveItemButton.setVisible(true);
-		cancelBtn.setVisible(true);
-
-		clearTextFields();
-	}
-
-	public void updateUser(User user) {
-		//
-		if (user.getAuthorizationLevel() == 1) {
-			newCustomerButton.setVisible(false);
-			removeItemButton.setVisible(false);
-			editItemButton.setVisible(false);
-		} else {
-			newCustomerButton.setVisible(true);
-			removeItemButton.setVisible(true);
-			editItemButton.setVisible(true);
-		}
-	}
-
-	
-
-	/**
-	 * A method that clears temp fields on logout.
-	 */
-	public void logout() {
-		String empty = "";
-		setNameTF(empty);
-		setAddressTF(empty);
-		seteMailTF(empty);
-		setIDTF(empty);
-		telTF.setText(empty);
-	}
-
 
 }
