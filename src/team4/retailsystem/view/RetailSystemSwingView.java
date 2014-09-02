@@ -54,6 +54,7 @@ implements RetailSystemView
 	private final static String PRODUCT = "product";
 	private final static String SUPPLIER = "supplier";
 	private final static String USER = "user";
+	private final static String STOCK = "stock";
 	
 	//Buttons for switching between the panels
 	JButton customerButton;
@@ -62,6 +63,7 @@ implements RetailSystemView
 	JButton productButton;
 	JButton supplierButton;
 	JButton userButton;
+	JButton stockControlButton;
 	JButton logoutButton;
 	
 	private Container contentPane;//The main content container for the frame, holds everything else
@@ -77,7 +79,7 @@ implements RetailSystemView
 	private ProductPanel productPanel;
 	private SupplierPanel supplierPanel;
 	private UserPanel userPanel;
-	private OrderedPanel orderedPanel;
+	private StockControlPanel stockControlPanel;
 	
 	public RetailSystemSwingView() {
 		
@@ -102,6 +104,7 @@ implements RetailSystemView
 		productButton = new JButton("Products");
 		supplierButton = new JButton("Suppliers");
 		userButton = new JButton("Users");
+		stockControlButton = new JButton("Stock control");
 		logoutButton = new JButton("Logout");
 		
 		loginPanel = new LogInPanel();
@@ -111,6 +114,7 @@ implements RetailSystemView
 		productPanel = new ProductPanel();
 		supplierPanel = new SupplierPanel(Database.getInstance().getSuppliers());
 		userPanel = new UserPanel();
+		stockControlPanel = new StockControlPanel();
 	}
 	
 	private void constructView(){
@@ -129,6 +133,7 @@ implements RetailSystemView
 		buttonPanel.add(productButton);
 		buttonPanel.add(supplierButton);
 		buttonPanel.add(userButton);
+		buttonPanel.add(stockControlButton);
 		buttonPanel.add(logoutButton);
 		//buttonPanel.add(userPanel);
 		
@@ -140,6 +145,7 @@ implements RetailSystemView
 		contentPanel.add(productPanel, PRODUCT);
 		contentPanel.add(supplierPanel, SUPPLIER);
 		contentPanel.add(userPanel, USER);
+		contentPanel.add(stockControlPanel, STOCK);
 		
 		panelPane.add(buttonPanel);
 		panelPane.add(contentPanel);
@@ -197,6 +203,14 @@ implements RetailSystemView
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showUserEditingScreen();
+			}
+			
+		});
+		
+		stockControlButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showStockControlScreen();
 			}
 			
 		});
@@ -285,6 +299,11 @@ implements RetailSystemView
 		((CardLayout)(contentPanel.getLayout())).show(contentPanel, USER);
 	}
 
+	@Override
+	public void showStockControlScreen() {
+		((CardLayout)(contentPanel.getLayout())).show(contentPanel, STOCK);
+	}
+	
 	@Override
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
 		orderPanel.updateSupplierList(suppliers);
