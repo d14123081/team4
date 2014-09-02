@@ -66,21 +66,6 @@ public class CustomerPanel extends JPanel {
 		addListeners();
 		constructView();
 		
-		
-		//give problems when placed in addListeners().
-		customerList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				c = (Customer) customerList.getSelectedValue();
-				infoTextArea.setText("");
-				nameTF.setText(c.getName());
-				addressTF.setText(c.getAddress());
-				eMailTF.setText(c.getEmail());
-				idTF.setText("" + c.getID());
-				telTF.setText(c.getTelephoneNumber());
-			}
-		});
-		
 	}
 
 	public void initialiseComponents() {
@@ -93,6 +78,7 @@ public class CustomerPanel extends JPanel {
 		customerContactLabel = new JLabel("Customer contact:");
 		customerIdLabel = new JLabel("Customer id:");
 		customerAddressLabel = new JLabel("Customer address:");
+		customerList = new JList<Object>();
 
 		nameTF = new JTextField();
 		eMailTF = new JTextField();
@@ -205,6 +191,20 @@ public class CustomerPanel extends JPanel {
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setToViewMode();
+			}
+		});
+		
+		//give problems when placed in addListeners().
+		customerList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				c = (Customer) customerList.getSelectedValue();
+				infoTextArea.setText("");
+				nameTF.setText(c.getName());
+				addressTF.setText(c.getAddress());
+				eMailTF.setText(c.getEmail());
+				idTF.setText("" + c.getID());
+				telTF.setText(c.getTelephoneNumber());
 			}
 		});
 	}
