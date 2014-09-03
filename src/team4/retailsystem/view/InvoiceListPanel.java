@@ -29,64 +29,21 @@ public class InvoiceListPanel extends JFrame {
 	private JButton btnDeleteInvoice, btnEditInvoice;
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
-	private Database database;
 
-	public InvoiceListPanel(InvoicePanel p) {
+	public InvoiceListPanel(InvoicePanel p, ArrayList<Invoice> inv) {
 		this.invoicePanel = p;
 		initialiseComponents();
-		addListeners();
 		construct();
+		addListeners();
+		setTableData(inv);
 	}
 
 	public void initialiseComponents() {
-		database = Database.getInstance();
+		invoiceTable = new JTable();
 		contentPane = new JPanel();
 		scrollPane = new JScrollPane();
-		invoiceTable = new JTable();
 		btnDeleteInvoice = new JButton("Delete Invoice");
 		btnEditInvoice = new JButton("Edit Invoice");
-		tableModel = (DefaultTableModel) invoiceTable.getModel();
-	}
-
-	public void addListeners() {
-		btnEditInvoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				boolean editInv = false;
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) 
-				{
-					if (invoiceTable.isRowSelected(i)) 
-					{
-						int id = (int)invoiceTable.getValueAt(i, 0);
-						Invoice inv = (Invoice)database.getInvoice(id);
-						invoicePanel.updateTable(inv);
-					}
-				}
-				if (!editInv) 
-				{
-					showError("Select an invoice to edit");
-				}
-			}
-		});
-
-		btnDeleteInvoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean delInv = false;
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-					if (invoiceTable.isRowSelected(i)) {
-						invoiceTable.clearSelection();
-						for (RetailViewListener r : listeners) {
-							r.clickDeleteInvoice(i);
-						}
-						delInv = true;
-						break;
-					}
-				}
-				if (!delInv) {
-					showError("Select an invoice to delete");
-				}
-			}
-		});
 	}
 
 	public void construct() {
@@ -96,6 +53,30 @@ public class InvoiceListPanel extends JFrame {
 		contentPane.setLayout(null);
 		scrollPane.setBounds(5, 5, 493, 334);
 		contentPane.add(scrollPane);
+		btnDeleteInvoice.setBounds(397, 350, 101, 23);
+		contentPane.add(btnDeleteInvoice);
+		btnEditInvoice.setBounds(286, 350, 101, 23);
+		contentPane.add(btnEditInvoice);
+		constructTable();
+		tableModel = (DefaultTableModel) invoiceTable.getModel();
+	}
+
+	public void addListeners() {
+
+	}
+
+	public void addListener(RetailViewListener r) {
+		listeners.add(r);
+	}
+
+	public void setTableData(ArrayList<Invoice> invoices) {
+		for (Invoice i : invoices) {
+			tableModel.addRow(new Object[] { i.getID(), i.getCustomer(),
+					i.getDate() });
+		}
+	}
+
+	public void constructTable() {
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Invoice ID", "Customer", "Date" }) {
 			Class[] columnTypes = new Class[] { Integer.class, String.class,
@@ -111,27 +92,12 @@ public class InvoiceListPanel extends JFrame {
 				return columnEditables[column];
 			}
 		});
+		invoiceTable.getTableHeader().setReorderingAllowed(false);
+		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invoiceTable.getColumnModel().getColumn(0).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(1).setResizable(false);
 		invoiceTable.getColumnModel().getColumn(2).setResizable(false);
 		scrollPane.setViewportView(invoiceTable);
-		btnDeleteInvoice.setBounds(397, 350, 101, 23);
-		contentPane.add(btnDeleteInvoice);
-		btnEditInvoice.setBounds(286, 350, 101, 23);
-		contentPane.add(btnEditInvoice);
-		invoiceTable.getTableHeader().setReorderingAllowed(false);
-		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	}
-
-	public void addListener(RetailViewListener r) {
-		listeners.add(r);
-	}
-
-	public void setTableData(ArrayList<Invoice> invoices) {
-		for (Invoice i : invoices) {
-			tableModel.addRow(new Object[] { i.getID(), i.getCustomer(),
-					i.getDate() });
-		}
 	}
 
 	// Shows message

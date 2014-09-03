@@ -68,8 +68,8 @@ public class InvoicePanel extends JPanel {
 
 	public InvoicePanel() {
 		initialiseComponents();
-		addListeners();
 		constructView();
+		addListeners();
 	}
 
 	public void initialiseComponents() {
@@ -102,7 +102,7 @@ public class InvoicePanel extends JPanel {
 		datePicker.getJFormattedTextField().setEnabled(false);
 		lblCustomer = new JLabel("Customer:");
 		initialiseTable();
-		invoiceListFrame = new InvoiceListPanel(this);
+		invoiceListFrame = new InvoiceListPanel(this, database.getInvoices());
 	}
 
 	public void constructView() {
