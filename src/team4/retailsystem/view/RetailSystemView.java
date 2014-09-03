@@ -49,5 +49,6 @@ public interface RetailSystemView {
 	
 	public void showError(String errorMessage);
 
-	
+	public void showStockControlScreen();
+
 }

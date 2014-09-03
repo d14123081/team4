@@ -153,4 +153,10 @@ implements RetailSystemView
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void showStockControlScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }

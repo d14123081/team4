@@ -1,3 +1,5 @@
+
+
 package team4.retailsystem.controller;
 
 import java.security.NoSuchAlgorithmException;
@@ -188,8 +190,7 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickDeleteProduct(int productId) {
-		model.deleteProduct(model.getProductById(productId));
-		
+		model.deleteProduct(model.getProductById(productId));		
 	}
 
 	@Override
@@ -282,13 +283,37 @@ implements RetailModelListener, RetailViewListener
 			Customer customer, Date d) {
 		model.addInvoice(new Invoice(lineItems, customer, d));
 		
+		//decrement each products's stock level
+		Product p;
+		for(LineItem l:lineItems){
+			p = Database.getInstance().getProduct(l.getProductID());
+			p.setStockLevel(p.getStockLevel() - l.getQuantity());
+			model.updateProduct(p);
+		}
 	}
 
 	@Override
 	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems,
 			Customer customer, Date d) {
+		
+		//get the old invoice object, re-add product stock. We'll then
+		//re-decrement with the values in the new lineItem arraylist
+		Invoice oldInvoice = Database.getInstance().getInvoice(id);
+		Product p;
+		for(LineItem l:oldInvoice.getLineItems()){
+			p = Database.getInstance().getProduct(l.getProductID());
+			p.setStockLevel(p.getStockLevel() + l.getQuantity());
+			model.updateProduct(p);
+		}
+		
 		model.updateInvoice(id, lineItems, customer, d);
-		// TODO Auto-generated method stub
+		
+		//decrement each products's stock level
+		for(LineItem l:lineItems){
+			p = Database.getInstance().getProduct(l.getProductID());
+			p.setStockLevel(p.getStockLevel() - l.getQuantity());
+			model.updateProduct(p);
+		}
 		
 	}
 
