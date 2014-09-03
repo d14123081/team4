@@ -161,6 +161,12 @@ public class ProductPanel extends JPanel {
 				}
 			}
 		});
+		
+		submit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setToEditMode();
+			}
+		});
 
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -170,7 +176,7 @@ public class ProductPanel extends JPanel {
 
 		edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setToViewMode();
+				setToEditMode();
 			}
 		});
 		remove.addActionListener(new ActionListener() {
@@ -373,6 +379,22 @@ public class ProductPanel extends JPanel {
 		edit.setText("Edit Product");
 		submit.setText("Create new Product");
 		back.setText("Clear fields");
+	}
+	
+	public void setToEditMode(){
+		idField.setEditable(true);
+		costField.setEditable(true);
+		markupField.setEditable(true);
+		stockLevelField.setEditable(true);
+		supplierCombo.setEnabled(true);
+
+		submit.setEnabled(true);
+		remove.setEnabled(true);
+		edit.setEnabled(true);
+		edit.setText("Edit Product");
+		submit.setText("Create new Product");
+		back.setText("Clear fields");
+		
 	}
 
 	public void clearTextFields() {
