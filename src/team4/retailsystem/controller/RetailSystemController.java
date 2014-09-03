@@ -188,7 +188,7 @@ implements RetailModelListener, RetailViewListener
 
 	@Override
 	public void clickDeleteProduct(int productId) {
-		// TODO Auto-generated method stub
+		model.deleteProduct(model.getProductById(productId));
 		
 	}
 
