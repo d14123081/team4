@@ -242,14 +242,6 @@ public class ProductPanel extends JPanel {
 				clearTextFields();
 			}
 		});
-		
-
-		
-		ActionEvent e = null;
-		// // when back button pressed
-		 if (e.getActionCommand().equals("back")) {
-		 setToViewMode();
-		 }
 
 	}
 	
@@ -257,7 +249,7 @@ public class ProductPanel extends JPanel {
 		JOptionPane.showMessageDialog(null, errorMessage);
 		
 	}
-	
+
 	// when remove button pressed
 	 
 	// private class NameBoxListener implements ActionListener {
