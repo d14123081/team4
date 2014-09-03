@@ -12,6 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -19,6 +20,8 @@ import javax.swing.SwingConstants;
 import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Product;
 import team4.retailsystem.model.Supplier;
+
+
 //import team4.retailsystem.view.CustomerPanel.CRUDListener;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -179,6 +182,22 @@ public class ProductPanel extends JPanel {
 				setToEditMode();
 			}
 		});
+		
+		remove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (productList.isSelectionEmpty()) {
+					showError("No product selected");
+				} else {
+					int productId = Integer.parseInt(idField.getText());
+					for (RetailViewListener r : listeners) {
+						r.clickDeleteUser(productId);
+					}
+					logout();
+				}
+			}
+		});
+		
+		
 		remove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// inform listeners of the delete customer event
@@ -223,9 +242,24 @@ public class ProductPanel extends JPanel {
 				clearTextFields();
 			}
 		});
+		
+
+		
+		ActionEvent e = null;
+		// // when back button pressed
+		 if (e.getActionCommand().equals("back")) {
+		 setToViewMode();
+		 }
 
 	}
-
+	
+	public void showError(String errorMessage) {
+		JOptionPane.showMessageDialog(null, errorMessage);
+		
+	}
+	
+	// when remove button pressed
+	 
 	// private class NameBoxListener implements ActionListener {
 	// @Override
 	// public void actionPerformed(ActionEvent e) {
@@ -276,19 +310,19 @@ public class ProductPanel extends JPanel {
 	//
 	// }
 	// // when back button pressed
-	// if (e.getActionCommand().equals("back")) {
-	// setToViewMode();
+	 //if (e.getActionCommand().equals("back")) {
+	 //setToViewMode();
 	// }
 	//
-	// // when remove button pressed
-	// if (e.getActionCommand().equals("Remove Product")) {
-	//
-	// // inform listeners of the delete customer event
-	// for (RetailViewListener r : listeners) {
-	// r.clickDeleteProduct(Integer.parseInt(idField.getText()));
-	// }
-	//
-	// }
+	 // when remove button pressed
+//	 if (remove.AddActionListener().equals("Remove Product")) 
+//	 {
+//	 // inform listeners of the delete customer event
+//	 for (RetailViewListener r : listeners) {
+//	 r.clickDeleteProduct(Integer.parseInt(idField.getText()));
+//	 }
+//	
+//	 }
 	//
 	// // when edit button pressed
 	// if (e.getActionCommand().equals("Edit Product")) {
@@ -416,6 +450,7 @@ public class ProductPanel extends JPanel {
 	productList.setListData(products.toArray());	
 		
 	}
+	
 
 	public void updateSupplierList(ArrayList<Supplier> suppliers) {
 		supplierCombo.setModel(new DefaultComboBoxModel(suppliers.toArray()));
