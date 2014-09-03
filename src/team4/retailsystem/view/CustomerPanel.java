@@ -58,28 +58,13 @@ public class CustomerPanel extends JPanel {
 	private JScrollPane scrollPane;
 	private JPanel panel_3;
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-	private Customer c;
+	//private Customer c;
 	
 	public CustomerPanel() {
 
 		initialiseComponents();
 		addListeners();
 		constructView();
-		
-		
-		//give problems when placed in addListeners().
-		customerList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				c = (Customer) customerList.getSelectedValue();
-				infoTextArea.setText("");
-				nameTF.setText(c.getName());
-				addressTF.setText(c.getAddress());
-				eMailTF.setText(c.getEmail());
-				idTF.setText("" + c.getID());
-				telTF.setText(c.getTelephoneNumber());
-			}
-		});
 		
 	}
 
@@ -93,6 +78,7 @@ public class CustomerPanel extends JPanel {
 		customerContactLabel = new JLabel("Customer contact:");
 		customerIdLabel = new JLabel("Customer id:");
 		customerAddressLabel = new JLabel("Customer address:");
+		customerList = new JList<Object>();
 
 		nameTF = new JTextField();
 		eMailTF = new JTextField();
@@ -111,6 +97,21 @@ public class CustomerPanel extends JPanel {
 	}
 
 	public void addListeners() {
+		
+		customerList.addMouseListener(new MouseAdapter() {
+			
+			public void mouseClicked(MouseEvent e) {
+				Customer c = (Customer) customerList.getSelectedValue();
+				
+				infoTextArea.setText("");
+				nameTF.setText(c.getName());
+				addressTF.setText(c.getAddress());
+				eMailTF.setText(c.getEmail());
+				idTF.setText("" + c.getID());
+				telTF.setText(c.getTelephoneNumber());
+			}
+			
+		});
 
 		newCustomerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -238,7 +239,7 @@ public class CustomerPanel extends JPanel {
 				.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		customerDetails.setBorder(new TitledBorder(UIManager
 				.getBorder("TitledBorder.border"), "Customer details",
-				TitledBorder.RIGHT, TitledBorder.TOP, null, null));
+				TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		customerDetails.setBounds(10, 84, 570, 372);
 		add(customerDetails);
 		customerDetails.setLayout(null);
@@ -334,7 +335,6 @@ public class CustomerPanel extends JPanel {
 		scrollPane.setBounds(590, 85, 220, 504);
 		add(scrollPane);
 
-		customerList = new JList<Object>();
 		customerList.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrollPane.setViewportView(customerList);
 
@@ -398,7 +398,7 @@ public class CustomerPanel extends JPanel {
 	// panel view edit customer
 	public void editCustomerMode() {
 
-		// disable selection list
+		infoTextArea.setText("");
 		customerList.setEnabled(false);
 		addressTF.setBackground(Color.white);
 
@@ -418,6 +418,7 @@ public class CustomerPanel extends JPanel {
 	// panel view new customer
 	public void newCustomerMode() {
 
+		infoTextArea.setText("");
 		customerList.setEnabled(false);
 		addressTF.setBackground(SystemColor.white);
 
