@@ -66,7 +66,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private static int viewOrders = 1;
     private static int addDeliveryDate = 2;
 
-    private OrderedPanel ordered;
+    private OrderedPanel ordered = new OrderedPanel(0);
     private CalenderPanel calender;
 
     @SuppressWarnings("serial")
@@ -395,6 +395,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     
     public void addListener(RetailViewListener r) {
         listeners.add(r);
+        ordered.addListener(r);
     }
     
     public void editQuantity(){
@@ -409,7 +410,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void ordersList(int v){
-        ordered = new OrderedPanel(v);
+        ordered.setOrderedType(v);
         Object[] t = {ordered,calender};
         JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
         JDialog d = o.createDialog(null,"Orders List");   
@@ -446,10 +447,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         }   
     }
 
- 	
- 	/**
- 	 * A method that clears temp fields on logout.
- 	 */
+    
+    /**
+     * A method that clears temp fields on logout.
+     */
     public void logout(){
         initialCondition();
         clearItemList();

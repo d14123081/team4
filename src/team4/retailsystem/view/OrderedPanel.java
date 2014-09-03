@@ -5,10 +5,8 @@ import java.awt.Dimension;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Delivery;
-import team4.retailsystem.model.LineItem;
 import team4.retailsystem.model.Order;
 
 public class OrderedPanel extends JPanel implements ListSelectionListener {
@@ -33,13 +30,11 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     private DefaultTableModel model;
     private DefaultTableCellRenderer centreRenderer;
     private JScrollPane orderScrollPanel;
-    private ArrayList<Object> orderedArrayList = new ArrayList<>();
     private ArrayList<Delivery> deliveries = Database.getInstance().getDeliveries();
     private ArrayList<Order> orders = Database.getInstance().getOrders();
     private Object[][] orderList = null;
     private String[] columnNames = {"Order ID", "Ordered Date","Delivery Date"};
     private static int orderID;
-    private ArrayList<Order> ordered = new ArrayList<>(); 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private CalenderPanel calender;
     private int addDelivery;
@@ -47,7 +42,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
 
     public OrderedPanel(int addDelivery) {
         this.addDelivery = addDelivery;
-        this.ordered = Database.getInstance().getOrders();
+        this.orders = Database.getInstance().getOrders();
         model = new DefaultTableModel(orderList,columnNames);
         ordersTable = new JTable(model){
             boolean[] canEdit = new boolean[]{
@@ -86,13 +81,14 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
             dialog.setSize(new Dimension(400, 350));
             dialog.setVisible(true);
             if(o.getValue().equals(0)){
-                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
+                
                 if(model.getValueAt(ordersTable.getSelectedRow(), 2).equals("")){
                     addDeliveryDay();
                 }
                 else{
-                    
+                    updateDeliveryDay();
                 }
+                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
             }
             
         }        
@@ -117,7 +113,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     public void getOrderedArrayList(){
         //orderedArrayList.clear();
         
-        for(Order order : ordered){
+        for(Order order : orders){
             String deliveryDate = "";
             for(Delivery delivery : deliveries){
                 if(order.getID() == delivery.getOrderID()){
@@ -154,7 +150,6 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
                         r.clickUpdateDelivery(delivery);
                     }
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -165,8 +160,11 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
         listeners.add(r);
     }
 
+    public
+    void setOrderedType(int type){
+        this.addDelivery = type;
+    }
     public void updateOrderList(ArrayList<Order> orders) {
-        // TODO Auto-generated method stub
         
     }
     
