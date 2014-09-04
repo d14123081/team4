@@ -153,8 +153,9 @@ public class ProductPanel extends JPanel {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				
-				if(productList.getSelectedValue() != null){
+				if(productList.getSelectedValue() != null && !arg0.getValueIsAdjusting()){
 					Product p = (Product) productList.getSelectedValue();
+					Supplier s = p.getSupplier();
 					
 					infoTextArea.setText("");
 					nameTF.setText(p.getName());
@@ -163,6 +164,9 @@ public class ProductPanel extends JPanel {
 					idTF.setText("" + p.getID());
 					stockLevelTF.setText("" + p.getStockLevel());
 					supplierTF.setText("" + p.getSupplier().getName());
+					
+					supplierBox.setSelectedItem(s);
+					
 				}
 			}
 			
@@ -244,7 +248,7 @@ public class ProductPanel extends JPanel {
 						infoTextArea.setText(getNameTF()
 								+ "'s details have been updated.");
 						// getproductNameArrayList();
-						clearTextFields();
+						//clearTextFields();
 						setToViewMode();
 
 					}
@@ -256,6 +260,18 @@ public class ProductPanel extends JPanel {
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setToViewMode();
+				
+				if(productList.getSelectedValue() != null){
+					Product p = (Product) productList.getSelectedValue();
+					
+					infoTextArea.setText("");
+					nameTF.setText(p.getName());
+					costsTF.setText("" + p.getCost());
+					markUpTF.setText("" + p.getMarkup());
+					idTF.setText("" + p.getID());
+					stockLevelTF.setText("" + p.getStockLevel());
+					supplierTF.setText("" + p.getSupplier().getName());
+				}
 			}
 		});
 	}
@@ -450,7 +466,7 @@ public class ProductPanel extends JPanel {
 	// default panel view
 	public void setToViewMode() {
 
-		clearTextFields();
+		//clearTextFields();
 
 		productList.setEnabled(true);
 
@@ -471,6 +487,7 @@ public class ProductPanel extends JPanel {
 	}
 
 	public void clearTextFields() {
+		
 		nameTF.setText("");
 		costsTF.setText("");
 		idTF.setText("");;
