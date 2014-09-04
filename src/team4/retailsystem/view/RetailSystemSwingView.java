@@ -248,21 +248,18 @@ implements RetailSystemView
 			showError("Unauthorised access.");
 			showLoginScreen();
 		}
-		else if(user.getAuthorizationLevel() == User.NORMAL_USER){
-			//hide button for administrative activities
-			userButton.setVisible(false);
-			//customerButton.setVisible(false);
-			supplierButton.setVisible(false);
-			showInvoiceEditingScreen();
+		else if( (user.getAuthorizationLevel() == User.NORMAL_USER) || (user.getAuthorizationLevel() == User.ADMINISTRATOR)){
 			customerPanel.updateUser(user);
+			invoicePanel.updateUser(user);
+			//orderPanel.updateUser(user);
+			//productPanel.updateUser(user);
+			//supplierPanel.updateUser(user);
+			userPanel.updateUser(user);
+			//stockControlPanel.updateUser(user);
 		}
-		else if(user.getAuthorizationLevel() == User.ADMINISTRATOR){
-			userButton.setVisible(true);
-			//customerButton.setVisible(true);
-			supplierButton.setVisible(true);
-			showCustomerEditingScreen();
-			customerPanel.updateUser(user);
-
+		else{
+			showError("Unrecognised access level.");
+			showLoginScreen();
 		}
 		((CardLayout)(contentPane.getLayout())).show(contentPane, MAIN);
 	}

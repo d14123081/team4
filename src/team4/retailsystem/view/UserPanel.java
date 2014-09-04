@@ -219,7 +219,7 @@ public class UserPanel extends JPanel {
 	}
 
 	// Handles what is displayed depending on what user is logged in
-	public void updateUserFunctionality(User u) {
+	public void updateUser(User u) {
 		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
 			usernameField.setEnabled(false);
 			authComboBox.setEnabled(false);
