@@ -23,6 +23,8 @@ import javax.swing.UIManager;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -65,22 +67,7 @@ public class CustomerPanel extends JPanel {
 		initialiseComponents();
 		addListeners();
 		constructView();
-		
-		
-		//give problems when placed in addListeners().
-		customerList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				c = (Customer) customerList.getSelectedValue();
-				infoTextArea.setText("");
-				nameTF.setText(c.getName());
-				addressTF.setText(c.getAddress());
-				eMailTF.setText(c.getEmail());
-				idTF.setText("" + c.getID());
-				telTF.setText(c.getTelephoneNumber());
-			}
-		});
-		
+
 	}
 
 	public void initialiseComponents() {
@@ -107,7 +94,8 @@ public class CustomerPanel extends JPanel {
 		cancelBtn = new JButton("Cancel");
 		scrollPane = new JScrollPane();
 		panel_3 = new JPanel();
-		
+	
+		customerList = new JList<Object>();
 	}
 
 	public void addListeners() {
@@ -146,6 +134,9 @@ public class CustomerPanel extends JPanel {
 					}
 					setToViewMode();
 
+					if(customerList.getComponentCount() > 0){
+						customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);
+					}
 				}
 			}
 
@@ -178,7 +169,6 @@ public class CustomerPanel extends JPanel {
 						infoTextArea.setText(getNameTF()
 								+ "  is added to the database.");
 						// getcustomerNameArrayList();
-						clearTextFields();
 						setToViewMode();
 
 					} else {
@@ -194,7 +184,7 @@ public class CustomerPanel extends JPanel {
 						infoTextArea.setText(getNameTF()
 								+ "'s details have been updated.");
 						// getcustomerNameArrayList();
-						clearTextFields();
+						//clearTextFields();
 						setToViewMode();
 
 					}
@@ -204,9 +194,39 @@ public class CustomerPanel extends JPanel {
 
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				setToViewMode();
+				
+				if(customerList.getSelectedValue() != null){
+					Customer c = (Customer)customerList.getSelectedValue();
+					infoTextArea.setText("");
+					nameTF.setText(c.getName());
+					addressTF.setText(c.getAddress());
+					eMailTF.setText(c.getEmail());
+					idTF.setText("" + c.getID());
+					telTF.setText(c.getTelephoneNumber());
+				}
 			}
 		});
+		
+		customerList.addListSelectionListener(new ListSelectionListener(){
+
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				
+				if(customerList.getSelectedValue() != null){
+					c = (Customer) customerList.getSelectedValue();
+					infoTextArea.setText("");
+					nameTF.setText(c.getName());
+					addressTF.setText(c.getAddress());
+					eMailTF.setText(c.getEmail());
+					idTF.setText("" + c.getID());
+					telTF.setText(c.getTelephoneNumber());
+				}
+			}
+			
+		});
+
 	}
 
 	public void constructView() {
@@ -334,7 +354,6 @@ public class CustomerPanel extends JPanel {
 		scrollPane.setBounds(590, 85, 220, 504);
 		add(scrollPane);
 
-		customerList = new JList<Object>();
 		customerList.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrollPane.setViewportView(customerList);
 
@@ -358,7 +377,28 @@ public class CustomerPanel extends JPanel {
 	}
 
 	public void updateCustomerList(ArrayList<Customer> customers) {
+		
+		Customer currentlySelected = null;
+		int previousCount = customerList.getModel().getSize();
+		
+		if(previousCount > 0){
+			currentlySelected = (Customer)customerList.getSelectedValue();
+		}
+
 		customerList.setListData(customers.toArray());
+		int newCount = customerList.getModel().getSize();
+		
+		if( customerList.getComponentCount() > 0 ){
+			if(currentlySelected!=null && (newCount == previousCount)){
+				customerList.setSelectedValue(currentlySelected, true);
+			}
+			else if( (newCount > previousCount) && (previousCount>0)){
+				customerList.setSelectedValue(customerList.getModel().getElementAt(newCount-1), true);
+			}
+			else{
+				customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);
+			}
+		}
 	}
 
 	public void addListener(RetailViewListener r) {
@@ -367,8 +407,6 @@ public class CustomerPanel extends JPanel {
 
 	// default panel view
 	public void setToViewMode() {
-
-		clearTextFields();
 
 		addressTF.setBackground(SystemColor.control);
 		customerList.setEnabled(true);
