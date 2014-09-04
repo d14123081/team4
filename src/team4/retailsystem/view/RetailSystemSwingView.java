@@ -252,7 +252,7 @@ implements RetailSystemView
 			customerPanel.updateUser(user);
 			invoicePanel.updateUser(user);
 			//orderPanel.updateUser(user);
-			//productPanel.updateUser(user);
+			productPanel.updateUser(user);
 			//supplierPanel.updateUser(user);
 			userPanel.updateUser(user);
 			//stockControlPanel.updateUser(user);
