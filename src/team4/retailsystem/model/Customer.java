@@ -69,4 +69,13 @@ public class Customer {
 		return this.name;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(! (o instanceof Customer)){
+			return false;
+		}
+		else{
+			return this.customerID == ((Customer)o).getID();
+		}
+	}
 }
