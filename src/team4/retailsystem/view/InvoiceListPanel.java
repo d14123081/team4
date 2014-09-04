@@ -29,13 +29,13 @@ public class InvoiceListPanel extends JFrame {
 	private JButton btnDeleteInvoice, btnEditInvoice;
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
+	private Database database = Database.getInstance();
 
 	public InvoiceListPanel(InvoicePanel p, ArrayList<Invoice> inv) {
 		this.invoicePanel = p;
 		initialiseComponents();
 		construct();
 		addListeners();
-		setTableData(inv);
 	}
 
 	public void initialiseComponents() {
@@ -62,7 +62,17 @@ public class InvoiceListPanel extends JFrame {
 	}
 
 	public void addListeners() {
-
+		btnEditInvoice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (invoiceTable.getSelectedRow() == -1) {
+					showError("No row selected.");
+				} else {
+					int invoiceId = (int) invoiceTable.getValueAt(
+							invoiceTable.getSelectedRow(), 0);
+					invoicePanel.updateTable(database.getInvoice(invoiceId));
+				}
+			}
+		});
 	}
 
 	public void addListener(RetailViewListener r) {
