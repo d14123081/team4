@@ -343,6 +343,8 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void getProductArrayList() {
+    	System.out.println("here");
+    	products = Database.getInstance().getProducts();
         productArrayList.clear();
         for (Product p : products) {
             productArrayList.add(p.getName() + "   ");
@@ -386,7 +388,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void updateProductList(ArrayList<Product> products){
+    	//this.products.equals(products);
+    	getProductArrayList();
         productList.setListData(products.toArray());
+        productList.validate();
     }
     
     public void updateSupplierList(ArrayList<Supplier> supliers){
