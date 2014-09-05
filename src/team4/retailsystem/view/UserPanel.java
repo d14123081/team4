@@ -11,6 +11,7 @@ import javax.swing.event.ListSelectionListener;
 
 import java.util.ArrayList;
 
+import team4.retailsystem.model.Customer;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.User;
 
@@ -154,20 +155,24 @@ public class UserPanel extends JPanel {
 		});
 
 		// Handles a click on user list
-		userList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				idField.setText(Integer.toString(((User) userList
-						.getSelectedValue()).getID()));
-				usernameField.setText(((User) userList.getSelectedValue())
-						.getUsername());
-				chckbxNew.setSelected(false);
-				if (((User) userList.getSelectedValue())
-						.getAuthorizationLevel() == 1) {
-					authComboBox.setSelectedIndex(0);
-				} else {
-					authComboBox.setSelectedIndex(1);
+		userList.addListSelectionListener(new ListSelectionListener(){
+
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				
+				if(userList.getSelectedValue() != null){
+					User u = (User) userList.getSelectedValue();
+					idField.setText(""+u.getID());
+					usernameField.setText(u.getUsername());
+					chckbxNew.setSelected(false);
+					if (u.getAuthorizationLevel() == 1) {
+						authComboBox.setSelectedIndex(0);
+					} else {
+						authComboBox.setSelectedIndex(1);
+					}
 				}
 			}
+			
 		});
 
 		// Handles cancel button click
@@ -182,8 +187,10 @@ public class UserPanel extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
+					userList.setEnabled(false);
 					clearFields();
-				} else {
+				} else {					
+					userList.setEnabled(true);
 					clearFields();
 				}
 
