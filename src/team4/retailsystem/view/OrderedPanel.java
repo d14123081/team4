@@ -89,6 +89,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
                 return canEdit[columnIndex];
             }
         };
+        ordersTable.getTableHeader().setReorderingAllowed(false);
         centreRenderer = new DefaultTableCellRenderer();
         centreRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         ordersTable.setRowSelectionAllowed(true);

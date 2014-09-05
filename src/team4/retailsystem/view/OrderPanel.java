@@ -119,7 +119,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         itemTable.setRowHeight(30);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         itemTable.getSelectionModel().addListSelectionListener(this);
-
+        itemTable.getTableHeader().setReorderingAllowed(false);
         orderListPanel = new JScrollPane(itemTable);
 
         gbc1.gridx = 0;
