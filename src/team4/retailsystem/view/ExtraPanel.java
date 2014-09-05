@@ -22,7 +22,7 @@ public class ExtraPanel extends JPanel implements ActionListener{
     private JButton zeroButton;
     public JButton enterButton;
     private JButton deleteButton;
-    private String text;
+    private String text = "";
     
     public ExtraPanel() {
         GridBagLayout gbl = new GridBagLayout();
@@ -118,74 +118,83 @@ public class ExtraPanel extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent arg0) {
         // TODO Auto-generated method stub
         if(arg0.getSource().equals(zeroButton)){
-            if(text != null){
-                text += 0;
+            if(text.equals(null) || text.equals("0") || text.equals("")){
+                System.out.println(text);
+                text = "0";
             }
+            else 
+                text += 0;
         }
         else if(arg0.getSource().equals(oneButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 1;
             else
                 text = "1";
         }
         else if(arg0.getSource().equals(twoButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 2;
             else
                 text = "2";
         }
         else if(arg0.getSource().equals(threeButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 3;
             else
                 text = "3";
         }
         else if(arg0.getSource().equals(fourButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 4;
             else
                 text = "4";
         }
         else if(arg0.getSource().equals(fiveButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 5;
             else
                 text = "5";
         }
         else if(arg0.getSource().equals(sixButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 6;
             else
                 text = "6";
         }
         else if(arg0.getSource().equals(sevenButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 7;
             else
                 text = "7";
         }
         else if(arg0.getSource().equals(eightButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 8;
             else
                 text = "8";
         }
         else if(arg0.getSource().equals(nineButton)){
-            if(text != null)
+            if(!(text.equals(null) || text.equals("0") || text.equals("")))
                 text += 9;
             else
                 text = "9";
         }
         else if(arg0.getSource().equals(deleteButton)){
-            if(text != null){
+            if(!(text.equals(null) || text.equals(""))){
                 text = text.replace(text.substring(text.length()-1 ), "");
             }
+            else
+                text = "0";
         }
         displayField.setText(text);
     }
     
     public int getValue(){
-        return Integer.parseInt(this.displayField.getText());
+        int value = Integer.parseInt(this.displayField.getText());
+        if(Integer.parseInt(this.displayField.getText()) == 0){
+            value = 1;
+        }
+        return value;
     }
 
 }
