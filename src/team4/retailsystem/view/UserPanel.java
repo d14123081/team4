@@ -228,6 +228,7 @@ public class UserPanel extends JPanel {
 	// Handles what is displayed depending on what user is logged in
 	public void updateUser(User u) {
 		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
+			chckbxNew.setVisible(false);
 			usernameField.setEnabled(false);
 			authComboBox.setEnabled(false);
 			userList.setEnabled(false);
@@ -238,6 +239,7 @@ public class UserPanel extends JPanel {
 			btnDelete.setVisible(false);
 			btnCancel.setVisible(false);
 		} else {
+			chckbxNew.setVisible(true);
 			usernameField.setEnabled(true);
 			authComboBox.setEnabled(true);
 			userList.setEnabled(true);
