@@ -562,7 +562,7 @@ public class ProductPanel extends JPanel {
 		setToViewMode();
 
 		if(productList.getModel().getSize() > 0){
-			System.out.println("here, product");
+			productList.clearSelection();
 			productList.setSelectedValue(productList.getModel().getElementAt(0), true);		
 		} else {
 			String empty = "";

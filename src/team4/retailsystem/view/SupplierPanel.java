@@ -515,7 +515,7 @@ public class SupplierPanel extends JPanel {
 		setToViewMode();
 		
 		if(supplierList.getModel().getSize() > 0){
-			System.out.println("here, supplier");
+			supplierList.clearSelection();
 			supplierList.setSelectedValue(supplierList.getModel().getElementAt(0), true);		
 		} else {
 			String empty = "";

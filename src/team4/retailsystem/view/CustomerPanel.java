@@ -512,7 +512,7 @@ public class CustomerPanel extends JPanel {
 		setToViewMode();
 		
 		if(customerList.getModel().getSize() > 0){
-			System.out.println("here, customer");
+			customerList.clearSelection();
 			customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
 		} else {
 			String empty = "";
