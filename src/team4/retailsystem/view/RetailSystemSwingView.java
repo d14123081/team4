@@ -218,6 +218,12 @@ implements RetailSystemView
 		logoutButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				customerPanel.logout();
+				invoicePanel.logout();
+				orderPanel.logout();
+				productPanel.logout();
+				supplierPanel.logout();
+				userPanel.logout();
 				showLoginScreen();
 			}
 			
