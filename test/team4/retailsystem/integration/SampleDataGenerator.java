@@ -290,7 +290,14 @@ public class SampleDataGenerator {
 		generateDeliveries(80);
 	}
 
+	private static void resetUsers(){
+		for(User u: Database.getInstance().getUsers())
+			Database.getInstance().deleteUser(u);
+		generateUsers();
+	}
+	
 	public static void main(String[] args) {
+		//resetUsers();
 		generateDatabase();
 		//generateRandomDatabase();
 	}
