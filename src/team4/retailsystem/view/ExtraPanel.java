@@ -180,8 +180,9 @@ public class ExtraPanel extends JPanel implements ActionListener{
                 text = "9";
         }
         else if(arg0.getSource().equals(deleteButton)){
-            if(!(text.equals(null) || text.equals(""))){
-                text = text.replace(text.substring(text.length()-1 ), "");
+            if(!(text.equals(null) || text.equals("")) && text.length() > 1){
+                System.out.println(text.length());
+                text = text.substring(0,text.length()-1 );
             }
             else
                 text = "0";
