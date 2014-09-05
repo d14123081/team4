@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -30,8 +32,9 @@ public class InvoiceListPanel extends JFrame {
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
 	private Database database = Database.getInstance();
+	DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
-	public InvoiceListPanel(InvoicePanel p, ArrayList<Invoice> inv) {
+	public InvoiceListPanel(InvoicePanel p) {
 		this.invoicePanel = p;
 		initialiseComponents();
 		construct();
@@ -65,11 +68,27 @@ public class InvoiceListPanel extends JFrame {
 		btnEditInvoice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (invoiceTable.getSelectedRow() == -1) {
-					showError("No row selected.");
+					showError("No invoice selected.");
 				} else {
 					int invoiceId = (int) invoiceTable.getValueAt(
 							invoiceTable.getSelectedRow(), 0);
 					invoicePanel.updateTable(database.getInvoice(invoiceId));
+					invoiceTable.clearSelection();
+				}
+			}
+		});
+
+		btnDeleteInvoice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (invoiceTable.getSelectedRow() == -1) {
+					showError("No invoice selected.");
+				} else {
+					int invoiceId = (int) invoiceTable.getValueAt(
+							invoiceTable.getSelectedRow(), 0);
+					for (RetailViewListener r : listeners) {
+						r.clickDeleteInvoice(invoiceId);
+					}
+					invoiceTable.clearSelection();
 				}
 			}
 		});
@@ -80,9 +99,13 @@ public class InvoiceListPanel extends JFrame {
 	}
 
 	public void setTableData(ArrayList<Invoice> invoices) {
+		int rowCount = tableModel.getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+			tableModel.removeRow(0);
+		}
 		for (Invoice i : invoices) {
 			tableModel.addRow(new Object[] { i.getID(), i.getCustomer(),
-					i.getDate() });
+					df.format(i.getDate()) });
 		}
 	}
 
@@ -114,5 +137,4 @@ public class InvoiceListPanel extends JFrame {
 	public void showError(String errorMessage) {
 		JOptionPane.showMessageDialog(null, errorMessage);
 	}
-
 }

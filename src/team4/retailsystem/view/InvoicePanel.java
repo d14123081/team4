@@ -102,13 +102,12 @@ public class InvoicePanel extends JPanel {
 		datePicker.getJFormattedTextField().setEnabled(false);
 		lblCustomer = new JLabel("Customer:");
 		initialiseTable();
-		invoiceListFrame = new InvoiceListPanel(this, database.getInvoices());
+		invoiceListFrame = new InvoiceListPanel(this);
 	}
 
 	public void constructView() {
 		// Creates the layout of GUI
 		setLayout(null);
-
 		invoiceTable.getTableHeader().setReorderingAllowed(false);
 		invoiceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invoiceListPanel.setLayout(null);
@@ -176,7 +175,7 @@ public class InvoicePanel extends JPanel {
 						r.clickCreateInvoice(lineitems, c, d);
 					}
 					logout();
-				} // else ff updating invoice
+				} // else if updating invoice
 				else if (!checkboxNew.isSelected()
 						&& tableModel.getRowCount() > 0) {
 					int id = Integer.parseInt(idField.getText());
@@ -206,25 +205,19 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
-		//Check all rows to see if selected, if selected, then remove else throw error
+		// Check all rows to see if selected, if selected, then remove else
+		// throw error
 		btnDelRow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				boolean delRow = false;
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-					if (invoiceTable.isRowSelected(i)) {
-						tableModel.removeRow(i);
-						invoiceTable.clearSelection();
-						delRow = true;
-						break;
-					}
-				}
-				if (!delRow) {
+				if (invoiceTable.getSelectedRow() == -1) {
 					showError("Select a row to delete");
+				} else {
+					tableModel.removeRow(invoiceTable.getSelectedRow());
+					invoiceTable.clearSelection();
 				}
 			}
 		});
 
-		
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout();
@@ -234,10 +227,8 @@ public class InvoicePanel extends JPanel {
 		// Handles a click event on product list
 		productList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// If user isn't updating nor creating a new invoice, throw
-				// error
 				if (!checkboxNew.isSelected() && tableModel.getRowCount() < 1) {
-					showError("You must either create a new invoice or append to an existing invoice");
+					showError("You must either create a new invoice or add to an existing invoice");
 				} else { // If table is empty
 					if (tableModel.getRowCount() == 0) {
 						// add row, [ product id, product name, 1 ]
@@ -329,7 +320,7 @@ public class InvoicePanel extends JPanel {
 		listeners.add(r);
 	}
 
-	// Clears the invioce
+	// Clears the invoice
 	public void clearInvoice() {
 		tableModel = (DefaultTableModel) invoiceTable.getModel();
 		int rowCount = tableModel.getRowCount();
@@ -356,6 +347,7 @@ public class InvoicePanel extends JPanel {
 			tableModel.addRow(new Object[] { li.getProductID(), p.getName(),
 					li.getQuantity() });
 		}
+		invoiceListFrame.setVisible(false);
 	}
 
 	// Shows message
@@ -363,6 +355,31 @@ public class InvoicePanel extends JPanel {
 		JOptionPane.showMessageDialog(null, errorMessage);
 	}
 
+	// Handles what is displayed depending on the user logged in
+	public void updateUser(User u) {
+		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
+			btnAdd.setVisible(false);
+			btnInvoices.setVisible(true);
+			btnCancel.setVisible(false);
+			btnDelRow.setVisible(false);
+			invoiceTable.setEnabled(false);
+			productList.setEnabled(false);
+			checkboxNew.setEnabled(false);
+			customerComboBox.setEnabled(false);
+			datePicker.setEnabled(false);
+		} else {
+			btnAdd.setVisible(true);
+			btnInvoices.setVisible(true);
+			btnCancel.setVisible(true);
+			btnDelRow.setVisible(true);
+			invoiceTable.setEnabled(true);
+			productList.setEnabled(true);
+			checkboxNew.setEnabled(true);
+			customerComboBox.setEnabled(true);
+			datePicker.setEnabled(true);
+		}
+	}
+	
 	public void initialiseTable() {
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Product ID", "Product Name", "Quantity" }) {
@@ -389,30 +406,5 @@ public class InvoicePanel extends JPanel {
 				}
 			}
 		});
-	}
-
-	// Handles what is displayed depending on the user logged in
-	public void updateUser(User u) {
-		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
-			btnAdd.setVisible(false);
-			btnInvoices.setVisible(true);
-			btnCancel.setVisible(false);
-			btnDelRow.setVisible(false);
-			invoiceTable.setEnabled(false);
-			productList.setEnabled(false);
-			checkboxNew.setEnabled(false);
-			customerComboBox.setEnabled(false);
-			datePicker.setEnabled(false);
-		} else {
-			btnAdd.setVisible(true);
-			btnInvoices.setVisible(true);
-			btnCancel.setVisible(true);
-			btnDelRow.setVisible(true);
-			invoiceTable.setEnabled(true);
-			productList.setEnabled(true);
-			checkboxNew.setEnabled(true);
-			customerComboBox.setEnabled(true);
-			datePicker.setEnabled(true);
-		}
 	}
 }
