@@ -516,6 +516,11 @@ public class CustomerPanel extends JPanel {
 		seteMailTF(empty);
 		setIDTF(empty);
 		telTF.setText(empty);
+		setToViewMode();
+		
+		if(customerList.getModel().getSize() != 0){
+			customerList.setSelectedIndex(0);			
+		}
 	}
 
 	// **********getters and setters***************
