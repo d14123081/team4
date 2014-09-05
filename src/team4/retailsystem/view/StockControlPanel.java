@@ -3,9 +3,10 @@ package team4.retailsystem.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
+import java.util.ArrayList;
 import javax.swing.*;
+
+import team4.retailsystem.model.Order;
 
 public class StockControlPanel extends JPanel implements ActionListener {
     
@@ -16,9 +17,11 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private JButton predictionButton;
     private JScrollPane stockChartScrollPanel;
     private JScrollPane profitChartScrollPanel;
-    private DisplayChart displayChart = new DisplayChart();
+    private DisplayChart displayChart;
     private static int stockView = 1;
     private static int profitView = 2;
+    private boolean isStock = false;
+    private boolean isProfit = false;
 
     public StockControlPanel() {
         GridBagLayout gbl = new GridBagLayout();
@@ -53,17 +56,8 @@ public class StockControlPanel extends JPanel implements ActionListener {
         gbc.gridheight = GridBagConstraints.REMAINDER;
         viewPanel = new JPanel();
         addPanel(viewPanel, gbl, gbc);
-        
-
-        stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
-        addPanelName("Stock Chart", stockChartScrollPanel);
-        profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
-        addPanelName("Profit Chart", profitChartScrollPanel);
-        stockChartScrollPanel.setVisible(false);
-        profitChartScrollPanel.setVisible(false);
-        viewPanel.add(stockChartScrollPanel);
-        viewPanel.add(profitChartScrollPanel);
- 
+               
+        //stockChartScrollPanel = new JScrollPane(new XYchart().xyChart()); 
         this.setVisible(true);
     }
 
@@ -86,20 +80,49 @@ public class StockControlPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
         if(arg0.getSource().equals(stockLevelButton)){
-            profitChartScrollPanel.setVisible(false);
-            stockChartScrollPanel.setVisible(true);
-            viewPanel.validate();
+            viewPanel.removeAll();
+            viewPanel.revalidate();
+            displayChart = new DisplayChart();
+            stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
+            viewPanel.add(stockChartScrollPanel);
+            isStock = true;
+            isProfit = false;
         }
         
         else if(arg0.getSource().equals(profitLevelButton)){
-            profitChartScrollPanel.setVisible(true);
-            stockChartScrollPanel.setVisible(false);
+            viewPanel.removeAll();
+            viewPanel.revalidate();
+            displayChart = new DisplayChart();
+            profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
+            viewPanel.add(profitChartScrollPanel);
             viewPanel.validate();
+            isStock = false;
+            isProfit = true;
         }
         
         else if(arg0.getSource().equals(predictionButton)){
             
         }
         
+    }
+
+    public void updateOrderList(ArrayList<Order> orders) {
+        updateChart();
+    }
+
+    public void updateChart(){
+        viewPanel.removeAll();
+        viewPanel.revalidate();
+        if(isStock == true){
+            displayChart = new DisplayChart();
+            stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
+            viewPanel.add(stockChartScrollPanel);
+        }
+        else if(isProfit == true){
+            displayChart = new DisplayChart();
+            profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
+            viewPanel.add(profitChartScrollPanel);
+        }      
+        viewPanel.validate();
     }
 }

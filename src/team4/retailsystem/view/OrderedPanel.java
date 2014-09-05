@@ -2,11 +2,17 @@ package team4.retailsystem.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,7 +29,7 @@ import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Delivery;
 import team4.retailsystem.model.Order;
 
-public class OrderedPanel extends JPanel implements ListSelectionListener {
+public class OrderedPanel extends JPanel implements ListSelectionListener, ActionListener {
 
     private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
     private JTable ordersTable;
@@ -37,16 +43,45 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     private static int orderID;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private CalenderPanel calender;
-    private int addDelivery;
     private JOptionPane o;
+    private JPanel buttonPanel;
+    private JButton removeOrder;
+    private JButton addDelivery;
+    private boolean isSelected = false;
 
-    public OrderedPanel(int addDelivery) {
-        this.addDelivery = addDelivery;
-        this.orders = Database.getInstance().getOrders();
+    public OrderedPanel() {
+
+        GridBagLayout gbl = new GridBagLayout();
+        this.setLayout(gbl);
+        GridBagConstraints gbc = new GridBagConstraints(); 
+        gbc.fill = GridBagConstraints.BOTH;
+        
+        buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        gbc.ipady = 30;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        addPanel(buttonPanel, gbl, gbc);
+
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        removeOrder = new JButton("Remove Order");
+        removeOrder.addActionListener(this);
+        buttonPanel.add(removeOrder);
+        addDelivery = new JButton("Add Delivery");
+        addDelivery.addActionListener(this);
+        buttonPanel.add(addDelivery);
+        
+        gbc.gridy = 1;
+        gbc.gridheight = 8;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         model = new DefaultTableModel(orderList,columnNames);
         ordersTable = new JTable(model){
             boolean[] canEdit = new boolean[]{
-                    false, false, true
+                    false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -65,38 +100,29 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
         ordersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ordersTable.getSelectionModel().addListSelectionListener(this);
         orderScrollPanel = new JScrollPane(ordersTable);
-        addPanelName("Ordered List", orderScrollPanel);
-        this.add(orderScrollPanel);
+        addScrollPane(orderScrollPanel, gbl, gbc);
         
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent arg0) {
-        this.orderID = Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString());
-        if(addDelivery == 2){
-            calender = new CalenderPanel();
-            Object[] t = {calender};
-            o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
-            JDialog dialog = o.createDialog("Delivery day");
-            dialog.setSize(new Dimension(400, 350));
-            dialog.setVisible(true);
-            if(o.getValue().equals(0)){
-                
-                if(model.getValueAt(ordersTable.getSelectedRow(), 2).equals("")){
-                    addDeliveryDay();
-                }
-                else{
-                    updateDeliveryDay();
-                }
-                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
-            }
-            
-        }        
+    public void valueChanged(ListSelectionEvent arg0) { 
+        isSelected = true;
     }
 
+    public void addScrollPane(JScrollPane panel, GridBagLayout gbl,
+            GridBagConstraints gbc) {
+        gbl.setConstraints(panel, gbc);
+        this.add(panel);
+    }
+    
     public void addPanelName(String panelName, JScrollPane panel) {
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         panel.setBorder(BorderFactory.createTitledBorder(panelName));
+    }
+    
+    public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
+        gbl.setConstraints(panel, gbc);
+        this.add(panel);
     }
     
     public void setItemTableSize() {
@@ -106,13 +132,15 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     }
     
     public int getOrderID(){
-        return this.orderID;
+        if(isSelected == false)
+            orderID = 0;
+        else
+            orderID = Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString());
+        return orderID;
     }
     
     
-    public void getOrderedArrayList(){
-        //orderedArrayList.clear();
-        
+    public void getOrderedArrayList(){  
         for(Order order : orders){
             String deliveryDate = "";
             for(Delivery delivery : deliveries){
@@ -128,10 +156,10 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     
     public void addDeliveryDay() {
         for (Order order : orders) {
-            if (order.getID() == orderID) {
+            if (order.getID() == Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString())) {
                 for (RetailViewListener r : listeners) {
                     try {
-                        r.clickAddDelivery(order.getSupplier(), orderID,
+                        r.clickAddDelivery(order.getSupplier(), order.getID(),
                                 sdf.parse(calender.getDate()));
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -143,7 +171,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
     
     public void updateDeliveryDay(){
         for (Delivery delivery : deliveries) {
-            if(delivery.getOrderID() == orderID) {
+            if(delivery.getOrderID() == Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString())) {
                 try {
                     delivery.setDate(sdf.parse(calender.getDate()));
                     for(RetailViewListener r : listeners){
@@ -162,10 +190,43 @@ public class OrderedPanel extends JPanel implements ListSelectionListener {
 
     public
     void setOrderedType(int type){
-        this.addDelivery = type;
+        
     }
     public void updateOrderList(ArrayList<Order> orders) {
         
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        if(arg0.getSource().equals(addDelivery)){
+            calender = new CalenderPanel();
+            Object[] t = {calender};
+            o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
+            JDialog dialog = o.createDialog("Delivery day");
+            dialog.setSize(new Dimension(400, 350));
+            dialog.setVisible(true);
+            if(o.getValue().equals(0)){
+                
+                if(model.getValueAt(ordersTable.getSelectedRow(), 2).equals("")){
+                    addDeliveryDay();
+                }
+                else{
+                    updateDeliveryDay();
+                }
+                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
+                
+            }
+        }
+        
+        else if(arg0.getSource().equals(removeOrder)){
+            for(RetailViewListener r : listeners){
+                r.clickDeleteOrder(Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString()));
+            }
+            model.removeRow(ordersTable.getSelectedRow());
+        }
+        ordersTable.clearSelection();
+        model.fireTableDataChanged();
+        isSelected = false;
     }
     
 }

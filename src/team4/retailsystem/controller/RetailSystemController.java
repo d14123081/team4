@@ -255,6 +255,11 @@ implements RetailModelListener, RetailViewListener
 			Supplier supplier, int deliveryId) {
 		// TODO Auto-generated method stub
 		model.addOrder(new Order(cost, supplier, deliveryId, lineItems));
+		for(LineItem items : lineItems){
+            Product product = Database.getInstance().getProduct(items.getProductID());
+            product.setStockLevel(product.getStockLevel() + items.getQuantity());
+            model.updateProduct(product);
+        }
 	}
 
 	@Override
