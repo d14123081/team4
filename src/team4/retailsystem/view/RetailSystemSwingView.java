@@ -112,7 +112,7 @@ implements RetailSystemView
 		invoicePanel = new InvoicePanel();
 		orderPanel = new OrderPanel();
 		productPanel = new ProductPanel();
-		supplierPanel = new SupplierPanel(Database.getInstance().getSuppliers());
+		supplierPanel = new SupplierPanel();
 		userPanel = new UserPanel();
 		stockControlPanel = new StockControlPanel();
 	}
