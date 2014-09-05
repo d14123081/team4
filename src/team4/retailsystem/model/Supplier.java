@@ -69,4 +69,14 @@ public class Supplier {
     public String toString(){
     	return this.name;
     }
+    
+    @Override
+	public boolean equals(Object o){
+		if(! (o instanceof Supplier)){
+			return false;
+		}
+		else{
+			return this.ID == ((Supplier)o).getID();
+		}
+	}
 }

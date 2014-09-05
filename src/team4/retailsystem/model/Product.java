@@ -93,4 +93,13 @@ public class Product {
 		return this.name;
 	}
 
+	@Override
+	public boolean equals(Object o){
+		if(! (o instanceof Product)){
+			return false;
+		}
+		else{
+			return this.ID == ((Product)o).getID();
+		}
+	}
 }
