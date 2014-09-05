@@ -191,7 +191,7 @@ public class ExtraPanel extends JPanel implements ActionListener{
     
     public int getValue(){
         int value = Integer.parseInt(this.displayField.getText());
-        if(Integer.parseInt(this.displayField.getText()) == 0){
+        if(value == 0){
             value = 1;
         }
         return value;
