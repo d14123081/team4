@@ -26,8 +26,6 @@ import team4.retailsystem.model.Product;
  **/
 public class InvoiceListPanel extends JFrame 
 {
-	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
-
 	private JPanel contentPane;
 	private JTable invoiceTable;
 	private JScrollPane scrollPane;
@@ -101,20 +99,12 @@ public class InvoiceListPanel extends JFrame
 				else 
 				{
 					int invoiceId = (int) invoiceTable.getValueAt(
-							invoiceTable.getSelectedRow(), 0);
-					for (RetailViewListener r : listeners) 
-					{
-						r.clickDeleteInvoice(invoiceId);
-					}
+						invoiceTable.getSelectedRow(), 0);
+					invoicePanel.deleteInvoice(invoiceId);
 					invoiceTable.clearSelection();
 				}
 			}
 		});
-	}
-
-	public void addListener(RetailViewListener r) 
-	{
-		listeners.add(r);
 	}
 
 	public void updateTable(ArrayList<Invoice> invoices) 

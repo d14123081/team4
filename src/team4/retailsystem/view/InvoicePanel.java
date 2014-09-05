@@ -423,6 +423,15 @@ public class InvoicePanel extends JPanel
 		});
 		
 	}
+	
+	public void deleteInvoice(int id)
+	{
+		for (RetailViewListener r : listeners) 
+		{
+			r.clickDeleteInvoice(id);
+		}
+	}
+	
 	public void showError(String errorMessage) 
 	{
 		JOptionPane.showMessageDialog(null, errorMessage);
