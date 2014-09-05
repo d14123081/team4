@@ -250,9 +250,11 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     @Override
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getSource().equals(newOrderButton)) {
+            itemsArrayList.clear();
             initialCondition();
             clearItemList();
             setItemTableSize();
+            productList.setEnabled(false);
             supplierList.setEnabled(true);
             getSupplierArrayList();
             setButton(true);
@@ -269,11 +271,11 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         else if (arg0.getSource().equals(editItemButton)) {
             if (isSelected == true) {
                 editQuantity();
+                itemTable.clearSelection();
+                model.fireTableDataChanged();
                 isSelected = false;
             } else
                 warmingMsg("Please select item to edit");
-            model.fireTableDataChanged();
-            
         }
 
         else if (arg0.getSource().equals(removeItemButton)) {
