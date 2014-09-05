@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -30,6 +32,7 @@ public class InvoiceListPanel extends JFrame {
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
 	private Database database = Database.getInstance();
+	DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
 	public InvoiceListPanel(InvoicePanel p) {
 		this.invoicePanel = p;
@@ -102,7 +105,7 @@ public class InvoiceListPanel extends JFrame {
 		}
 		for (Invoice i : invoices) {
 			tableModel.addRow(new Object[] { i.getID(), i.getCustomer(),
-					i.getDate() });
+					df.format(i.getDate()) });
 		}
 	}
 
