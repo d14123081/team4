@@ -270,9 +270,18 @@ implements RetailModelListener, RetailViewListener
 	}
 
 	@Override
-	public void clickDeleteOrder(int orderId) {
+	public void clickDeleteOrder(int orderId, String date) {
 		// TODO Auto-generated method stub
-		
+	    if(date.equals("")){
+            Order order = Database.getInstance().getOrder(orderId);
+            for(LineItem items : order.getLineItems()){
+                Product product = Database.getInstance().getProduct(items.getProductID());
+                product.setStockLevel(product.getStockLevel() - items.getQuantity());
+                model.updateProduct(product);
+            }
+        }
+        model.deleteOrder(model.getOrderById(orderId));
+
 	}
 
 	

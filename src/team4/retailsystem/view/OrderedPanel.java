@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -140,7 +141,9 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
     }
     
     
-    public void getOrderedArrayList(){  
+    public void getOrderedArrayList(){ 
+        orderList = null;
+        model.setDataVector(orderList, columnNames);
         for(Order order : orders){
             String deliveryDate = "";
             for(Delivery delivery : deliveries){
@@ -193,7 +196,9 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
         
     }
     public void updateOrderList(ArrayList<Order> orders) {
-        
+        this.orders = orders;
+        getOrderedArrayList();
+        model.fireTableDataChanged();
     }
 
     @Override
@@ -213,14 +218,15 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
                 else{
                     updateDeliveryDay();
                 }
-                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);
-                
+                model.setValueAt(calender.getDate(), ordersTable.getSelectedRow(), 2);    
             }
+            
         }
         
         else if(arg0.getSource().equals(removeOrder)){
             for(RetailViewListener r : listeners){
-                r.clickDeleteOrder(Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString()));
+                String d = model.getValueAt(ordersTable.getSelectedRow(),2).toString();
+                r.clickDeleteOrder(Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString()), d);
             }
             model.removeRow(ordersTable.getSelectedRow());
         }

@@ -38,7 +38,7 @@ public interface RetailViewListener {
 	//order panel events
 	public void clickCreateOrder(double cost, ArrayList<LineItem> lineItems, Supplier supplier, int deliveryId);
 	public void clickUpdateOrder(double cost, ArrayList<LineItem> lineItems, Supplier supplier, int deliveryId, Date date);
-	public void clickDeleteOrder(int orderId);
+	public void clickDeleteOrder(int orderId, String date);
 	
 	//ordered panel events
 	public void clickAddDelivery(Supplier supplier, int orderID, Date date);
