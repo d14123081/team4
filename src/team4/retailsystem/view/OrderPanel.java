@@ -224,22 +224,24 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         } else if (productList.getValueIsAdjusting() == true) {
             for (Product product : products) {
-                if (productList.getSelectedValue().toString()
-                        .equals(product.getName() + "   ")) {
-                    cost = product.getCost();
-                    Object[] item =
-                            { productList.getSelectedValue().toString(), 1,
-                                    cost };
-                    itemsArrayList.add(new LineItem(product.getID(), 1));
-                    total = total + cost;
-                    totalField.setText(df.format(total));
-                    model.addRow(item);
-                    model.fireTableDataChanged();
-                    supplierList.setEnabled(false);
-                    break;
+                if(checkProductArrayList(itemsArrayList) == false){
+                    if (productList.getSelectedValue().toString()
+                            .equals(product.getName() + "   ")) {
+                        cost = product.getCost();
+                        Object[] item =
+                                { productList.getSelectedValue().toString(), 1,
+                                        cost };
+                        itemsArrayList.add(new LineItem(product.getID(), 1));
+                        total = total + cost;
+                        totalField.setText(df.format(total));
+                        model.addRow(item);
+                        model.fireTableDataChanged();
+                        supplierList.setEnabled(false);
+                        break;
+                    }
                 }
+                
             }
-
         } else if (itemTable.getSelectionModel().getValueIsAdjusting() == true) {
             isSelected = true;
         }
@@ -329,6 +331,18 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             productArrayList.add(p.getName() + "   ");
         }
         productList.setListData(productArrayList.toArray());
+    }
+    
+    public boolean checkProductArrayList(ArrayList<LineItem> itemsArrayList){
+        boolean isSame = false;
+        for(LineItem items : itemsArrayList){
+            Product product = Database.getInstance().getProduct(items.getProductID());
+            if(productList.getSelectedValue().toString().equals(product.getName()+ "   ")){
+                isSame = true;
+                break;
+            }
+        }
+        return isSame;
     }
 
     public void warmingMsg(String msg) {
