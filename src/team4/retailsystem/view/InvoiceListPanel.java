@@ -35,7 +35,7 @@ public class InvoiceListPanel extends JFrame
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
 	private Database database = Database.getInstance();
-	DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
 	public InvoiceListPanel(InvoicePanel p) 
 	{

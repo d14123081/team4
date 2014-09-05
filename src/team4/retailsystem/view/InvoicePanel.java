@@ -298,7 +298,6 @@ public class InvoicePanel extends JPanel
 			}
 		});
 
-		
 		checkboxNew.addItemListener(new ItemListener() 
 		{
 			@Override
@@ -306,75 +305,36 @@ public class InvoicePanel extends JPanel
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED) 
 				{
-					clearInvoice();
+					logout();
+					btnInvoices.setEnabled(false);
+					checkboxNew.setSelected(true);
 					customerComboBox.setEnabled(true);
-					datePicker.setEnabled(true);
-					datePicker.getJFormattedTextField().setEnabled(true);
-					datePanel.setEnabled(true);
+					//datePicker.setEnabled(true);
+					datePicker.getJFormattedTextField().setEnabled(true);				
+					//datePanel.setEnabled(true);
+					//dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
 				} 
 				else 
 				{
 					logout();
+					btnInvoices.setEnabled(true);
 					customerComboBox.setEnabled(false);
-					datePicker.setEnabled(false);
+					//datePicker.setEnabled(false);
 					datePicker.getJFormattedTextField().setEnabled(false);
-					datePanel.setEnabled(false);
+					//datePanel.setEnabled(false);					
 				}
 			}
 		});
 	}
 
-	// Updates invoices on panel
-	public void updateInvoiceList(ArrayList<Invoice> invoices) 
-	{
-		invoiceListFrame.updateTable(invoices);
-	}
-
-	// Updates products on panel
-	public void updateProductList(ArrayList<Product> products) 
-	{
-		productList.setListData(products.toArray());
-	}
-
-	// Updates customers on panel
-	public void updateCustomerList(ArrayList<Customer> customers) 
-	{
-		customerComboBox
-				.setModel(new DefaultComboBoxModel(customers.toArray()));
-	}
-
-	public void addListener(RetailViewListener r) 
-	{
-		listeners.add(r);
-	}
-
-	// Clears the invoice
-	public void clearInvoice() 
-	{
-		int rowCount = tableModel.getRowCount();
-		for (int i = 0; i < rowCount; i++) 
-		{
-			tableModel.removeRow(0);
-		}
-		idField.setText(null);
-	}
-
-	// Resets panel
-	public void logout() 
-	{
-		clearInvoice();
-		checkboxNew.setSelected(false); 
-		Calendar c = Calendar.getInstance();
-		dateModel.setDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH),
-				c.get(Calendar.DATE));
-		if(customerComboBox.getModel().getSize() > 0){
-			customerComboBox.setSelectedIndex(0);			
-		}
-	}
-
+	
 	public void updateTable(Invoice i) 
 	{
 		logout();
+		datePicker.setEnabled(true);
+		datePicker.getJFormattedTextField().setEnabled(true);				
+		datePanel.setEnabled(true);
+		dateModel.setDate(i.getDate().getDay(), i.getDate().getMonth(), i.getDate().getYear());
 		idField.setText(Integer.toString(i.getID()));
 		customerComboBox.setSelectedItem(i.getCustomer());
 		ArrayList<LineItem> lineitems = i.getLineItems();
@@ -417,6 +377,20 @@ public class InvoicePanel extends JPanel
 		}
 	}
 	
+	// Resets panel
+		public void logout() 
+		{
+			int rowCount = tableModel.getRowCount();
+			for (int i = 0; i < rowCount; i++) 
+			{
+				tableModel.removeRow(0);
+			}
+			idField.setText(null);
+			invoiceListFrame.setVisible(false);
+			customerComboBox.setSelectedIndex(0);
+			dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+		}
+	
 	public void initialiseTable() 
 	{
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
@@ -454,4 +428,27 @@ public class InvoicePanel extends JPanel
 		JOptionPane.showMessageDialog(null, errorMessage);
 	}
 
+	// Updates invoices on panel
+	public void updateInvoiceList(ArrayList<Invoice> invoices) 
+	{
+		invoiceListFrame.updateTable(invoices);
+	}
+
+	// Updates products on panel
+	public void updateProductList(ArrayList<Product> products) 
+	{
+		productList.setListData(products.toArray());
+	}
+
+	// Updates customers on panel
+	public void updateCustomerList(ArrayList<Customer> customers) 
+	{
+		customerComboBox
+				.setModel(new DefaultComboBoxModel(customers.toArray()));
+	}
+
+	public void addListener(RetailViewListener r) 
+	{
+		listeners.add(r);
+	}
 }
