@@ -7,7 +7,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
-//import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,12 +24,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-import team4.retailsystem.model.Customer;
-import team4.retailsystem.model.Database;
-import team4.retailsystem.model.Invoice;
-import team4.retailsystem.model.LineItem;
-import team4.retailsystem.model.Product;
-import team4.retailsystem.model.User;
+import team4.retailsystem.model.*;
 
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.TableModelEvent;
@@ -38,13 +32,12 @@ import javax.swing.event.TableModelListener;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
-
-import javax.swing.SpringLayout;
-
-public class InvoicePanel extends JPanel {
+import net.sourceforge.jdatepicker.impl.*;
+/**
+ * @author Alan
+ **/
+public class InvoicePanel extends JPanel 
+{
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 
 	private Database database;
@@ -66,13 +59,15 @@ public class InvoicePanel extends JPanel {
 	private Calendar today = Calendar.getInstance();
 	private InvoiceListPanel invoiceListFrame;
 
-	public InvoicePanel() {
+	public InvoicePanel() 
+	{
 		initialiseComponents();
 		constructView();
 		addListeners();
 	}
 
-	public void initialiseComponents() {
+	public void initialiseComponents() 
+	{
 		btnInvoices = new JButton("Invoices");
 		btnAdd = new JButton("Submit");
 		btnCancel = new JButton("Cancel");
@@ -89,7 +84,6 @@ public class InvoicePanel extends JPanel {
 		invoicePanel = new JPanel();
 		invoiceTable = new JTable();
 		idField = new JTextField();
-		tableModel = (DefaultTableModel) invoiceTable.getModel();
 		productScrollPane = new JScrollPane();
 		productList = new JList();
 		productScrollPane.setViewportView(productList);
@@ -102,6 +96,7 @@ public class InvoicePanel extends JPanel {
 		datePicker.getJFormattedTextField().setEnabled(false);
 		lblCustomer = new JLabel("Customer:");
 		initialiseTable();
+		tableModel = (DefaultTableModel) invoiceTable.getModel();
 		invoiceListFrame = new InvoiceListPanel(this);
 	}
 
@@ -158,31 +153,39 @@ public class InvoicePanel extends JPanel {
 		invoicePanel.add(lblCustomer);
 	}
 
-	public void addListeners() {
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+	public void addListeners() 
+	{
+		btnAdd.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
 				// If new invoice + items added to invoice, create new
-				if (checkboxNew.isSelected() && tableModel.getRowCount() > 0) {
+				if (checkboxNew.isSelected() && tableModel.getRowCount() > 0) 
+				{
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					Date d = (Date) datePicker.getModel().getValue();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
-					for (int i = 0; i < tableModel.getRowCount(); i++) {
+					for (int i = 0; i < tableModel.getRowCount(); i++) 
+					{
 						int productId = (int) invoiceTable.getValueAt(i, 0);
 						int quantity = (int) invoiceTable.getValueAt(i, 2);
 						lineitems.add(new LineItem(productId, quantity));
 					}
-					for (RetailViewListener r : listeners) {
+					for (RetailViewListener r : listeners) 
+					{
 						r.clickCreateInvoice(lineitems, c, d);
 					}
 					logout();
-				} // else if updating invoice
-				else if (!checkboxNew.isSelected()
-						&& tableModel.getRowCount() > 0) {
+				} 
+				// else if updating invoice
+				else if (!checkboxNew.isSelected() && tableModel.getRowCount() > 0) 
+				{
 					int id = Integer.parseInt(idField.getText());
 					Customer c = (Customer) customerComboBox.getSelectedItem();
 					Date d = (Date) datePicker.getModel().getValue();
 					ArrayList<LineItem> lineitems = new ArrayList<>();
-					for (int i = 0; i < tableModel.getRowCount(); i++) {
+					for (int i = 0; i < tableModel.getRowCount(); i++) 
+					{
 						int productId = (int) invoiceTable.getValueAt(i, 0);
 						int quantity = (int) invoiceTable.getValueAt(i, 2);
 						lineitems.add(new LineItem(productId, quantity));
@@ -191,70 +194,84 @@ public class InvoicePanel extends JPanel {
 						r.clickUpdateInvoice(id, lineitems, c, d);
 					}
 					logout();
-				} // If neither updating nor creating - throw error
-				else {
+				} //Handles a submit when there's no rows in table
+				else 
+				{
 					showError("Incomplete invoice");
 				}
 
 			}
 		});
 
-		btnInvoices.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnInvoices.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
 				invoiceListFrame.setVisible(true);
 			}
 		});
 
-		// Check all rows to see if selected, if selected, then remove else
-		// throw error
-		btnDelRow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (invoiceTable.getSelectedRow() == -1) {
+		//If a row is selected, remove it
+		btnDelRow.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (invoiceTable.getSelectedRow() == -1) 
+				{
 					showError("Select a row to delete");
-				} else {
+				} 
+				else 
+				{
 					tableModel.removeRow(invoiceTable.getSelectedRow());
 					invoiceTable.clearSelection();
 				}
 			}
 		});
 
-		btnCancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		//Reset the GUI
+		btnCancel.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
 				logout();
 			}
 		});
 
-		// Handles a click event on product list
-		productList.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (!checkboxNew.isSelected() && tableModel.getRowCount() < 1) {
+		productList.addMouseListener(new MouseAdapter() 
+		{
+			public void mouseClicked(MouseEvent e) 
+			{
+				if (!checkboxNew.isSelected() && tableModel.getRowCount() < 1) 
+				{
 					showError("You must either create a new invoice or add to an existing invoice");
-				} else { // If table is empty
-					if (tableModel.getRowCount() == 0) {
-						// add row, [ product id, product name, 1 ]
-						tableModel.addRow(new Object[] {
-								((Product) productList.getSelectedValue())
-										.getID(),
-								((Product) productList.getSelectedValue())
-										.getName(), 1 });
-					} else {
-						// Check if item already on list, if so increase, if not
-						// then add to list
-						for (int i = 0; i < tableModel.getRowCount(); i++) {
-							if ((int) tableModel.getValueAt(i, 0) == ((Product) productList
-									.getSelectedValue()).getID()) {
-								tableModel.setValueAt(
-										(int) tableModel.getValueAt(i, 2) + 1,
-										i, 2);
+				} 
+				else 
+				{ 
+					if (tableModel.getRowCount() == 0) 
+					{ //add new row [ id, name, 1 ]
+						int id = ((Product) productList.getSelectedValue()).getID();
+						String name = ((Product) productList.getSelectedValue()).getName();
+						tableModel.addRow(new Object[]{ id, name, 1 });
+					} 
+					else 
+					{ //compares product id of item being added to lineitem ids
+						for (int i = 0; i < tableModel.getRowCount(); i++) 
+						{
+							int lineItemID = (int) tableModel.getValueAt(i, 0);
+							int productID = ((Product) productList.getSelectedValue()).getID();
+							//if match, increase by 1
+							if ( lineItemID == productID ) 
+							{
+								int increment_value = (int) tableModel.getValueAt(i, 2) + 1;
+								tableModel.setValueAt(increment_value, i, 2);
 								break;
 							}
-							if (i == tableModel.getRowCount() - 1) {
-								tableModel.addRow(new Object[] {
-										((Product) productList
-												.getSelectedValue()).getID(),
-										((Product) productList
-												.getSelectedValue()).getName(),
-										1 });
+							//if no match, add to table
+							if (i == tableModel.getRowCount() - 1) 
+							{
+								int id = ((Product) productList.getSelectedValue()).getID();
+								String name = ((Product) productList.getSelectedValue()).getName();
+								tableModel.addRow(new Object[] {id, name, 1 });
 								break;
 							}
 						}
@@ -263,86 +280,100 @@ public class InvoicePanel extends JPanel {
 			}
 		});
 
-		// Handles table update
-		invoiceTable.getModel().addTableModelListener(new TableModelListener() {
+		// Updates total cost
+		invoiceTable.getModel().addTableModelListener(new TableModelListener() 
+		{
 			@Override
-			public void tableChanged(TableModelEvent e) {
+			public void tableChanged(TableModelEvent e) 
+			{
 				double cost = 0.0;
-				for (int i = 0; i < invoiceTable.getRowCount(); i++) {
-					Product p = database.getProduct((int) invoiceTable
-							.getValueAt(i, 0));
-					cost += p.getPrice() * (int) invoiceTable.getValueAt(i, 2);
+				for (int i = 0; i < invoiceTable.getRowCount(); i++) 
+				{
+					int id = (int) invoiceTable.getValueAt(i, 0);
+					Product p = database.getProduct(id);
+					int quantity = (int) invoiceTable.getValueAt(i, 2);
+					cost += p.getPrice() * quantity;
 				}
 				totalCostField.setText(df.format(cost));
 			}
 		});
 
-		// Handles the "new" checkbox
-		checkboxNew.addItemListener(new ItemListener() {
+		
+		checkboxNew.addItemListener(new ItemListener() 
+		{
 			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
+			public void itemStateChanged(ItemEvent e) 
+			{
+				if (e.getStateChange() == ItemEvent.SELECTED) 
+				{
 					clearInvoice();
 					customerComboBox.setEnabled(true);
 					datePicker.setEnabled(true);
 					datePicker.getJFormattedTextField().setEnabled(true);
 					datePanel.setEnabled(true);
-
-				} else {
+				} 
+				else 
+				{
 					logout();
 					customerComboBox.setEnabled(false);
 					datePicker.setEnabled(false);
 					datePicker.getJFormattedTextField().setEnabled(false);
 					datePanel.setEnabled(false);
 				}
-
 			}
 		});
 	}
 
 	// Updates invoices on panel
-	public void updateInvoiceList(ArrayList<Invoice> invoices) {
-		invoiceListFrame.setTableData(invoices);
+	public void updateInvoiceList(ArrayList<Invoice> invoices) 
+	{
+		invoiceListFrame.updateTable(invoices);
 	}
 
 	// Updates products on panel
-	public void updateProductList(ArrayList<Product> products) {
+	public void updateProductList(ArrayList<Product> products) 
+	{
 		productList.setListData(products.toArray());
 	}
 
 	// Updates customers on panel
-	public void updateCustomerList(ArrayList<Customer> customers) {
+	public void updateCustomerList(ArrayList<Customer> customers) 
+	{
 		customerComboBox
 				.setModel(new DefaultComboBoxModel(customers.toArray()));
 	}
 
-	public void addListener(RetailViewListener r) {
+	public void addListener(RetailViewListener r) 
+	{
 		listeners.add(r);
 	}
 
 	// Clears the invoice
-	public void clearInvoice() {
-		tableModel = (DefaultTableModel) invoiceTable.getModel();
+	public void clearInvoice() 
+	{
 		int rowCount = tableModel.getRowCount();
-		for (int i = 0; i < rowCount; i++) {
+		for (int i = 0; i < rowCount; i++) 
+		{
 			tableModel.removeRow(0);
 		}
 		idField.setText(null);
 	}
 
 	// Resets panel
-	public void logout() {
+	public void logout() 
+	{
 		clearInvoice();
-		checkboxNew.setSelected(false); // set the checkbox to the default login
-										// position
+		checkboxNew.setSelected(false); 
 	}
 
-	public void updateTable(Invoice i) {
+	public void updateTable(Invoice i) 
+	{
 		logout();
 		idField.setText(Integer.toString(i.getID()));
 		customerComboBox.setSelectedItem(i.getCustomer());
 		ArrayList<LineItem> lineitems = i.getLineItems();
-		for (LineItem li : lineitems) {
+		for (LineItem li : lineitems) 
+		{
 			Product p = database.getProduct(li.getProductID());
 			tableModel.addRow(new Object[] { li.getProductID(), p.getName(),
 					li.getQuantity() });
@@ -350,14 +381,12 @@ public class InvoicePanel extends JPanel {
 		invoiceListFrame.setVisible(false);
 	}
 
-	// Shows message
-	public void showError(String errorMessage) {
-		JOptionPane.showMessageDialog(null, errorMessage);
-	}
-
+	
 	// Handles what is displayed depending on the user logged in
-	public void updateUser(User u) {
-		if (u.getAuthorizationLevel() == User.NORMAL_USER) {
+	public void updateUser(User u) 
+	{
+		if (u.getAuthorizationLevel() == User.NORMAL_USER) 
+		{
 			btnAdd.setVisible(false);
 			btnInvoices.setVisible(true);
 			btnCancel.setVisible(false);
@@ -367,7 +396,9 @@ public class InvoicePanel extends JPanel {
 			checkboxNew.setEnabled(false);
 			customerComboBox.setEnabled(false);
 			datePicker.setEnabled(false);
-		} else {
+		} 
+		else 
+		{
 			btnAdd.setVisible(true);
 			btnInvoices.setVisible(true);
 			btnCancel.setVisible(true);
@@ -380,31 +411,41 @@ public class InvoicePanel extends JPanel {
 		}
 	}
 	
-	public void initialiseTable() {
+	public void initialiseTable() 
+	{
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Product ID", "Product Name", "Quantity" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
+				new String[] { "Product ID", "Product Name", "Quantity" }) 
+		{
+			Class[] columnTypes = new Class[] 
+					{ Integer.class, String.class,
 					Integer.class };
-
-			public Class getColumnClass(int columnIndex) {
+			public Class getColumnClass(int columnIndex) 
+			{
 				return columnTypes[columnIndex];
 			}
-
 			boolean[] columnEditables = new boolean[] { false, false, true };
-
-			public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) 
+			{
 				return columnEditables[column];
 			}
-
 			@Override
-			public void setValueAt(Object val, int row, int column) {
+			public void setValueAt(Object val, int row, int column) 
+			{
 				Product p = database.getProduct((int) invoiceTable.getValueAt(
 						row, column - 2));
+				//Validation on quantity, cannot go over stock level and must be a number > 0
 				if (val instanceof Number && ((Number) val).doubleValue() > 0
-						&& ((Number) val).intValue() <= p.getStockLevel()) {
+						&& ((Number) val).intValue() <= p.getStockLevel()) 
+				{
 					super.setValueAt(val, row, column);
 				}
 			}
 		});
+		
 	}
+	public void showError(String errorMessage) 
+	{
+		JOptionPane.showMessageDialog(null, errorMessage);
+	}
+
 }
