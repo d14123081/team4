@@ -347,6 +347,7 @@ implements RetailSystemView
 	@Override
 	public void updateOrders(ArrayList<Order> orders) {
 		orderPanel.updateOrderList(orders);
+		stockControlPanel.updateOrderList(orders);
 	}
 
 }

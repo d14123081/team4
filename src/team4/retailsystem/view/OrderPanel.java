@@ -24,6 +24,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             new ArrayList<RetailViewListener>();
 
     private JPanel buttonPanel1;
+    private JPanel buttonPanel2;
     private JScrollPane orderListPanel;
     private JPanel combinePanel;
     private JPanel orderPanel;
@@ -31,14 +32,12 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private JScrollPane supplierPanel;
     private JScrollPane productPanel;
     private JButton newOrderButton;
-    private JButton viewOrderedButton;
+    private JButton OrderedButton;
     private JButton makeOrderButton;
     private JButton editItemButton;
     private JButton removeItemButton;
-    private JButton addDelivery;
     private JLabel totalLabel;
     private JTextField totalField;
-    private JButton enter;
 
     private JList<Object> supplierList;
     private JList<Object> productList;
@@ -46,7 +45,8 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private JTable itemTable;
     private DefaultTableModel model;
     private DecimalFormat df = new DecimalFormat("0.00");
-    private ArrayList<Supplier> suppliers = Database.getInstance().getSuppliers();
+    private ArrayList<Supplier> suppliers = Database.getInstance()
+            .getSuppliers();
     private ArrayList<Product> products = Database.getInstance().getProducts();
     private ArrayList<Order> orders = Database.getInstance().getOrders();
     private ArrayList<String> supplierArrayList = new ArrayList<>();
@@ -56,17 +56,15 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     private String[] columnNames =
             { "Item name", "Quantity", "Price per item" };
     private Supplier supplier;
-    private boolean isNewOrder = false;
     private boolean isSelected = false;
     private ExtraPanel p;
 
     private double total = 0;
     private double cost = 0;
     private int index;
-    private static int viewOrders = 1;
-    private static int addDeliveryDate = 2;
 
-    private OrderedPanel ordered = new OrderedPanel(0);
+
+    private OrderedPanel ordered = new OrderedPanel();
     private CalenderPanel calender;
 
     @SuppressWarnings("serial")
@@ -76,10 +74,9 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        enter = new JButton();
-        enter.addActionListener(this);
         buttonPanel1 = new JPanel();
-        buttonPanel1.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        buttonPanel1
+                .setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         gbc.ipady = 30;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -92,21 +89,9 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         buttonPanel1.add(newOrderButton, gbc);
         newOrderButton.addActionListener(this);
 
-        editItemButton = new JButton("Edit");
-        editItemButton.addActionListener(this);
-        buttonPanel1.add(editItemButton);
-
-        removeItemButton = new JButton("Remove");
-        removeItemButton.addActionListener(this);
-        buttonPanel1.add(removeItemButton);
-
-        viewOrderedButton = new JButton("View Orders");
-        buttonPanel1.add(viewOrderedButton, gbc);
-        viewOrderedButton.addActionListener(this);
-        
-        addDelivery = new JButton("Add Delivery");
-        buttonPanel1.add(addDelivery, gbc);
-        addDelivery.addActionListener(this);
+        OrderedButton = new JButton("Orders");
+        buttonPanel1.add(OrderedButton, gbc);
+        OrderedButton.addActionListener(this);
 
         orderPanel = new JPanel();
         gbc.weightx = 1.2;
@@ -121,12 +106,9 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         GridBagConstraints gbc1 = new GridBagConstraints();
         gbc1.fill = GridBagConstraints.BOTH;
 
-        model = new DefaultTableModel(itemsList, columnNames){
+        model = new DefaultTableModel(itemsList, columnNames) {
 
-
-            boolean[] canEdit = new boolean[]{
-                    false, false, false
-            };
+            boolean[] canEdit = new boolean[] { false, false, false };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
@@ -137,7 +119,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         itemTable.setRowHeight(30);
         itemTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         itemTable.getSelectionModel().addListSelectionListener(this);
-        
+
         orderListPanel = new JScrollPane(itemTable);
 
         gbc1.gridx = 0;
@@ -149,20 +131,21 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         addScrollPane(orderListPanel, gbl1, gbc1);
         orderPanel.add(orderListPanel);
 
-        totalPricePanel = new JPanel();
+        buttonPanel2 = new JPanel();
+        buttonPanel2.setLayout(new GridLayout(2,0));
+        
+        gbc1.ipady = 20;
         gbc1.gridy = 1;
         gbc1.weighty = 1.0;
-        addPanel(totalPricePanel, gbl1, gbc1);
-        orderPanel.add(totalPricePanel);
-        totalPricePanel.setLayout(new BorderLayout(20, 20));
-
-        makeOrderButton = new JButton("Submit");
-        makeOrderButton.addActionListener(this);
-        totalPricePanel.add(makeOrderButton, BorderLayout.LINE_START);
+        addPanel(buttonPanel2, gbl1, gbc1);
+        orderPanel.add(buttonPanel2);
+        totalPricePanel = new JPanel();
+        buttonPanel2.add(totalPricePanel);
+        totalPricePanel.setLayout(new BorderLayout());
 
         totalLabel = new JLabel("Total Price: ");
         totalLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-        totalPricePanel.add(totalLabel, BorderLayout.CENTER);
+        totalPricePanel.add(totalLabel, BorderLayout.LINE_START);
 
         totalField = new JTextField("0.00", 10);
         totalField.setHorizontalAlignment(JTextField.RIGHT);
@@ -171,6 +154,22 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         totalField.setEditable(false);
         totalPricePanel.add(totalField, BorderLayout.LINE_END);
 
+        JPanel button = new JPanel();
+        button.setLayout(new GridLayout(1,3));
+        makeOrderButton = new JButton("Submit");
+        makeOrderButton.addActionListener(this);
+        button.add(makeOrderButton);
+        
+        editItemButton = new JButton("Edit");
+        editItemButton.addActionListener(this);
+        button.add(editItemButton);
+
+        removeItemButton = new JButton("Remove");
+        removeItemButton.addActionListener(this);
+        button.add(removeItemButton);
+        setButton(false);
+        buttonPanel2.add(button);
+        
         combinePanel = new JPanel();
         gbc.weightx = 1.8;
         gbc.weighty = 2.0;
@@ -191,7 +190,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         addPanelName("Suppliers", supplierPanel);
         combinePanel.add(supplierPanel);
         productList = new JList<Object>(productArrayList.toArray());
-        
+
         getProductArrayList();
         productList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         productList.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -209,29 +208,12 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         this.setVisible(true);
     }
 
-    public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
-        gbl.setConstraints(panel, gbc);
-        this.add(panel);
-    }
-
-    public void addScrollPane(JScrollPane panel, GridBagLayout gbl,
-            GridBagConstraints gbc) {
-        gbl.setConstraints(panel, gbc);
-        this.add(panel);
-    }
-
-    public void addPanelName(String panelName, JScrollPane panel) {
-        panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        panel.setBorder(BorderFactory.createTitledBorder(panelName));
-    }
-
     @Override
     public void valueChanged(ListSelectionEvent arg0) {
         if (supplierList.getValueIsAdjusting() == true) {
             productArrayList.clear();
             index = supplierList.getSelectedIndex();
-            supplier =
-                    Database.getInstance().getSuppliers().get(index);
+            supplier = Database.getInstance().getSuppliers().get(index);
             for (Product p : products) {
                 if (p.getSupplier().getID() == supplier.getID()) {
                     productArrayList.add(p.getName() + "   ");
@@ -239,7 +221,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             }
             productList.setEnabled(true);
             productList.setListData(productArrayList.toArray());
-            
+
         } else if (productList.getValueIsAdjusting() == true) {
             for (Product product : products) {
                 if (productList.getSelectedValue().toString()
@@ -269,19 +251,19 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             initialCondition();
             clearItemList();
             setItemTableSize();
-            isNewOrder = true;
             supplierList.setEnabled(true);
             getSupplierArrayList();
+            setButton(true);
         }
-        
-        else if (arg0.getSource().equals(viewOrderedButton)) {
-            ordersList(viewOrders);   
+
+        else if (arg0.getSource().equals(OrderedButton)) {
+            supplierList.setEnabled(false);
+            productList.setEnabled(false);
+            setButton(false);
+            ordersList();
         }
-        
-        else if (arg0.getSource().equals(addDelivery)){
-            ordersList(addDeliveryDate);
-        }
-        
+
+
         else if (arg0.getSource().equals(editItemButton)) {
             if (isSelected == true) {
                 editQuantity();
@@ -289,53 +271,50 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             } else
                 warmingMsg("Please select item to edit");
             model.fireTableDataChanged();
+            
         }
 
         else if (arg0.getSource().equals(removeItemButton)) {
             if (isSelected == true) {
-                total = total - Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 1).toString())* Double.parseDouble(model.getValueAt(itemTable.getSelectedRow(), 2).toString());
+                total =
+                        total
+                                - Double.parseDouble(model.getValueAt(
+                                        itemTable.getSelectedRow(), 1)
+                                        .toString())
+                                * Double.parseDouble(model.getValueAt(
+                                        itemTable.getSelectedRow(), 2)
+                                        .toString());
                 totalField.setText(df.format(total));
                 itemsArrayList.remove(itemTable.getSelectedRow());
                 model.removeRow(itemTable.getSelectedRow());
                 model.fireTableDataChanged();
                 isSelected = false;
-                
+
             } else
                 warmingMsg("Please select item to edit");
         }
 
         else if (arg0.getSource().equals(makeOrderButton)) {
-            if (isNewOrder == true) {
-                if(model.getRowCount()>0){
-                    for (RetailViewListener r : listeners) {
-                        r.clickCreateOrder(total, itemsArrayList, supplier, 1);    
-                    }
-                    for(LineItem item : itemsArrayList){
-                        for(Product p : products){
-                            if(item.getProductID() == p.getID()){
-                                for(RetailViewListener r : listeners){
-                                    r.clickUpdateProduct(p.getID(), p.getName(), p.getCost(), p.getMarkup(), p.getStockLevel()+item.getQuantity(), supplier);
-                                }
-                            }
-                        }
-                    }
-                    itemsArrayList.clear();
-                    initialCondition();
-                    totalField.setText("0.00");
-                    supplierList.setEnabled(false);
-                    productList.setEnabled(false);
-                    clearItemList();
+            if (model.getRowCount() > 0) {
+                for (RetailViewListener r : listeners) {
+                    System.out.print(1);
+                    r.clickCreateOrder(total, itemsArrayList, supplier, 1);   
                 }
-                else
-                    warmingMsg("Please add item to make a new order");
-            }
-            else
-                warmingMsg("Please select New Order");
+                initialCondition();
+                totalField.setText("0.00");
+                supplierList.setEnabled(false);
+                productList.setEnabled(false);
+                itemsArrayList.clear();
+                setButton(false);
+                clearItemList();
+            } else
+                warmingMsg("Please add item to make a new order");
         }
 
     }
 
     public void getSupplierArrayList() {
+        suppliers = Database.getInstance().getSuppliers();
         supplierArrayList.clear();
         for (Supplier s : suppliers) {
             supplierArrayList.add(s.getName() + "   ");
@@ -344,7 +323,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void getProductArrayList() {
-    	products = Database.getInstance().getProducts();
+        products = Database.getInstance().getProducts();
         productArrayList.clear();
         for (Product p : products) {
             productArrayList.add(p.getName() + "   ");
@@ -358,7 +337,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void initialCondition() {
-        isNewOrder = false;
         isSelected = false;
         total = 0;
     }
@@ -373,98 +351,116 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         itemsList = null;
         model.setDataVector(itemsList, columnNames);
         model.fireTableDataChanged();
+        totalField.setText("0.00");
     }
 
-    private void updateQuantity(int quantity){
-        total =
-                total
-                        + Double.parseDouble(model.getValueAt(
-                                itemTable.getSelectedRow(), 2)
-                                .toString())
-                        * (quantity - 1);
+    private void updateQuantity(int quantity) {
+        total +=
+                (Double.parseDouble(model.getValueAt(
+                        itemTable.getSelectedRow(), 2).toString()) * (quantity - 1));
         itemsArrayList.get(itemTable.getSelectedRow()).setQuantity(quantity);
         model.setValueAt(quantity, itemTable.getSelectedRow(), 1);
         totalField.setText(df.format(total));
     }
-    
-    public void updateProductList(ArrayList<Product> products){
-    	//this.products.equals(products);
-    	getProductArrayList();
-        productList.setListData(products.toArray());
-        productList.validate();
-    }
-    
-    public void updateSupplierList(ArrayList<Supplier> supliers){
-        supplierList.setListData(suppliers.toArray());
-    }
-    
-    public void addListener(RetailViewListener r) {
-        listeners.add(r);
-        ordered.addListener(r);
-    }
-    
-    public void editQuantity(){
+
+    public void editQuantity() {
         p = new ExtraPanel();
-        Object[] t = {p};
-        JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
+        Object[] t = { p };
+        JOptionPane o =
+                new JOptionPane(t, JOptionPane.PLAIN_MESSAGE,
+                        JOptionPane.OK_OPTION);
         JDialog dialog = o.createDialog("Edit Quantity");
         dialog.setVisible(true);
-        if(o.getValue().equals(0)){
+        if (o.getValue().equals(0)) {
             updateQuantity(p.getValue());
         }
     }
-    
-    public void ordersList(int v){
-        ordered.setOrderedType(v);
-        Object[] t = {ordered,calender};
-        JOptionPane o = new JOptionPane(t,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_OPTION);
-        JDialog d = o.createDialog(null,"Orders List");   
+
+    public void ordersList() {
+        clearItemList();
+        Object[] t = { ordered, calender };
+        JOptionPane o =
+                new JOptionPane(t, JOptionPane.PLAIN_MESSAGE,
+                        JOptionPane.OK_OPTION);
+        JDialog d = o.createDialog(null, "Orders List");
         d.setSize(480, 550);
         d.setVisible(true);
-        if(o.getValue().equals(0)){
-            switch(v){
-            case 1:
+        if (o.getValue().equals(0)) {
+            if(ordered.getOrderID() > 0){
                 clearItemList();
                 total = 0;
                 orders = Database.getInstance().getOrders();
-                for(Order order : orders){
-                    if(order.getID() == ordered.getOrderID()){
+                for (Order order : orders) {
+                    if (order.getID() == ordered.getOrderID()) {
                         itemsArrayList = order.getLineItems();
-                        for(LineItem items : order.getLineItems()){
-                            for(Product product : products){
-                                if(product.getID() == items.getProductID()){
+                        for (LineItem items : order.getLineItems()) {
+                            for (Product product : products) {
+                                if (product.getID() == items.getProductID()) {
                                     Object[] item =
-                                        { product.getName(), items.getQuantity(),product.getCost()};
-                                    total = total + product.getCost()*items.getQuantity();
+                                            { product.getName(),
+                                                    items.getQuantity(),
+                                                    product.getCost() };
+                                    total += product.getCost()
+                                             * items.getQuantity();
                                     model.addRow(item);
                                     model.fireTableDataChanged();
                                 }
                             }
                         }
-                        totalField.setText(df.format(total));         
+                        totalField.setText(df.format(total));
                     }
-                };
-                break;
-            case 2:
-                clearItemList();
-                break;
+                }
             }
-        }   
+        }
     }
 
-    
     /**
      * A method that clears temp fields on logout.
      */
-    public void logout(){
+    public void logout() {
         initialCondition();
         clearItemList();
         supplierList.setEnabled(false);
     }
 
-    public void updateOrderList(ArrayList<Order> orders) {
-
+    public void setButton(boolean isVisible){
+        makeOrderButton.setVisible(isVisible);
+        editItemButton.setVisible(isVisible);
+        removeItemButton.setVisible(isVisible);
     }
     
+    public void addPanel(JPanel panel, GridBagLayout gbl, GridBagConstraints gbc) {
+        gbl.setConstraints(panel, gbc);
+        this.add(panel);
+    }
+
+    public void addScrollPane(JScrollPane panel, GridBagLayout gbl,
+            GridBagConstraints gbc) {
+        gbl.setConstraints(panel, gbc);
+        this.add(panel);
+    }
+
+    public void addPanelName(String panelName, JScrollPane panel) {
+        panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        panel.setBorder(BorderFactory.createTitledBorder(panelName));
+    }
     
+    public void updateOrderList(ArrayList<Order> orders) {
+        
+    }
+
+    public void updateProductList(ArrayList<Product> products) {
+        getProductArrayList();
+        productList.setListData(products.toArray());
+        productList.validate();
+    }
+
+    public void updateSupplierList(ArrayList<Supplier> supliers) {
+        supplierList.setListData(suppliers.toArray());
+    }
+
+    public void addListener(RetailViewListener r) {
+        listeners.add(r);
+        ordered.addListener(r);
+    }
 }
