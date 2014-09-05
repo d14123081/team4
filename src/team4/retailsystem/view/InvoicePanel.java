@@ -364,6 +364,12 @@ public class InvoicePanel extends JPanel
 	{
 		clearInvoice();
 		checkboxNew.setSelected(false); 
+		Calendar c = Calendar.getInstance();
+		dateModel.setDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH),
+				c.get(Calendar.DATE));
+		if(customerComboBox.getModel().getSize() > 0){
+			customerComboBox.setSelectedIndex(0);			
+		}
 	}
 
 	public void updateTable(Invoice i) 
