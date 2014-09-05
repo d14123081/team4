@@ -842,6 +842,7 @@ public class DatabaseTest {
 		Supplier supplier = new Supplier(tempData,tempData,tempData,tempData);
 		
 		db.addCustomer(customer);
+		customer = db.getCustomers().get(0);
 		db.addSupplier(supplier);
 		
 		ArrayList<LineItem> invoiceItems = new ArrayList<LineItem>();
