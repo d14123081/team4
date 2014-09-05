@@ -31,6 +31,7 @@ public class ExtraPanel extends JPanel implements ActionListener{
         gbc.fill = GridBagConstraints.BOTH;
         
         displayField = new JTextField("0");
+        displayField.setEditable(false);
         displayField.setHorizontalAlignment(JTextField.RIGHT);
         gbc.ipady = 10;
         gbc.gridx = 0;
@@ -181,7 +182,6 @@ public class ExtraPanel extends JPanel implements ActionListener{
         }
         else if(arg0.getSource().equals(deleteButton)){
             if(!(text.equals(null) || text.equals("")) && text.length() > 1){
-                System.out.println(text.length());
                 text = text.substring(0,text.length()-1 );
             }
             else
