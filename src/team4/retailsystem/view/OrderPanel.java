@@ -124,7 +124,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
 
         gbc1.gridx = 0;
         gbc1.gridy = 0;
-        gbc1.weighty = 6.0;
+        gbc1.weighty = 8.0;
         gbc1.weightx = 1;
         gbc1.gridwidth = 1;
         addPanelName("Order Items List", orderListPanel);
@@ -134,7 +134,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
         buttonPanel2 = new JPanel();
         buttonPanel2.setLayout(new GridLayout(2,0));
         
-        gbc1.ipady = 20;
+        gbc1.ipady = 10;
         gbc1.gridy = 1;
         gbc1.weighty = 1.0;
         addPanel(buttonPanel2, gbl1, gbc1);
@@ -449,7 +449,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
     
     public void updateOrderList(ArrayList<Order> orders) {
-        
+        ordered.updateOrderList(orders);
     }
 
     public void updateProductList(ArrayList<Product> products) {
