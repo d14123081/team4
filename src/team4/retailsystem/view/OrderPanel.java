@@ -420,7 +420,10 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     public void logout() {
         initialCondition();
         clearItemList();
+        productList.clearSelection();
+        supplierList.clearSelection();
         supplierList.setEnabled(false);
+        productList.setEnabled(false);
     }
 
     public void setButton(boolean isVisible){
