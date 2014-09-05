@@ -153,7 +153,7 @@ public class CustomerPanel extends JPanel {
 					setToViewMode();
 
 					if(customerList.getModel().getSize() > 0){
-						customerList.setSelectedIndex(0);
+						customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
 					} else {
 						clearTextFields();
 					}
@@ -417,7 +417,7 @@ public class CustomerPanel extends JPanel {
 				customerList.setSelectedValue(customerList.getModel().getElementAt(newCount-1), true);
 			}
 			else{
-				customerList.setSelectedIndex(0);
+				customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
 			}
 		}
 	}
@@ -517,9 +517,9 @@ public class CustomerPanel extends JPanel {
 		setIDTF(empty);
 		telTF.setText(empty);
 		setToViewMode();
-		
+		System.out.println(customerList.getModel().getSize());
 		if(customerList.getModel().getSize() > 0){
-			customerList.setSelectedIndex(0);			
+			customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
 		}
 	}
 

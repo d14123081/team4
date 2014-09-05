@@ -21,8 +21,11 @@ import javax.swing.JButton;
 import team4.retailsystem.model.Database;
 import team4.retailsystem.model.Invoice;
 import team4.retailsystem.model.Product;
-
-public class InvoiceListPanel extends JFrame {
+/**
+ * @author Alan
+ **/
+public class InvoiceListPanel extends JFrame 
+{
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 
 	private JPanel contentPane;
@@ -34,14 +37,16 @@ public class InvoiceListPanel extends JFrame {
 	private Database database = Database.getInstance();
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
-	public InvoiceListPanel(InvoicePanel p) {
+	public InvoiceListPanel(InvoicePanel p) 
+	{
 		this.invoicePanel = p;
 		initialiseComponents();
 		construct();
 		addListeners();
 	}
 
-	public void initialiseComponents() {
+	public void initialiseComponents() 
+	{
 		invoiceTable = new JTable();
 		contentPane = new JPanel();
 		scrollPane = new JScrollPane();
@@ -49,7 +54,8 @@ public class InvoiceListPanel extends JFrame {
 		btnEditInvoice = new JButton("Edit Invoice");
 	}
 
-	public void construct() {
+	public void construct() 
+	{
 		setBounds(100, 100, 522, 418);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -64,13 +70,19 @@ public class InvoiceListPanel extends JFrame {
 		tableModel = (DefaultTableModel) invoiceTable.getModel();
 	}
 
-	public void addListeners() {
-		btnEditInvoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (invoiceTable.getSelectedRow() == -1) {
-					showError("No invoice selected.");
-				} else {
-					int invoiceId = (int) invoiceTable.getValueAt(
+	public void addListeners() 
+	{
+		btnEditInvoice.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (invoiceTable.getSelectedRow() == -1) 
+				{
+					showError("No invoice selected");
+				} 
+				else 
+				{
+					int invoiceId = (int)invoiceTable.getValueAt(
 							invoiceTable.getSelectedRow(), 0);
 					invoicePanel.updateTable(database.getInvoice(invoiceId));
 					invoiceTable.clearSelection();
@@ -78,14 +90,20 @@ public class InvoiceListPanel extends JFrame {
 			}
 		});
 
-		btnDeleteInvoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (invoiceTable.getSelectedRow() == -1) {
+		btnDeleteInvoice.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (invoiceTable.getSelectedRow() == -1) 
+				{
 					showError("No invoice selected.");
-				} else {
+				} 
+				else 
+				{
 					int invoiceId = (int) invoiceTable.getValueAt(
 							invoiceTable.getSelectedRow(), 0);
-					for (RetailViewListener r : listeners) {
+					for (RetailViewListener r : listeners) 
+					{
 						r.clickDeleteInvoice(invoiceId);
 					}
 					invoiceTable.clearSelection();
@@ -94,34 +112,40 @@ public class InvoiceListPanel extends JFrame {
 		});
 	}
 
-	public void addListener(RetailViewListener r) {
+	public void addListener(RetailViewListener r) 
+	{
 		listeners.add(r);
 	}
 
-	public void setTableData(ArrayList<Invoice> invoices) {
+	public void updateTable(ArrayList<Invoice> invoices) 
+	{
 		int rowCount = tableModel.getRowCount();
-		for (int i = 0; i < rowCount; i++) {
+		for (int i = 0; i < rowCount; i++) 
+		{
 			tableModel.removeRow(0);
 		}
-		for (Invoice i : invoices) {
+		for (Invoice i : invoices) 
+		{
 			tableModel.addRow(new Object[] { i.getID(), i.getCustomer(),
 					df.format(i.getDate()) });
 		}
 	}
 
-	public void constructTable() {
+	public void constructTable() 
+	{
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Invoice ID", "Customer", "Date" }) {
-			Class[] columnTypes = new Class[] { Integer.class, String.class,
+				new String[] { "Invoice ID", "Customer", "Date" }) 
+		{
+			Class[] columnTypes = new Class[] 
+					{ Integer.class, String.class,
 					Object.class };
-
-			public Class getColumnClass(int columnIndex) {
+			public Class getColumnClass(int columnIndex) 
+			{
 				return columnTypes[columnIndex];
 			}
-
 			boolean[] columnEditables = new boolean[] { false, false, false };
-
-			public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) 
+			{
 				return columnEditables[column];
 			}
 		});
@@ -133,8 +157,8 @@ public class InvoiceListPanel extends JFrame {
 		scrollPane.setViewportView(invoiceTable);
 	}
 
-	// Shows message
-	public void showError(String errorMessage) {
+	public void showError(String errorMessage) 
+	{
 		JOptionPane.showMessageDialog(null, errorMessage);
 	}
 }
