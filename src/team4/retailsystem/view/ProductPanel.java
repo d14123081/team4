@@ -564,6 +564,12 @@ public class ProductPanel extends JPanel {
 		setMarkUpTF(empty);
 		setIDTF(empty);
 		stockLevelTF.setText(empty);
+		
+		setToViewMode();
+		
+		if(productList.getModel().getSize() != 0){
+			productList.setSelectedIndex(0);			
+		}
 	}
 
 	// **********getters and setters***************
