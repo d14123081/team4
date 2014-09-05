@@ -154,7 +154,7 @@ public class SupplierPanel extends JPanel {
 					setToViewMode();
 
 					if(supplierList.getModel().getSize() > 0){
-						supplierList.setSelectedIndex(0);
+						supplierList.setSelectedValue(supplierList.getModel().getElementAt(0), true);	
 					} else {
 						clearTextFields();
 					}
