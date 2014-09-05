@@ -518,6 +518,12 @@ public class SupplierPanel extends JPanel {
 		seteMailTF(empty);
 		setIDTF(empty);
 		telTF.setText(empty);
+		
+		setToViewMode();
+		
+		if(supplierList.getModel().getSize() != 0){
+			supplierList.setSelectedIndex(0);			
+		}
 	}
 
 	// **********getters and setters***************
