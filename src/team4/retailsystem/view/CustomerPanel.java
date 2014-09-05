@@ -517,9 +517,10 @@ public class CustomerPanel extends JPanel {
 		setIDTF(empty);
 		telTF.setText(empty);
 		setToViewMode();
-		
+		System.out.println(customerList.getModel().getSize());
 		if(customerList.getModel().getSize() > 0){
-			customerList.setSelectedIndex(0);			
+			customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
+			System.out.println("here");
 		}
 	}
 

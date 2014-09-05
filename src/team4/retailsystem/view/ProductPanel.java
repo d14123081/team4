@@ -568,7 +568,7 @@ public class ProductPanel extends JPanel {
 		setToViewMode();
 
 		if(productList.getModel().getSize() > 0){
-			productList.setSelectedIndex(0);			
+			productList.setSelectedValue(productList.getModel().getElementAt(0), true);		
 		}
 	}
 
