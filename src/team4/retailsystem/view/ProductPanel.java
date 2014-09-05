@@ -566,8 +566,8 @@ public class ProductPanel extends JPanel {
 		stockLevelTF.setText(empty);
 		
 		setToViewMode();
-		
-		if(productList.getModel().getSize() != 0){
+
+		if(productList.getModel().getSize() > 0){
 			productList.setSelectedIndex(0);			
 		}
 	}

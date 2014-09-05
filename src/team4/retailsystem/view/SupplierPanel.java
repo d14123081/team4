@@ -520,8 +520,8 @@ public class SupplierPanel extends JPanel {
 		telTF.setText(empty);
 		
 		setToViewMode();
-		
-		if(supplierList.getModel().getSize() != 0){
+
+		if(supplierList.getModel().getSize() > 0){
 			supplierList.setSelectedIndex(0);			
 		}
 	}

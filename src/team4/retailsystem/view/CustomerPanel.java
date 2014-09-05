@@ -518,7 +518,7 @@ public class CustomerPanel extends JPanel {
 		telTF.setText(empty);
 		setToViewMode();
 		
-		if(customerList.getModel().getSize() != 0){
+		if(customerList.getModel().getSize() > 0){
 			customerList.setSelectedIndex(0);			
 		}
 	}
