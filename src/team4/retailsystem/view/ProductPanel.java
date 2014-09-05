@@ -441,7 +441,7 @@ public class ProductPanel extends JPanel {
 		productList.setListData(products.toArray());
 		int newCount = productList.getModel().getSize();
 		
-		if( productList.getComponentCount() > 0 ){
+		if( productList.getModel().getSize() > 0 ){
 			if(currentlySelected!=null && (newCount == previousCount)){
 				productList.setSelectedValue(currentlySelected, true);
 			}
@@ -451,6 +451,8 @@ public class ProductPanel extends JPanel {
 			else{
 				productList.setSelectedValue(productList.getModel().getElementAt(0), true);
 			}
+		} else {
+			clearTextFields();
 		}
 	}
 	

@@ -28,6 +28,8 @@ import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JTextArea;
 
@@ -61,6 +63,12 @@ public class CustomerPanel extends JPanel {
 	private JPanel panel_3;
 	private ArrayList<RetailViewListener> listeners = new ArrayList<RetailViewListener>();
 	private Customer c;
+	
+    private Pattern emailPattern = Pattern
+            .compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]"
+                    + "{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|((["
+                    + "a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
+    private Pattern telPattern = Pattern.compile("(\\+|\\d)\\d{6,15}");
 	
 	public CustomerPanel() {
 
@@ -98,6 +106,16 @@ public class CustomerPanel extends JPanel {
 		customerList = new JList<Object>();
 	}
 
+    public boolean isEmailValid(String email) {
+        Matcher emailMatcher = emailPattern.matcher(email);
+        return emailMatcher.matches();
+    }
+
+    public boolean isTelValid(String telephone) {
+        Matcher telMatcher = telPattern.matcher(telephone);
+        return telMatcher.matches();
+    }
+
 	public void addListeners() {
 
 		newCustomerButton.addActionListener(new ActionListener() {
@@ -134,8 +152,10 @@ public class CustomerPanel extends JPanel {
 					}
 					setToViewMode();
 
-					if(customerList.getComponentCount() > 0){
-						customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);
+					if(customerList.getModel().getSize() > 0){
+						customerList.setSelectedIndex(0);
+					} else {
+						clearTextFields();
 					}
 				}
 			}
@@ -149,13 +169,14 @@ public class CustomerPanel extends JPanel {
 
 					JOptionPane.showMessageDialog(null,
 							"Please make sure all fields are filled in");
-				}
-
-				// checks for invalid Email construction
-				else if (getEmailTF().contains("@")
-						&& getEmailTF().contains(".")) {
+				} else if (!isEmailValid(getEmailTF())) {
+					JOptionPane.showMessageDialog(null,
+							"Invalid email.");
+				} else if (!isTelValid(getTelTF())){
+					JOptionPane.showMessageDialog(null,
+							"Invalid telephone.");					
+				} else {
 					if (getIDTF().isEmpty()) {
-
 						// inform RetailViewListeners of the event, pass the
 						// information.
 						for (RetailViewListener r : listeners) {
@@ -388,7 +409,7 @@ public class CustomerPanel extends JPanel {
 		customerList.setListData(customers.toArray());
 		int newCount = customerList.getModel().getSize();
 		
-		if( customerList.getComponentCount() > 0 ){
+		if( customerList.getModel().getSize() > 0 ){
 			if(currentlySelected!=null && (newCount == previousCount)){
 				customerList.setSelectedValue(currentlySelected, true);
 			}
@@ -396,7 +417,7 @@ public class CustomerPanel extends JPanel {
 				customerList.setSelectedValue(customerList.getModel().getElementAt(newCount-1), true);
 			}
 			else{
-				customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);
+				customerList.setSelectedIndex(0);
 			}
 		}
 	}
