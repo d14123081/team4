@@ -319,6 +319,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                             }
                         }
                     }
+                    itemsArrayList.clear();
                     initialCondition();
                     totalField.setText("0.00");
                     supplierList.setEnabled(false);
