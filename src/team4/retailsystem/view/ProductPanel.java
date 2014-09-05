@@ -53,6 +53,7 @@ import team4.retailsystem.model.Supplier;
 import team4.retailsystem.model.User;
 
 
+
 //import team4.retailsystem.view.CustomerPanel.CRUDListener;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -557,18 +558,19 @@ public class ProductPanel extends JPanel {
 	}
 
 	// A method that clears temp fields on logout.
-	public void logout() {
-		String empty = "";
-		setNameTF(empty);
-		setCostsTF(empty);
-		setMarkUpTF(empty);
-		setIDTF(empty);
-		stockLevelTF.setText(empty);
-		
+	public void logout() {		
 		setToViewMode();
 
 		if(productList.getModel().getSize() > 0){
+			System.out.println("here, product");
 			productList.setSelectedValue(productList.getModel().getElementAt(0), true);		
+		} else {
+			String empty = "";
+			setNameTF(empty);
+			setCostsTF(empty);
+			setMarkUpTF(empty);
+			setIDTF(empty);
+			stockLevelTF.setText(empty);
 		}
 	}
 

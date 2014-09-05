@@ -398,7 +398,6 @@ public class CustomerPanel extends JPanel {
 	}
 
 	public void updateCustomerList(ArrayList<Customer> customers) {
-		
 		Customer currentlySelected = null;
 		int previousCount = customerList.getModel().getSize();
 		
@@ -510,16 +509,18 @@ public class CustomerPanel extends JPanel {
 
 	// A method that clears temp fields on logout.
 	public void logout() {
-		String empty = "";
-		setNameTF(empty);
-		setAddressTF(empty);
-		seteMailTF(empty);
-		setIDTF(empty);
-		telTF.setText(empty);
 		setToViewMode();
-		System.out.println(customerList.getModel().getSize());
+		
 		if(customerList.getModel().getSize() > 0){
+			System.out.println("here, customer");
 			customerList.setSelectedValue(customerList.getModel().getElementAt(0), true);	
+		} else {
+			String empty = "";
+			setNameTF(empty);
+			setAddressTF(empty);
+			seteMailTF(empty);
+			setIDTF(empty);
+			telTF.setText(empty);
 		}
 	}
 

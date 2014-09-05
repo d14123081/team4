@@ -512,17 +512,18 @@ public class SupplierPanel extends JPanel {
 
 	// A method that clears temp fields on logout.
 	public void logout() {
-		String empty = "";
-		setNameTF(empty);
-		setAddressTF(empty);
-		seteMailTF(empty);
-		setIDTF(empty);
-		telTF.setText(empty);
-		
 		setToViewMode();
-
+		
 		if(supplierList.getModel().getSize() > 0){
+			System.out.println("here, supplier");
 			supplierList.setSelectedValue(supplierList.getModel().getElementAt(0), true);		
+		} else {
+			String empty = "";
+			setNameTF(empty);
+			setAddressTF(empty);
+			seteMailTF(empty);
+			setIDTF(empty);
+			telTF.setText(empty);
 		}
 	}
 
