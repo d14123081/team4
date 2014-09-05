@@ -82,12 +82,12 @@ public class SupplierPanel extends JPanel {
 	public void initialiseComponents() {
 
 		panel = new JPanel();
-		supplierPanelLabel = new JLabel("Suppliers");
+		supplierPanelLabel = new JLabel("Supplier Panel");
 		supplierDetails = new JPanel();
 		supplierNameLabel = new JLabel("Name:");
 		supplierEmailLabel = new JLabel("Email address:");
 		supplierContactLabel = new JLabel("Telephone:");
-		supplierIdLabel = new JLabel("Unique ID:");
+		supplierIdLabel = new JLabel("Supplier ID:");
 		supplierAddressLabel = new JLabel("Address:");
 
 		nameTF = new JTextField();
@@ -96,9 +96,9 @@ public class SupplierPanel extends JPanel {
 		telTF = new JTextField();
 		addressTF = new JTextArea();
 		saveItemButton = new JButton("Save");
-		newCustomerButton = new JButton("New");
-		editItemButton = new JButton("Edit");
-		removeItemButton = new JButton("Delete");
+		newCustomerButton = new JButton("New Supplier");
+		editItemButton = new JButton("Edit Supplier");
+		removeItemButton = new JButton("Delete Supplier");
 		infoTextArea = new JTextArea();
 		cancelBtn = new JButton("Cancel");
 		scrollPane = new JScrollPane();

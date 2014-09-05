@@ -83,11 +83,11 @@ public class CustomerPanel extends JPanel {
 		panel = new JPanel();
 		customerPanelLabel = new JLabel("Customer Panel");
 		customerDetails = new JPanel();
-		customerNameLabel = new JLabel("Customer name:");
-		customerEmailLabel = new JLabel("Customer email:");
-		customerContactLabel = new JLabel("Customer contact:");
-		customerIdLabel = new JLabel("Customer id:");
-		customerAddressLabel = new JLabel("Customer address:");
+		customerNameLabel = new JLabel("Customer Name:");
+		customerEmailLabel = new JLabel("Customer Email:");
+		customerContactLabel = new JLabel("Customer Telephone:");
+		customerIdLabel = new JLabel("Customer ID:");
+		customerAddressLabel = new JLabel("Customer Address:");
 
 		nameTF = new JTextField();
 		eMailTF = new JTextField();
