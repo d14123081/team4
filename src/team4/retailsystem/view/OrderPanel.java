@@ -343,7 +343,6 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
     }
 
     public void getProductArrayList() {
-    	System.out.println("here");
     	products = Database.getInstance().getProducts();
         productArrayList.clear();
         for (Product p : products) {
