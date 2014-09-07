@@ -170,7 +170,7 @@ public class PredictionPanel extends JPanel{
     
     public JFreeChart create3DPieChart(DefaultPieDataset dataset){
         JFreeChart chart = ChartFactory.createPieChart3D(
-                "MonthLy Selling Pie Chart",  // chart title
+                "Monthly Selling Pie Chart",  // chart title
                 dataset,                   // data
                 true,                   // include legend
                 true,
