@@ -252,6 +252,8 @@ public class UserPanel extends JPanel {
 			idField.setText(null);
 			usernameField.setText(null);
 		}
+		
+		userList.setSelectedValue(u, true);
 	}
 
 	// Validates fields
