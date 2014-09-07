@@ -173,8 +173,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
         comboBoxPanel.add(yearsLabel);
        
         for(int i = 0; i < 5; i++){
-            years[i] = String.valueOf(new Date().getYear() - i);
-            System.out.println(year);
+            years[i] = String.valueOf(new Date().getYear() - i + 1900);
         }
         yearsComboBox = new JComboBox(years);
         comboBoxPanel.add(yearsComboBox);
