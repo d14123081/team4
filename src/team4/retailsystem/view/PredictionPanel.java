@@ -3,6 +3,7 @@ package team4.retailsystem.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -58,6 +59,8 @@ public class PredictionPanel extends JPanel{
     private String [] columnNames = {"Product", "Buy", "Sell", "Profit", "Currently Stock"};
     private static int yearlyChart = 1;
     private static int monthlyChart = 2;
+    private SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+    private SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
 
     public PredictionPanel(int month, int year){
     	this.setPreferredSize(new Dimension(800,490));
@@ -143,7 +146,7 @@ public class PredictionPanel extends JPanel{
         for(Product product: products){
             int value = 0;
             for(Invoice invoice : invoices){
-                if((invoice.getDate().getMonth() == month) && (invoice.getDate().getYear() == year)){
+                if((Integer.valueOf(sdfMonth.format(invoice.getDate())) == month) && (Integer.valueOf(sdfYear.format(invoice.getDate())) == year)){
                     for(LineItem item : invoice.getLineItems()){
                         if(product.getID() == item.getProductID()){
                             value += item.getQuantity();
@@ -221,7 +224,7 @@ public class PredictionPanel extends JPanel{
             int buyItems = 0;
             double totalProfit = 0;  
             for(Invoice invoice : invoices){
-                if((invoice.getDate().getMonth() == month) &&(invoice.getDate().getYear() == year)){
+                if((Integer.valueOf(sdfMonth.format(invoice.getDate())) == month) && (Integer.valueOf(sdfYear.format(invoice.getDate())) == year)){
                     for(LineItem item : invoice.getLineItems()){
                         if(product.getID() == item.getProductID()){
                             sellItems += item.getQuantity();
@@ -230,7 +233,7 @@ public class PredictionPanel extends JPanel{
                 }
             }
             for(Order order : orders){
-                if((order.getOrderDate().getMonth() == month) &&(order.getOrderDate().getYear() == year)){
+                if((Integer.valueOf(sdfMonth.format(order.getOrderDate())) == month) && (Integer.valueOf(sdfYear.format(order.getOrderDate())) == year)){
                     for(LineItem item : order.getLineItems()){
                         if(product.getID() == item.getProductID()){
                             buyItems += item.getQuantity();

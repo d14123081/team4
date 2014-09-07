@@ -3,6 +3,7 @@ package team4.retailsystem.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -30,8 +31,10 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private boolean isProfit = false;
     private boolean isPrediction = false;
     private Date date = new Date();
-    private int month = date.getMonth();
-    private int year = date.getYear();
+    private SimpleDateFormat sdfMonth = new SimpleDateFormat("MM");
+    private SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+    private int month = Integer.parseInt(sdfMonth.format(date));
+    private int year = Integer.parseInt(sdfYear.format(date));
     private JLabel yearsLabel = new JLabel("Year");
     private JLabel monthLabel = new JLabel("Month");
     private JComboBox yearsComboBox;
@@ -173,11 +176,11 @@ public class StockControlPanel extends JPanel implements ActionListener {
         comboBoxPanel.add(yearsLabel);
        
         for(int i = 0; i < 5; i++){
-            years[i] = String.valueOf(new Date().getYear() - i + 1900);
+            years[i] = String.valueOf(Integer.parseInt(sdfYear.format(date)) - i);
         }
         yearsComboBox = new JComboBox(years);
         comboBoxPanel.add(yearsComboBox);
-        yearsComboBox.setSelectedIndex(date.getYear()-year);
+        yearsComboBox.setSelectedIndex(Integer.parseInt(sdfYear.format(date))-year);
         yearsComboBox.addActionListener(this);
         
         predictionChart = new PredictionPanel(month, year);
