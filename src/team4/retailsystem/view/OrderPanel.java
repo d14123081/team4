@@ -230,7 +230,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                         cost = product.getCost();
                         Object[] item =
                                 { productList.getSelectedValue().toString(), 1,
-                                        cost };
+                                        df.format(cost) };
                         itemsArrayList.add(new LineItem(product.getID(), 1));
                         total = total + cost;
                         totalField.setText(df.format(total));
@@ -415,7 +415,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
                                     Object[] item =
                                             { product.getName(),
                                                     items.getQuantity(),
-                                                    product.getCost() };
+                                                    df.format(product.getCost()) };
                                     total += product.getCost()
                                              * items.getQuantity();
                                     model.addRow(item);
