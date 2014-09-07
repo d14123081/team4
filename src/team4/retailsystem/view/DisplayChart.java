@@ -57,6 +57,7 @@ public class DisplayChart {
     private double orderCost;
     private double invoiceCost;
     private double profits;
+    
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public ChartPanel Chart(int type) {
@@ -69,34 +70,11 @@ public class DisplayChart {
     private CategoryDataset createDataset(int type) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         if (type == 1) {
-            for (Product product : products) {
-                orderItemValue = getOrderItemValue(product);
-                dataset.addValue(orderItemValue, buySeries, product.getName());
-
-                invoiceItemValue = getInvoiceItemValue(product);
-                dataset.addValue(invoiceItemValue, sellSeries,
-                        product.getName());
-
-                dataset.addValue(product.getStockLevel(), stockSeries,
-                        product.getName());
-            }
+            getStockLevelDataSet(dataset);
         }
 
         else if (type == 2) {
-            dates.clear();
-            dates = getDate();
-            profits = 0;
-            for (Date d : dates) {
-                orderCost = getOrderCost(d);
-                dataset.addValue(orderCost, buySeries, sdf.format(d.getTime()));
-
-                invoiceCost = getInvoiceCost(d);
-                dataset.addValue(invoiceCost, sellSeries,
-                        sdf.format(d.getTime()));
-
-                profits += (invoiceCost - orderCost);
-                dataset.addValue(profits, profitSeries, sdf.format(d.getTime()));
-            }
+            getProfitDataSet(dataset);
         }
 
         return dataset;
@@ -144,10 +122,11 @@ public class DisplayChart {
 
         else if (type == 2) {
             lineRenderer = (LineAndShapeRenderer) plot.getRenderer();
-            lineRenderer.setSeriesLinesVisible(0, true);
-            lineRenderer.setSeriesLinesVisible(1, true);
+            lineRenderer.setSeriesLinesVisible(0, false);
+            lineRenderer.setSeriesShapesVisible(0, true);
+            lineRenderer.setSeriesLinesVisible(1, false);
+            lineRenderer.setSeriesShapesVisible(1, true);
             lineRenderer.setSeriesLinesVisible(2, true);
-
         }
 
         return chart;
@@ -177,8 +156,7 @@ public class DisplayChart {
         Date d = new Date();
         int month = d.getMonth() - 2;
         Date d1 = new Date();
-        d1.setMonth(month);
-        
+        d1.setMonth(month);      
         for (Invoice invoice : invoices) {
             if(invoice.getDate().after(d1)){
                 for (LineItem item : invoice.getLineItems()) {
@@ -210,7 +188,7 @@ public class DisplayChart {
         }
         return cost;
     }
-
+    
     private JFreeChart getChartType(int type) {
         JFreeChart chart = null;
         if (type == 1) {
@@ -268,4 +246,51 @@ public class DisplayChart {
         Collections.sort(dates);
         return dates;
     }
+   
+    public void getStockLevelDataSet(DefaultCategoryDataset dataset){
+        for (Product product : products) {
+            orderItemValue = getOrderItemValue(product);
+            dataset.addValue(orderItemValue, buySeries, product.getName());
+
+            invoiceItemValue = getInvoiceItemValue(product);
+            dataset.addValue(invoiceItemValue, sellSeries,
+                    product.getName());
+
+            dataset.addValue(product.getStockLevel(), stockSeries,
+                    product.getName());
+        }
+    }
+    
+    public void getProfitDataSet(DefaultCategoryDataset dataset){
+        dates.clear();
+        dates = getDate();
+        profits = 0;
+        int i = 0;
+        for (Date d : dates) {
+            orderCost = getOrderCost(d);
+            invoiceCost = getInvoiceCost(d);
+            if(i == 0){
+                dataset.addValue(orderCost, buySeries, sdf.format(d.getTime()));
+                dataset.addValue(invoiceCost, sellSeries,
+                        sdf.format(d.getTime()));
+            }
+            else {
+                if(orderCost > 0)
+                    dataset.addValue(orderCost, buySeries, sdf.format(d.getTime()));
+                                  
+                
+                else if(invoiceCost > 0)
+                    dataset.addValue(invoiceCost, sellSeries,
+                            sdf.format(d.getTime()));
+            }
+            
+                        
+            profits += (invoiceCost - orderCost);
+            dataset.addValue(profits, profitSeries, sdf.format(d.getTime()));
+            invoiceCost = 0;
+            orderCost = 0;
+            i++;
+        }
+    }
+    
 }

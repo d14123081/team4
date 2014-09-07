@@ -256,11 +256,34 @@ public class SampleDataGenerator {
 		order1.add(new LineItem(2, 10));
 		ArrayList<LineItem> order2 = new ArrayList<>();
 		order2.add(new LineItem(3, 20));
+		ArrayList<LineItem> order3 = new ArrayList<>();
+        order3.add(new LineItem(1, 5));
+        order3.add(new LineItem(2, 15));
+        ArrayList<LineItem> order4 = new ArrayList<>();
+        order4.add(new LineItem(3, 25));
+        ArrayList<LineItem> order5 = new ArrayList<>();
+        order5.add(new LineItem(2, 10));
+        order5.add(new LineItem(1, 25));
+        ArrayList<LineItem> order6 = new ArrayList<>();
+        order6.add(new LineItem(3, 20));
+        ArrayList<LineItem> order7 = new ArrayList<>();
+        order7.add(new LineItem(3, 20));
+        
 
 		Database.getInstance().addOrder(
-				new Order(7500.0, suppliers.get(0), 1, order1, "15/08/2014"));
+				new Order(7500.0, suppliers.get(0), 1, order1, "4/03/2014"));
 		Database.getInstance().addOrder(
-				new Order(9600.0, suppliers.get(1), 2, order2, "16/08/2014"));
+				new Order(9600.0, suppliers.get(1), 2, order2, "16/04/2014"));
+		Database.getInstance().addOrder(
+                new Order(9600.0, suppliers.get(0), 2, order3, "11/06/2014"));
+		Database.getInstance().addOrder(
+                new Order(9600.0, suppliers.get(1), 2, order4, "16/06/2014"));
+		Database.getInstance().addOrder(
+                new Order(9600.0, suppliers.get(0), 2, order5, "13/8/2014"));
+		Database.getInstance().addOrder(
+                new Order(9600.0, suppliers.get(1), 2, order6, "1/09/2014"));
+		Database.getInstance().addOrder(
+                new Order(9600.0, suppliers.get(1), 2, order7, "6/09/2014"));
 	}
 
 	private static void generateDeliveries() {

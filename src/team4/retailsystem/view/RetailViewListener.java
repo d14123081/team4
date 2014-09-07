@@ -43,6 +43,8 @@ public interface RetailViewListener {
 	//ordered panel events
 	public void clickAddDelivery(Supplier supplier, int orderID, Date date);
 	public void clickUpdateDelivery(Delivery delivery);
+	public void clickDeleteDelivery(Delivery d);
+	
 	//invoice panel events
 	public void clickCreateInvoice(ArrayList<LineItem> lineItems, Customer customer, Date d);
 	public void clickUpdateInvoice(int id, ArrayList<LineItem> lineItems, Customer customer, Date d); 

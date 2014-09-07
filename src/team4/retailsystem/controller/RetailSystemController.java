@@ -349,5 +349,11 @@ implements RetailModelListener, RetailViewListener
         // TODO Auto-generated method stub
         model.updateDelivery(delivery);
     }
+
+    @Override
+    public void clickDeleteDelivery(Delivery d) {
+        // TODO Auto-generated method stub
+        model.deleteDelivery(d);
+    }
 	
 }

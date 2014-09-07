@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
+
 import javax.swing.*;
 
 import team4.retailsystem.model.Order;
@@ -17,11 +19,16 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private JButton predictionButton;
     private JScrollPane stockChartScrollPanel;
     private JScrollPane profitChartScrollPanel;
+    private JScrollPane predictionChartScrollPanel;
     private DisplayChart displayChart;
+    private PredictionPanel predictionChart;
     private static int stockView = 1;
     private static int profitView = 2;
     private boolean isStock = false;
     private boolean isProfit = false;
+    private boolean isPrediction = false;
+    private Date date = new Date();
+    private int month = date.getMonth();
 
     public StockControlPanel() {
         GridBagLayout gbl = new GridBagLayout();
@@ -57,7 +64,6 @@ public class StockControlPanel extends JPanel implements ActionListener {
         viewPanel = new JPanel();
         addPanel(viewPanel, gbl, gbc);
                
-        //stockChartScrollPanel = new JScrollPane(new XYchart().xyChart()); 
         this.setVisible(true);
     }
 
@@ -79,30 +85,40 @@ public class StockControlPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+        viewPanel.removeAll();
         if(arg0.getSource().equals(stockLevelButton)){
-            viewPanel.removeAll();
-            viewPanel.revalidate();
             displayChart = new DisplayChart();
             stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
+            stockChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            stockChartScrollPanel.setAutoscrolls(true);
             viewPanel.add(stockChartScrollPanel);
             isStock = true;
             isProfit = false;
+            isPrediction = false;
         }
         
         else if(arg0.getSource().equals(profitLevelButton)){
-            viewPanel.removeAll();
-            viewPanel.revalidate();
             displayChart = new DisplayChart();
             profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
+            profitChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             viewPanel.add(profitChartScrollPanel);
             viewPanel.validate();
             isStock = false;
+            isPrediction = false;
             isProfit = true;
         }
         
         else if(arg0.getSource().equals(predictionButton)){
-            
+            predictionChart = new PredictionPanel(date.getMonth(),date.getYear());
+            predictionChartScrollPanel = new JScrollPane(predictionChart);
+            predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            viewPanel.add(predictionChartScrollPanel);
+            viewPanel.validate();
+            isStock = false;
+            isPrediction = true;
+            isProfit = false;
         }
+        viewPanel.validate();
         
     }
 
@@ -112,7 +128,6 @@ public class StockControlPanel extends JPanel implements ActionListener {
 
     public void updateChart(){
         viewPanel.removeAll();
-        viewPanel.revalidate();
         if(isStock == true){
             displayChart = new DisplayChart();
             stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
@@ -122,7 +137,12 @@ public class StockControlPanel extends JPanel implements ActionListener {
             displayChart = new DisplayChart();
             profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
             viewPanel.add(profitChartScrollPanel);
-        }      
+        }  
+        else if(isPrediction == true){
+            predictionChart = new PredictionPanel(new Date().getMonth(), date.getYear());
+            predictionChartScrollPanel = new JScrollPane(predictionChart);
+            predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            viewPanel.add(predictionChartScrollPanel);}
         viewPanel.validate();
     }
 }

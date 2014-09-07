@@ -302,7 +302,7 @@ public class OrderPanel extends JPanel implements ListSelectionListener,
             if (model.getRowCount() > 0) {
                 for (RetailViewListener r : listeners) {
                     System.out.print(1);
-                    r.clickCreateOrder(total, itemsArrayList, supplier, 1);   
+                    r.clickCreateOrder(total, itemsArrayList, supplier, 0);   
                 }
                 initialCondition();
                 totalField.setText("0.00");

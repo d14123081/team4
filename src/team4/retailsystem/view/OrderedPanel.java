@@ -144,6 +144,7 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
     
     public void getOrderedArrayList(){ 
         orderList = null;
+        deliveries = Database.getInstance().getDeliveries();
         model.setDataVector(orderList, columnNames);
         for(Order order : orders){
             String deliveryDate = "";
@@ -225,11 +226,18 @@ public class OrderedPanel extends JPanel implements ListSelectionListener, Actio
         }
         
         else if(arg0.getSource().equals(removeOrder)){
+            int rowSelected = ordersTable.getSelectedRow();
             for(RetailViewListener r : listeners){
-                String d = model.getValueAt(ordersTable.getSelectedRow(),2).toString();
-                r.clickDeleteOrder(Integer.parseInt(model.getValueAt(ordersTable.getSelectedRow(),0).toString()), d);
+                String d = model.getValueAt(rowSelected,2).toString();
+                deliveries = Database.getInstance().getDeliveries();
+                for(Delivery delivery : deliveries){
+                    if(delivery.getOrderID() == Integer.parseInt(model.getValueAt(rowSelected,0).toString())){
+                        System.out.print("here");
+                        r.clickDeleteDelivery(delivery);  
+                    }
+                }
+                r.clickDeleteOrder(Integer.parseInt(model.getValueAt(rowSelected,0).toString()), d);
             }
-            model.removeRow(ordersTable.getSelectedRow());
         }
         ordersTable.clearSelection();
         model.fireTableDataChanged();
