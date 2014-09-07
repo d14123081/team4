@@ -60,9 +60,9 @@ public class InvoiceListPanel extends JFrame
 		contentPane.setLayout(null);
 		scrollPane.setBounds(5, 5, 493, 334);
 		contentPane.add(scrollPane);
-		btnDeleteInvoice.setBounds(397, 350, 101, 23);
+		btnDeleteInvoice.setBounds(377, 350, 121, 23);
 		contentPane.add(btnDeleteInvoice);
-		btnEditInvoice.setBounds(286, 350, 101, 23);
+		btnEditInvoice.setBounds(246, 350, 121, 23);
 		contentPane.add(btnEditInvoice);
 		constructTable();
 		tableModel = (DefaultTableModel) invoiceTable.getModel();
@@ -150,5 +150,21 @@ public class InvoiceListPanel extends JFrame
 	public void showError(String errorMessage) 
 	{
 		JOptionPane.showMessageDialog(null, errorMessage);
+	}
+	
+	//Shows which buttons are seen depending on user logged in
+	public void updateButtons(int access)
+	{
+		switch(access)
+		{
+			case 0:
+				btnDeleteInvoice.setVisible(false);
+				btnEditInvoice.setText("View Invoice");
+				break;
+			case 1:
+				btnDeleteInvoice.setVisible(true);
+				btnEditInvoice.setText("Edit Invoice");
+				break;
+		}
 	}
 }

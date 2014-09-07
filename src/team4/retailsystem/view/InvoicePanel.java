@@ -98,6 +98,7 @@ public class InvoicePanel extends JPanel
 		initialiseTable();
 		tableModel = (DefaultTableModel) invoiceTable.getModel();
 		invoiceListFrame = new InvoiceListPanel(this);
+		
 	}
 
 	public void constructView() {
@@ -244,6 +245,7 @@ public class InvoicePanel extends JPanel
 				if (!checkboxNew.isSelected() && tableModel.getRowCount() < 1) 
 				{
 					showError("You must either create a new invoice or add to an existing invoice");
+					productList.clearSelection();
 				} 
 				else 
 				{ 
@@ -309,19 +311,19 @@ public class InvoicePanel extends JPanel
 					btnInvoices.setEnabled(false);
 					checkboxNew.setSelected(true);
 					customerComboBox.setEnabled(true);
-					//datePicker.setEnabled(true);
+					datePicker.setEnabled(true);
 					datePicker.getJFormattedTextField().setEnabled(true);				
-					//datePanel.setEnabled(true);
-					//dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+					datePanel.setEnabled(true);
+					dateModel.setDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
 				} 
 				else 
 				{
 					logout();
 					btnInvoices.setEnabled(true);
 					customerComboBox.setEnabled(false);
-					//datePicker.setEnabled(false);
+					datePicker.setEnabled(false);
 					datePicker.getJFormattedTextField().setEnabled(false);
-					//datePanel.setEnabled(false);					
+					datePanel.setEnabled(false);					
 				}
 			}
 		});
@@ -331,6 +333,7 @@ public class InvoicePanel extends JPanel
 	public void updateTable(Invoice i) 
 	{
 		logout();
+		customerComboBox.setEnabled(true);
 		datePicker.setEnabled(true);
 		datePicker.getJFormattedTextField().setEnabled(true);				
 		datePanel.setEnabled(true);
@@ -362,6 +365,7 @@ public class InvoicePanel extends JPanel
 			checkboxNew.setEnabled(false);
 			customerComboBox.setEnabled(false);
 			datePicker.setEnabled(false);
+			invoiceListFrame.updateButtons(0);
 		} 
 		else 
 		{
@@ -372,12 +376,13 @@ public class InvoicePanel extends JPanel
 			invoiceTable.setEnabled(true);
 			productList.setEnabled(true);
 			checkboxNew.setEnabled(true);
-			customerComboBox.setEnabled(true);
+			customerComboBox.setEnabled(false);
 			datePicker.setEnabled(true);
+			invoiceListFrame.updateButtons(1);
 		}
 	}
 	
-	// Resets panel
+		// Resets panel
 		public void logout() 
 		{
 			int rowCount = tableModel.getRowCount();
@@ -421,9 +426,9 @@ public class InvoicePanel extends JPanel
 				}
 			}
 		});
-		
 	}
 	
+	// Deletes an invoice 
 	public void deleteInvoice(int id)
 	{
 		for (RetailViewListener r : listeners) 

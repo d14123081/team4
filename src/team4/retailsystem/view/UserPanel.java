@@ -31,14 +31,14 @@ public class UserPanel extends JPanel {
 	private JScrollPane scrollPane;
 
 	public UserPanel() {
-		setBounds(10, 88, 820, 600);
-		setLayout(null);
+		
 		initialiseComponents();
 		addListeners();
 		constructView();
 	}
 
 	public void initialiseComponents() {
+		
 		database = Database.getInstance();
 		panel = new JPanel();
 		btnAdd = new JButton("Submit");
@@ -48,16 +48,18 @@ public class UserPanel extends JPanel {
 		lblUserId = new JLabel("User ID:");
 		idField = new JTextField();
 		scrollPane = new JScrollPane();
-		userList = new JList();
+		userList = new JList<Object>();
 		btnDelete = new JButton("Delete User");
 		authComboBox = new JComboBox();
 		lblUsername = new JLabel("Username:");
 		lblAuthLevel = new JLabel("Auth. Level:");
 		userListPanel = new JPanel();
-		panel2 = new JPanel();
+		panel2 = new JPanel(); 
 	}
 
 	public void constructView() {
+		setBounds(10, 88, 820, 600);
+		setLayout(null);
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel.setBounds(10, 11, 600, 578);
 		add(panel);
@@ -107,6 +109,7 @@ public class UserPanel extends JPanel {
 		userList.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		btnDelete.setBounds(10, 544, 180, 23);
 		userListPanel.add(btnDelete);
+		
 	}
 
 	public void addListeners() {
