@@ -101,4 +101,14 @@ public class User {
 	public boolean isPasswordEmpty(){
 		return getPasswordDigest()==null;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(! (o instanceof User)){
+			return false;
+		}
+		else{
+			return this.id == ((User)o).getID();
+		}
+	}
 }
