@@ -36,9 +36,9 @@ public class LogInPanel extends JPanel implements ActionListener {
     public LogInPanel() {
         this.setLayout(null);
         
-        wellcomeLabel = new JLabel("Welcome to Retail System");
+        wellcomeLabel = new JLabel("Team4 Retail System");
         wellcomeLabel.setFont(new Font("Tahoma", Font.BOLD, 19));
-        wellcomeLabel.setBounds(276, 60, 281, 37);
+        wellcomeLabel.setBounds(294, 90, 281, 37);
         this.add(wellcomeLabel);
         
         usernameLabel = new JLabel("Username");
@@ -65,7 +65,7 @@ public class LogInPanel extends JPanel implements ActionListener {
         
         logInButton = new JButton("Log In");
         logInButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        logInButton.setBounds(294, 283, 89, 30);
+        logInButton.setBounds(354, 300, 89, 30);
         logInButton.addActionListener(this);
         this.add(logInButton);
                 
