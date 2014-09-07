@@ -3,6 +3,7 @@ package team4.retailsystem.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -16,6 +17,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
@@ -119,7 +122,7 @@ public class PredictionPanel extends JPanel{
         lineItem = monthOfYearPrediction(month, year, type);
         for(LineItem item : lineItem){
             Product product = Database.getInstance().getProduct(item.getProductID());
-            dataset.setValue(product.getName() + ": " + item.getQuantity() + " items", new Double(item.getQuantity()*100/totalProduct));
+            dataset.setValue(product.getName(), new Double(item.getQuantity()*100/totalProduct));
         }
         return dataset;
     }
@@ -179,6 +182,9 @@ public class PredictionPanel extends JPanel{
         piePlot.setDirection(Rotation.ANTICLOCKWISE);
         piePlot.setForegroundAlpha(0.5f);
         piePlot.setNoDataMessage("No Selling to display");
+        PieSectionLabelGenerator generator = new StandardPieSectionLabelGenerator(
+                "{0} = {2}", new DecimalFormat("0"), new DecimalFormat("0.00%"));
+        piePlot.setLabelGenerator(generator);
         return chart;
     }
 

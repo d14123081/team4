@@ -156,7 +156,8 @@ public class DisplayChart {
         Date d = new Date();
         int month = d.getMonth() - 2;
         Date d1 = new Date();
-        d1.setMonth(month);      
+        d1.setMonth(month);
+        
         for (Invoice invoice : invoices) {
             if(invoice.getDate().after(d1)){
                 for (LineItem item : invoice.getLineItems()) {
