@@ -33,13 +33,13 @@ public class InvoiceListPanel extends JFrame
 	private InvoicePanel invoicePanel;
 	private DefaultTableModel tableModel;
 	private Database database = Database.getInstance();
-	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 
 	public InvoiceListPanel(InvoicePanel p) 
 	{
 		this.invoicePanel = p;
 		initialiseComponents();
-		construct();
+		constructView();
 		addListeners();
 	}
 
@@ -52,7 +52,7 @@ public class InvoiceListPanel extends JFrame
 		btnEditInvoice = new JButton("Edit Invoice");
 	}
 
-	public void construct() 
+	public void constructView() 
 	{
 		setBounds(100, 100, 522, 418);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -74,14 +74,16 @@ public class InvoiceListPanel extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
+				//If no row selected
 				if (invoiceTable.getSelectedRow() == -1) 
 				{
 					showError("No invoice selected");
 				} 
-				else 
+				else //edit invoice
 				{
 					int invoiceId = (int)invoiceTable.getValueAt(
 							invoiceTable.getSelectedRow(), 0);
+					//Calls the updateTable method (which pulls an invoice from database into the GUI
 					invoicePanel.updateTable(database.getInvoice(invoiceId));
 					invoiceTable.clearSelection();
 				}
@@ -92,14 +94,16 @@ public class InvoiceListPanel extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
+				//If no row selected
 				if (invoiceTable.getSelectedRow() == -1) 
 				{
 					showError("No invoice selected.");
 				} 
-				else 
+				else //Delete invoice
 				{
 					int invoiceId = (int) invoiceTable.getValueAt(
 						invoiceTable.getSelectedRow(), 0);
+					//Passes the id to the invoice panel which then passes it to the controller for removal
 					invoicePanel.deleteInvoice(invoiceId);
 					invoiceTable.clearSelection();
 				}
@@ -107,6 +111,7 @@ public class InvoiceListPanel extends JFrame
 		});
 	}
 
+	//Sets the invoice list table rows
 	public void updateTable(ArrayList<Invoice> invoices) 
 	{
 		int rowCount = tableModel.getRowCount();
@@ -121,6 +126,7 @@ public class InvoiceListPanel extends JFrame
 		}
 	}
 
+	//Cleans up constructView() method by keeping table construction seperate
 	public void constructTable() 
 	{
 		invoiceTable.setModel(new DefaultTableModel(new Object[][] {},

@@ -269,7 +269,6 @@ public class InvoicePanel extends JPanel
 								int id = ((Product) productList.getSelectedValue()).getID();
 								String name = ((Product) productList.getSelectedValue()).getName();
 								tableModel.addRow(new Object[] {id, name, 1 });
-								break;
 							}
 						}
 					}
@@ -349,7 +348,7 @@ public class InvoicePanel extends JPanel
 		datePicker.setEnabled(true);
 		datePicker.getJFormattedTextField().setEnabled(true);				
 		datePanel.setEnabled(true);
-		dateModel.setDate(i.getDate().getDay(), i.getDate().getMonth(), i.getDate().getYear());
+		dateModel.setDate(i.getDate().getYear()+1900, i.getDate().getMonth(), i.getDate().getDay());
 		idField.setText(Integer.toString(i.getID()));
 		customerComboBox.setSelectedItem(i.getCustomer());
 		ArrayList<LineItem> lineitems = i.getLineItems();
