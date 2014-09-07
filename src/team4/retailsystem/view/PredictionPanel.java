@@ -1,6 +1,7 @@
 package team4.retailsystem.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
@@ -59,6 +60,7 @@ public class PredictionPanel extends JPanel{
     private static int monthlyChart = 2;
 
     public PredictionPanel(int month, int year){
+    	this.setPreferredSize(new Dimension(800,520));
         this.setLayout(new GridLayout(2, 0));       
         yearlyPanel = new JPanel();
         addPanelName("Yearly Selling", yearlyPanel);
@@ -72,7 +74,6 @@ public class PredictionPanel extends JPanel{
         addPanelName("Monthly Selling", monthlyPanel);
         monthlyPanel.add(PieChart(month, year, monthlyChart));
         combinePanel.add(monthlyPanel);
-        
         
         infoPanel = new JPanel();
         addPanelName("Prediction Information", infoPanel);
@@ -88,6 +89,7 @@ public class PredictionPanel extends JPanel{
         infoTable.setRowHeight(30);
         infoTable.getTableHeader().setReorderingAllowed(false);
         infoScrollPanel = new JScrollPane(infoTable);
+        infoScrollPanel.setPreferredSize(new Dimension(380,220));
         infoPanel.add(infoScrollPanel);
         getListInfoOfMonth(month, year);
         this.setVisible(true);
@@ -96,6 +98,7 @@ public class PredictionPanel extends JPanel{
         pieDataset = createMonthlyPredictionDataset(month, year, type);
         chart = create3DPieChart(pieDataset);
         ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(380,220));
         return chartPanel;
     }
      
@@ -103,6 +106,7 @@ public class PredictionPanel extends JPanel{
         categoryDataset = createYearlyDataset(year, type);
         chart = createLineChart(categoryDataset);
         ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(780,220));
         return chartPanel;
     }
     

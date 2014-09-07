@@ -86,6 +86,9 @@ public class StockControlPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+    	if(predictionChart != null){
+    		predictionChartScrollPanel.setVisible(false);
+    	}
         viewPanel.removeAll();
         if(arg0.getSource().equals(stockLevelButton)){
             displayChart = new DisplayChart();
@@ -112,7 +115,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
         else if(arg0.getSource().equals(predictionButton)){
             predictionChart = new PredictionPanel(8,date.getYear());
             predictionChartScrollPanel = new JScrollPane(predictionChart);
-            predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            //predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             viewPanel.add(predictionChartScrollPanel);
             viewPanel.validate();
             isStock = false;
@@ -130,6 +133,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
     public void updateChart(){
         viewPanel.removeAll();
         if(isStock == true){
+        	predictionChartScrollPanel.setVisible(false);
             displayChart = new DisplayChart();
             stockChartScrollPanel = new JScrollPane(displayChart.Chart(stockView));
             viewPanel.add(stockChartScrollPanel);
