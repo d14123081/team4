@@ -94,8 +94,8 @@ public class StockControlPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-    	if(predictionChart != null){
-    		predictionChartScrollPanel.setVisible(false);
+    	if(predictionPanel != null){
+    		predictionPanel.setVisible(false);
     	}
         viewPanel.removeAll();
         if(arg0.getSource().equals(stockLevelButton)){
@@ -149,6 +149,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
             viewPanel.add(stockChartScrollPanel);
         }
         else if(isProfit == true){
+        	predictionChartScrollPanel.setVisible(false);
             displayChart = new DisplayChart();
             profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
             viewPanel.add(profitChartScrollPanel);
