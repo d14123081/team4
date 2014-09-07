@@ -27,6 +27,8 @@ import javax.swing.JButton;
 import team4.retailsystem.model.*;
 
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.JList;
@@ -217,15 +219,8 @@ public class InvoicePanel extends JPanel
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				if (invoiceTable.getSelectedRow() == -1) 
-				{
-					showError("Select a row to delete");
-				} 
-				else 
-				{
 					tableModel.removeRow(invoiceTable.getSelectedRow());
 					invoiceTable.clearSelection();
-				}
 			}
 		});
 
@@ -297,6 +292,23 @@ public class InvoicePanel extends JPanel
 					cost += p.getPrice() * quantity;
 				}
 				totalCostField.setText(df.format(cost));
+			}
+		});
+		
+		//Listens for a row selection
+		invoiceTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+		{    
+			@Override
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if(invoiceTable.getSelectedRow() == -1)
+				{
+					btnDelRow.setEnabled(false);
+				}
+				else
+				{
+					btnDelRow.setEnabled(true);
+				}
 			}
 		});
 
@@ -372,7 +384,7 @@ public class InvoicePanel extends JPanel
 			btnAdd.setVisible(true);
 			btnInvoices.setVisible(true);
 			btnCancel.setVisible(true);
-			btnDelRow.setVisible(true);
+			btnDelRow.setEnabled(false);
 			invoiceTable.setEnabled(true);
 			productList.setEnabled(true);
 			checkboxNew.setEnabled(true);
