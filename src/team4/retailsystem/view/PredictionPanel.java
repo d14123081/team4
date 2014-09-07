@@ -60,7 +60,7 @@ public class PredictionPanel extends JPanel{
     private static int monthlyChart = 2;
 
     public PredictionPanel(int month, int year){
-    	this.setPreferredSize(new Dimension(800,520));
+    	this.setPreferredSize(new Dimension(800,500));
         this.setLayout(new GridLayout(2, 0));       
         yearlyPanel = new JPanel();
         addPanelName("Yearly Selling", yearlyPanel);

@@ -21,6 +21,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private JScrollPane profitChartScrollPanel;
     private JScrollPane predictionChartScrollPanel;
     private JPanel predictionPanel;
+    private JPanel comboBoxPanel;
     private DisplayChart displayChart;
     private PredictionPanel predictionChart;
     private static int stockView = 1;
@@ -30,6 +31,13 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private boolean isPrediction = false;
     private Date date = new Date();
     private int month = date.getMonth();
+    private int year = date.getYear();
+    private JLabel yearsLabel = new JLabel("Year");
+    private JLabel monthLabel = new JLabel("Month");
+    private JComboBox yearsComboBox;
+    private JComboBox monthsComboBox;
+    private String[] months = new String[] {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private String[] years = new String[5];
 
     public StockControlPanel() {
         GridBagLayout gbl = new GridBagLayout();
@@ -113,14 +121,16 @@ public class StockControlPanel extends JPanel implements ActionListener {
         }
         
         else if(arg0.getSource().equals(predictionButton)){
-            predictionChart = new PredictionPanel(8,date.getYear());
-            predictionChartScrollPanel = new JScrollPane(predictionChart);
-            //predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            viewPanel.add(predictionChartScrollPanel);
+            getPredictionPanel(month, year);
             viewPanel.validate();
             isStock = false;
             isPrediction = true;
             isProfit = false;
+        }
+        else if( arg0.getSource().equals(yearsComboBox) || arg0.getSource().equals(monthsComboBox)){
+            month = monthsComboBox.getSelectedIndex() + 1;
+            year = Integer.parseInt(yearsComboBox.getSelectedItem().toString());
+            getPredictionPanel(month, year);          
         }
         viewPanel.validate();
         
@@ -143,12 +153,38 @@ public class StockControlPanel extends JPanel implements ActionListener {
             profitChartScrollPanel = new JScrollPane(displayChart.Chart(profitView));
             viewPanel.add(profitChartScrollPanel);
         }  
-        else if(isPrediction == true){
-            //predictionPanel.setLayout(mgr);
-            predictionChart = new PredictionPanel(new Date().getMonth(), date.getYear());
-            predictionChartScrollPanel = new JScrollPane(predictionChart);
-            predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        else if(isPrediction == true){         
+            getPredictionPanel(month, year);
             viewPanel.add(predictionChartScrollPanel);}
         viewPanel.validate();
+    }
+    public void getPredictionPanel(int month, int year){
+        predictionPanel = new JPanel();
+        predictionPanel.setLayout(new BoxLayout(predictionPanel, BoxLayout.Y_AXIS));
+        comboBoxPanel = new JPanel();
+        predictionPanel.add(comboBoxPanel);
+        comboBoxPanel.add(monthLabel);
+        monthsComboBox = new JComboBox(months);
+        comboBoxPanel.add(monthsComboBox);
+        //monthsComboBox.setModel(new DefaultComboBoxModel(months));
+        monthsComboBox.setSelectedIndex(month-1);
+        monthsComboBox.addActionListener(this);
+        comboBoxPanel.add(yearsLabel);
+       
+        for(int i = 0; i < 5; i++){
+            years[i] = String.valueOf(new Date().getYear() - i);
+            System.out.println(year);
+        }
+        yearsComboBox = new JComboBox(years);
+        comboBoxPanel.add(yearsComboBox);
+        yearsComboBox.setSelectedIndex(date.getYear()-year);
+        yearsComboBox.addActionListener(this);
+        
+        predictionChart = new PredictionPanel(month, year);
+        predictionChartScrollPanel = new JScrollPane(predictionChart);
+        predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        predictionPanel.add(predictionChart);
+        
+        viewPanel.add(predictionPanel);
     }
 }
