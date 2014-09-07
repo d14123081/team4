@@ -99,6 +99,8 @@ public class ProductPanel extends JPanel {
 //	private ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 	private Supplier s;
 	
+	private DecimalFormat df = new DecimalFormat("0.00");
+	
 	public ProductPanel() {
 
 		initialiseComponents();
@@ -160,8 +162,8 @@ public class ProductPanel extends JPanel {
 					
 					infoTextArea.setText("");
 					nameTF.setText(p.getName());
-					costsTF.setText("" + p.getCost());
-					markUpTF.setText("" + p.getMarkup());
+					costsTF.setText("" + df.format(p.getCost()));
+					markUpTF.setText("" + df.format(p.getMarkup()));
 					idTF.setText("" + p.getID());
 					stockLevelTF.setText("" + p.getStockLevel());
 					supplierTF.setText("" + p.getSupplier().getName());
