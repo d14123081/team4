@@ -57,14 +57,14 @@ implements RetailSystemView
 	private final static String STOCK = "stock";
 	
 	//Buttons for switching between the panels
-	JButton customerButton;
-	JButton invoiceButton;
-	JButton orderButton;
-	JButton productButton;
-	JButton supplierButton;
-	JButton userButton;
-	JButton stockControlButton;
-	JButton logoutButton;
+	private JButton customerButton;
+	private JButton invoiceButton;
+	private JButton orderButton;
+	private JButton productButton;
+	private JButton supplierButton;
+	private JButton userButton;
+	private JButton stockControlButton;
+	private JButton logoutButton;
 	
 	private Container contentPane;//The main content container for the frame, holds everything else
 	private JPanel panelPane;//holds all (except login) panels in CardLayout
@@ -127,15 +127,17 @@ implements RetailSystemView
 		
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
 		buttonPanel.add(customerButton);
+		buttonPanel.add(supplierButton);
+		buttonPanel.add(productButton);
+		buttonPanel.add(userButton);
+		
 		buttonPanel.add(invoiceButton);
 		buttonPanel.add(orderButton);
-		buttonPanel.add(productButton);
-		buttonPanel.add(supplierButton);
-		buttonPanel.add(userButton);
 		buttonPanel.add(stockControlButton);
+		
 		buttonPanel.add(logoutButton);
-		//buttonPanel.add(userPanel);
 		
 		contentPanel.setLayout(new CardLayout());
 		contentPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
