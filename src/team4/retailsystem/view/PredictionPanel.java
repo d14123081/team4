@@ -8,7 +8,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
@@ -55,25 +54,25 @@ public class PredictionPanel extends JPanel{
     private DefaultTableModel model;
     private JScrollPane infoScrollPanel;
     private Object [][] list = null;
-    private String [] columnNames = {"Product", "Buy", "Sell", "Profit", "Stock", "Recommend"};
+    private String [] columnNames = {"Product", "Buy", "Sell", "Profit", "Currently Stock"};
     private static int yearlyChart = 1;
     private static int monthlyChart = 2;
 
     public PredictionPanel(int month, int year){
-        this.setLayout(new GridLayout(2, 0));
+        this.setLayout(new GridLayout(2, 0));       
         yearlyPanel = new JPanel();
         addPanelName("Yearly Selling", yearlyPanel);
         this.add(yearlyPanel);
         yearlyPanel.add(LineChart(year, yearlyChart));
-        
         combinePanel = new JPanel();
         combinePanel.setLayout(new GridLayout(1, 2));
         this.add(combinePanel);
         
         monthlyPanel = new JPanel();
         addPanelName("Monthly Selling", monthlyPanel);
-        combinePanel.add(monthlyPanel);
         monthlyPanel.add(PieChart(month, year, monthlyChart));
+        combinePanel.add(monthlyPanel);
+        
         
         infoPanel = new JPanel();
         addPanelName("Prediction Information", infoPanel);
@@ -90,7 +89,7 @@ public class PredictionPanel extends JPanel{
         infoTable.getTableHeader().setReorderingAllowed(false);
         infoScrollPanel = new JScrollPane(infoTable);
         infoPanel.add(infoScrollPanel);
-        
+        getListInfoOfMonth(month, year);
         this.setVisible(true);
     }
     public ChartPanel PieChart(int month, int year, int type){
@@ -140,7 +139,7 @@ public class PredictionPanel extends JPanel{
         for(Product product: products){
             int value = 0;
             for(Invoice invoice : invoices){
-                if((invoice.getDate().getMonth() == month) && invoice.getDate().getYear() == year){
+                if((invoice.getDate().getMonth() == month) && (invoice.getDate().getYear() == year)){
                     for(LineItem item : invoice.getLineItems()){
                         if(product.getID() == item.getProductID()){
                             value += item.getQuantity();
@@ -210,7 +209,35 @@ public class PredictionPanel extends JPanel{
         return chart;
     }
     
-    public void getListInfo(){
-        
+    public void getListInfoOfMonth(int month, int year){
+        list = null;
+        model.setDataVector(list, columnNames);
+        for(Product product : products){
+            int sellItems = 0;
+            int buyItems = 0;
+            double totalProfit = 0;  
+            for(Invoice invoice : invoices){
+                if((invoice.getDate().getMonth() == month) &&(invoice.getDate().getYear() == year)){
+                    for(LineItem item : invoice.getLineItems()){
+                        if(product.getID() == item.getProductID()){
+                            sellItems += item.getQuantity();
+                          }
+                    }
+                }
+            }
+            for(Order order : orders){
+                if((order.getOrderDate().getMonth() == month) &&(order.getOrderDate().getYear() == year)){
+                    for(LineItem item : order.getLineItems()){
+                        if(product.getID() == item.getProductID()){
+                            buyItems += item.getQuantity();
+                          }
+                    }
+                }
+            }
+            totalProfit = (sellItems - buyItems) * product.getMarkup();
+            Object[] itemInfo = { product.getName(), buyItems, sellItems, totalProfit, product.getStockLevel()};
+            model.addRow(itemInfo);
+        }
+        model.fireTableDataChanged();
     }
 }

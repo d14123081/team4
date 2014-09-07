@@ -20,6 +20,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
     private JScrollPane stockChartScrollPanel;
     private JScrollPane profitChartScrollPanel;
     private JScrollPane predictionChartScrollPanel;
+    private JPanel predictionPanel;
     private DisplayChart displayChart;
     private PredictionPanel predictionChart;
     private static int stockView = 1;
@@ -109,7 +110,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
         }
         
         else if(arg0.getSource().equals(predictionButton)){
-            predictionChart = new PredictionPanel(date.getMonth(),date.getYear());
+            predictionChart = new PredictionPanel(8,date.getYear());
             predictionChartScrollPanel = new JScrollPane(predictionChart);
             predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             viewPanel.add(predictionChartScrollPanel);
@@ -139,6 +140,7 @@ public class StockControlPanel extends JPanel implements ActionListener {
             viewPanel.add(profitChartScrollPanel);
         }  
         else if(isPrediction == true){
+            //predictionPanel.setLayout(mgr);
             predictionChart = new PredictionPanel(new Date().getMonth(), date.getYear());
             predictionChartScrollPanel = new JScrollPane(predictionChart);
             predictionChartScrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
